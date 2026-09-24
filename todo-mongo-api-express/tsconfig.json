@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    /* -----------------------------------------------------------------------
+     * Modern Node.js + ESM setup
+     *
+     * "target": ES2023 — Node 22 supports every ES2023 feature natively.
+     * "module" / "moduleResolution": "NodeNext" — the ESM-aware resolver.
+     *                    Requires explicit .js extensions on relative imports
+     *                    (yes, .js — even in .ts files; TS resolves the .ts
+     *                    but emits code that Node loads at runtime with .js).
+     * ---------------------------------------------------------------------*/
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+
+    /* Emit ------------------------------------------------------------------*/
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": false,
+    "sourceMap": true,
+    "removeComments": false,
+
+    /* Interop ---------------------------------------------------------------*/
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Strictness — the whole point of using TypeScript ----------------------*/
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+
+    /* Perf ------------------------------------------------------------------*/
+    "skipLibCheck": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "coverage"]
+}

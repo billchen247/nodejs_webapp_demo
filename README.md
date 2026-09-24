@@ -1,17 +1,19 @@
-# Node.js Web App Demo — four Todo REST APIs, one learning arc
+# Node.js Web App Demo — five Todo REST APIs, one learning arc
 
-This repo contains **four implementations of the same tiny Todo REST API**,
+This repo contains **five implementations of the same tiny Todo REST API**,
 each written on a different layer of the Node.js web stack. Reading them in
 order shows what a framework *actually adds* — every project keeps the same
-routes, the same JSON-file "database", and (where practical) the same tests,
-so the only thing that changes between projects is the framework layer.
+routes, the same (or nearly the same) "database" contract, and, where
+practical, the same tests, so the only thing that changes between projects is
+one layer at a time.
 
-| # | Project                                                    | Framework layer                        | Language / modules | Node engine |
-| - | ---------------------------------------------------------- | -------------------------------------- | ------------------ | ----------- |
-| 1 | [`todo-node-api`](./todo-node-api)                         | none — raw `http` module               | JavaScript / CJS   | ≥ 24        |
-| 2 | [`todo-connect-api`](./todo-connect-api)                   | [Connect](https://github.com/senchalabs/connect) middleware | JavaScript / CJS   | ≥ 24        |
-| 3 | [`todo-express-api`](./todo-express-api)                   | [Express 4](https://expressjs.com/)    | JavaScript / CJS   | ≥ 24        |
-| 4 | [`todo-node-api-express`](./todo-node-api-express)         | [Express 5](https://expressjs.com/2024/10/15/v5-release.html) + Zod + Helmet | **TypeScript / ESM** | ≥ 22        |
+| # | Project                                                    | Framework layer                        | Store        | Language / modules | Node engine |
+| - | ---------------------------------------------------------- | -------------------------------------- | ------------ | ------------------ | ----------- |
+| 1 | [`todo-node-api`](./todo-node-api)                         | none — raw `http` module               | JSON file    | JavaScript / CJS   | ≥ 24        |
+| 2 | [`todo-connect-api`](./todo-connect-api)                   | [Connect](https://github.com/senchalabs/connect) middleware | JSON file | JavaScript / CJS | ≥ 24 |
+| 3 | [`todo-express-api`](./todo-express-api)                   | [Express 4](https://expressjs.com/)    | JSON file    | JavaScript / CJS   | ≥ 24        |
+| 4 | [`todo-node-api-express`](./todo-node-api-express)         | [Express 5](https://expressjs.com/2024/10/15/v5-release.html) + Zod + Helmet | JSON file | **TypeScript / ESM** | ≥ 22 |
+| 5 | [`todo-mongo-api-express`](./todo-mongo-api-express)       | Express 5 + Zod + Helmet + **Mongoose** | **MongoDB** | TypeScript / ESM   | ≥ 24        |
 
 Each project has its own detailed README — start there for API docs,
 architecture notes, and side-by-side comparisons with its siblings.
@@ -41,9 +43,16 @@ architecture notes, and side-by-side comparisons with its siblings.
    Vitest + supertest. This is what a new Node service in 2026 would
    plausibly look like.
 
-Reading 1 → 4 answers the question *"why do people use Express?"* better
-than any tutorial, because the behaviour is held constant and only the
-plumbing changes.
+5. **`todo-mongo-api-express`** — the same modern stack as #4, but the
+   JSON-file "database" is replaced with **MongoDB** via **Mongoose**.
+   Identifiers become `ObjectId`s, `updatedAt` joins `createdAt`, filtering
+   and pagination happen server-side, and the tests use
+   `mongodb-memory-server` so the suite still runs with no external service.
+
+Reading 1 → 4 answers the question *"why do people use Express?"* — the
+framework changes, everything else stays put. Reading 4 → 5 answers the
+sibling question *"why do people use Mongoose / a real database?"* — the
+framework is held constant this time, and only the persistence layer moves.
 
 ---
 
@@ -74,7 +83,8 @@ nodejs_webapp_demo/
 ├── todo-node-api/             ← 1. raw http, no framework
 ├── todo-connect-api/          ← 2. Connect middleware
 ├── todo-express-api/          ← 3. Express 4
-└── todo-node-api-express/     ← 4. Express 5 + TypeScript + ESM
+├── todo-node-api-express/     ← 4. Express 5 + TypeScript + ESM
+└── todo-mongo-api-express/    ← 5. Express 5 + TypeScript + ESM + MongoDB
 ```
 
 ---
