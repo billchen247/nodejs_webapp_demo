@@ -1,0 +1,26 @@
+{
+  "name": "todo-node-api",
+  "version": "1.0.0",
+  "description": "Educational Todo REST API built with Node.js built-in modules only (no Express).",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "nodejs",
+    "http",
+    "rest",
+    "api",
+    "todo",
+    "educational",
+    "no-express"
+  ],
+  "author": "Educational Example",
+  "license": "MIT"
+}

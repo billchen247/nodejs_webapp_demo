@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Learn Node.js",
+    "completed": false,
+    "createdAt": "2026-09-23T12:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "title": "Understand the HTTP module",
+    "completed": true,
+    "createdAt": "2026-09-23T12:05:00.000Z"
+  },
+  {
+    "id": 3,
+    "title": "Build a REST API without Express",
+    "completed": false,
+    "createdAt": "2026-09-23T12:10:00.000Z"
+  }
+]
