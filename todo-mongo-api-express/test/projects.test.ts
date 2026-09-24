@@ -341,6 +341,21 @@ describe("POST /api/projects/:id/tasks", () => {
  * Cascade: deleting a project deletes its tasks
  * -------------------------------------------------------------------------*/
 
+/* ---------------------------------------------------------------------------
+ * OpenAPI / Swagger — the new resource must show up in the spec
+ * -------------------------------------------------------------------------*/
+
+describe("swagger includes the Project resource", () => {
+    test("paths cover /api/projects, /api/projects/{id}, and nested tasks", async () => {
+        const res = await request(app).get("/api-docs/swagger.json");
+        expect(res.status).toBe(200);
+        expect(res.body.paths["/api/projects"]).toBeTruthy();
+        expect(res.body.paths["/api/projects/{id}"]).toBeTruthy();
+        expect(res.body.paths["/api/projects/{id}/tasks"]).toBeTruthy();
+        expect(res.body.components.schemas.Project).toBeTruthy();
+    });
+});
+
 describe("DELETE /api/projects/:id — cascade", () => {
     test("removes the project AND all its tasks; leaves other projects' tasks intact", async () => {
         const { a, b } = await seedTwoProjects();
