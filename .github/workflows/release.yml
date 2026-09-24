@@ -68,12 +68,14 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: ${{ matrix.package }}/package-lock.json
 
+      # These packages gitignore package-lock.json (see each package's
+      # .gitignore), so `npm ci` (which requires a lockfile) and setup-node's
+      # `cache: npm` (which hashes the lockfile) both fail on the runner.
+      # Use `npm install` and skip the setup-node cache accordingly.
       - name: Install dependencies
         working-directory: ${{ matrix.package }}
-        run: npm ci
+        run: npm install
 
       # Only todo-node-api-express has a compile step (TypeScript -> dist/);
       # the others are runnable as-is. Detect the script instead of hardcoding
