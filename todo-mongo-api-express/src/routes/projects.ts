@@ -14,6 +14,7 @@ import {
     ProjectIdParamSchema,
     UpdateProjectSchema,
 } from "../schemas/projects.js";
+import { CreateTodoSchema } from "../schemas/todos.js";
 
 export const projectsRouter = Router();
 
@@ -34,4 +35,8 @@ projectsRouter
 // Nested tasks collection: /api/projects/:id/tasks
 projectsRouter
     .route("/:id/tasks")
-    .get(validate({ params: ProjectIdParamSchema }), projects.listProjectTasks);
+    .get(validate({ params: ProjectIdParamSchema }), projects.listProjectTasks)
+    .post(
+        validate({ params: ProjectIdParamSchema, body: CreateTodoSchema }),
+        projects.createProjectTask
+    );

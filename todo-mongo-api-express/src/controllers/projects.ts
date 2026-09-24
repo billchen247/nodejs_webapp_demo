@@ -38,6 +38,19 @@ export const listProjectTasks: RequestHandler = async (req, res) => {
     res.json(tasks);
 };
 
+// POST /api/projects/:id/tasks — create a task nested under the project.
+// Body: { title: string } — the path id overrides any projectId in the body.
+export const createProjectTask: RequestHandler = async (req, res) => {
+    const { id } = req.params as { id: string };
+    const body = req.body as { title: string };
+
+    const project = await ProjectModel.findById(id);
+    if (!project) throw notFound("Project not found");
+
+    const task = await TodoModel.create({ title: body.title, projectId: id });
+    res.status(201).json(task);
+};
+
 // POST /api/projects
 // Body: { name: string }
 export const createProject: RequestHandler = async (req, res) => {

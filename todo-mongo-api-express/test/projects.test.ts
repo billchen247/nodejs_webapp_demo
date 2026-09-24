@@ -289,35 +289,50 @@ describe("GET /api/projects/:id/tasks", () => {
 });
 
 /* ---------------------------------------------------------------------------
- * GET /api/projects/:id/tasks — nested list
+ * POST /api/projects/:id/tasks
  * -------------------------------------------------------------------------*/
 
-describe("GET /api/projects/:id/tasks", () => {
-    test("returns only tasks belonging to the given project", async () => {
-        const { a, b } = await seedTwoProjects();
-        await TodoModel.create({ title: "In A", projectId: a._id });
-        await TodoModel.create({ title: "In A too", projectId: a._id });
-        await TodoModel.create({ title: "In B", projectId: b._id });
-        await TodoModel.create({ title: "Orphan" }); // no projectId
+describe("POST /api/projects/:id/tasks", () => {
+    test("creates a task under the project and sets projectId from the path", async () => {
+        const { a } = await seedTwoProjects();
+        const res = await request(app)
+            .post(`/api/projects/${a.id}/tasks`)
+            .set("Content-Type", "application/json")
+            .send({ title: "Write proposal" });
 
-        const res = await request(app).get(`/api/projects/${a.id}/tasks`);
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveLength(2);
-        const titles = res.body.map((t: { title: string }) => t.title).sort();
-        expect(titles).toEqual(["In A", "In A too"]);
+        expect(res.status).toBe(201);
+        expect(res.body.title).toBe("Write proposal");
+        expect(res.body.projectId).toBe(a.id);
+        expect(res.body.completed).toBe(false);
+    });
+
+    test("ignores projectId in the body — the path wins", async () => {
+        const { a, b } = await seedTwoProjects();
+        const res = await request(app)
+            .post(`/api/projects/${a.id}/tasks`)
+            .set("Content-Type", "application/json")
+            .send({ title: "belongs to A", projectId: b.id });
+
+        expect(res.status).toBe(201);
+        expect(res.body.projectId).toBe(a.id);
     });
 
     test("returns 404 when the project does not exist", async () => {
-        const res = await request(app).get(
-            "/api/projects/000000000000000000000000/tasks"
-        );
+        const res = await request(app)
+            .post("/api/projects/000000000000000000000000/tasks")
+            .set("Content-Type", "application/json")
+            .send({ title: "orphan" });
         expect(res.status).toBe(404);
         expect(res.body.error).toBe("Project not found");
     });
 
-    test("returns 400 for a malformed project id", async () => {
-        const res = await request(app).get("/api/projects/not-an-oid/tasks");
+    test("returns 400 when title is missing", async () => {
+        const { a } = await seedTwoProjects();
+        const res = await request(app)
+            .post(`/api/projects/${a.id}/tasks`)
+            .set("Content-Type", "application/json")
+            .send({});
         expect(res.status).toBe(400);
-        expect(res.body.error).toBe("Invalid Project ID");
+        expect(res.body.error).toMatch(/title/i);
     });
 });
