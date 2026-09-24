@@ -1,0 +1,146 @@
+name: Build and Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v1.0.0). Must match v<major>.<minor>.<patch>.'
+        required: true
+        type: string
+
+# The action-gh-release action needs write access to the Contents (releases) API.
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  resolve-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      value: ${{ steps.version.outputs.value }}
+    steps:
+      # Resolve the release version from either the pushed tag or the manual
+      # dispatch input. Values are read via env: (never interpolated directly
+      # into the shell script) to keep this step injection-safe.
+      - name: Determine release version
+        id: version
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VALUE="$INPUT_VERSION"
+          else
+            VALUE="$REF_NAME"
+          fi
+          if ! printf '%s' "$VALUE" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$'; then
+            echo "Invalid version format: $VALUE" >&2
+            echo "Expected: v<major>.<minor>.<patch> (optional -prerelease)" >&2
+            exit 1
+          fi
+          echo "value=$VALUE" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: resolve-version
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - todo-connect-api
+          - todo-express-api
+          - todo-node-api
+          - todo-node-api-express
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ${{ matrix.package }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.package }}
+        run: npm ci
+
+      # Only todo-node-api-express has a compile step (TypeScript -> dist/);
+      # the others are runnable as-is. Detect the script instead of hardcoding
+      # per-package so adding a build to another package Just Works.
+      - name: Build (if package defines a build script)
+        working-directory: ${{ matrix.package }}
+        run: |
+          if npm run | grep -qE '^  build$'; then
+            npm run build
+          else
+            echo "No build script defined; skipping."
+          fi
+
+      # Package the runtime tree - source + package manifests, no node_modules,
+      # no coverage, no local data files. Consumers run `npm ci --omit=dev`
+      # after unzipping to install production deps.
+      - name: Package archive
+        env:
+          VERSION: ${{ needs.resolve-version.outputs.value }}
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          ARCHIVE="${PACKAGE}-${VERSION}.zip"
+          (cd "$PACKAGE" && zip -r "../${ARCHIVE}" . \
+            -x 'node_modules/*' \
+            -x 'coverage/*' \
+            -x 'data/*' \
+            -x '.git/*')
+          echo "Created ${ARCHIVE}"
+          ls -lh "${ARCHIVE}"
+
+      - name: Upload package archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.package }}-${{ needs.resolve-version.outputs.value }}
+          path: ${{ matrix.package }}-${{ needs.resolve-version.outputs.value }}.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    needs: [resolve-version, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          # Fetch full history so auto-generated release notes can diff from
+          # the previous tag rather than just seeing HEAD.
+          fetch-depth: 0
+
+      - name: Download all package archives
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: List release assets
+        run: ls -lh release-assets
+
+      # For workflow_dispatch runs the tag does not exist yet - the action
+      # will create it against the current commit. For push-tag runs the tag
+      # already exists and the action just attaches assets to it.
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.resolve-version.outputs.value }}
+          name: Release ${{ needs.resolve-version.outputs.value }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: release-assets/*.zip
