@@ -179,6 +179,12 @@ the two sister projects (`todo-node-api` on 3000, `todo-connect-api` on
 | `POST`   | `/api/todos`                     | create a todo — body `{ "title": "..." }`|
 | `PUT`    | `/api/todos/:id`                 | update fields (title and/or completed)   |
 | `DELETE` | `/api/todos/:id`                 | delete a todo                            |
+| `GET`    | `/api/students`                  | list all students                        |
+| `GET`    | `/api/students?registrationActive=true` | filter registered students        |
+| `GET`    | `/api/students/:id`               | fetch one student by id                  |
+| `POST`   | `/api/students`                  | create a student — body `{ "name": "..." }` |
+| `PUT`    | `/api/students/:id`               | update name or registration status       |
+| `DELETE` | `/api/students/:id`               | delete a student                         |
 
 Every error response has the shape `{ "error": "message" }`. Standard
 status codes: 200/201/204 for success, 400 for validation errors, 404 for
@@ -216,7 +222,8 @@ the suite doesn't clobber your checked-in data.
 ```
 todo-node-api-express/
 ├── data/
-│   └── todos.json           the JSON "database"
+│   ├── todos.json           the Todo JSON "database"
+│   └── students.json        the Student JSON "database"
 ├── views/
 │   └── home.html            landing page (served by res.sendFile)
 ├── src/
@@ -226,17 +233,21 @@ todo-node-api-express/
 │   ├── openapi.ts           OpenAPI 3.0 spec (Swagger UI reads this)
 │   ├── controllers/
 │   │   ├── home.ts          GET /  (serves the HTML page)
-│   │   └── todos.ts         all /api/todos handlers
+│   │   ├── todos.ts         all /api/todos handlers
+│   │   └── students.ts      all /api/students handlers
 │   ├── routes/
-│   │   └── todos.ts         express.Router for /api/todos
+│   │   ├── todos.ts         express.Router for /api/todos
+│   │   └── students.ts      express.Router for /api/students
 │   ├── middleware/
 │   │   ├── errors.ts        notFoundHandler + errorHandler
 │   │   ├── swagger.ts       Swagger UI + spec, mounted at /api-docs
 │   │   └── validate.ts      turns a Zod schema into an Express middleware
 │   ├── models/
-│   │   └── todos.ts         readTodos / writeTodos + Todo type
+│   │   ├── todos.ts         readTodos / writeTodos + Todo type
+│   │   └── students.ts      readStudents / writeStudents + Student type
 │   ├── schemas/
-│   │   └── todos.ts         Zod schemas for params/query/body
+│   │   ├── todos.ts         Zod schemas for params/query/body
+│   │   └── students.ts      Zod schemas for params/query/body
 │   └── utils/
 │       └── http-error.ts    HttpError class thrown by controllers
 ├── test/

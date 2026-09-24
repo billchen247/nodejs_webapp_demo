@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Tom Wu",
+    "registrationActive": false,
+    "createdAt": "2026-09-24T19:43:56.217Z"
+  },
+  {
+    "id": 2,
+    "name": "Elina Li",
+    "registrationActive": true,
+    "createdAt": "2026-09-24T19:43:56.217Z"
+  },
+  {
+    "id": 3,
+    "name": "Peter Wu",
+    "registrationActive": false,
+    "createdAt": "2026-09-24T20:21:00.052Z"
+  }
+]

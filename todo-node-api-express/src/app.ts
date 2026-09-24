@@ -29,6 +29,7 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 import { ALLOWED_ORIGIN, IS_TEST } from "./config.js";
 import { todosRouter } from "./routes/todos.js";
+import { studentsRouter } from "./routes/students.js";
 import { showHomePage } from "./controllers/home.js";
 import { createSwaggerRouter } from "./middleware/swagger.js";
 import { errorHandler, notFoundHandler } from "./middleware/errors.js";
@@ -108,6 +109,7 @@ export function createApp(): Express {
 
     // The Todos REST resource.
     app.use("/api/todos", todosRouter);
+    app.use("/api/students", studentsRouter);
 
     /* --- terminal handlers ----------------------------------------------- */
 

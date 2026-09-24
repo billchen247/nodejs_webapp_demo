@@ -31,6 +31,21 @@ const todoSchema: OpenApiObject = {
     },
 };
 
+const studentSchema: OpenApiObject = {
+    type: "object",
+    required: ["id", "name", "registrationActive", "createdAt"],
+    properties: {
+        id: { type: "integer", minimum: 1, example: 1 },
+        name: { type: "string", example: "Ada Lovelace" },
+        registrationActive: { type: "boolean", example: true },
+        createdAt: {
+            type: "string",
+            format: "date-time",
+            example: "2026-09-24T12:00:00.000Z",
+        },
+    },
+};
+
 const errorSchema: OpenApiObject = {
     type: "object",
     required: ["error"],
@@ -50,10 +65,14 @@ export const openapi: OpenApiObject = {
             "wired up in src/routes/, and validated with Zod schemas in src/schemas/.",
     },
     servers: [{ url: "/", description: "This server" }],
-    tags: [{ name: "todos", description: "CRUD operations on todos" }],
+    tags: [
+        { name: "todos", description: "CRUD operations on todos" },
+        { name: "students", description: "CRUD operations on students" },
+    ],
     components: {
         schemas: {
             Todo: todoSchema,
+            Student: studentSchema,
             Error: errorSchema,
             NewTodo: {
                 type: "object",
@@ -67,6 +86,20 @@ export const openapi: OpenApiObject = {
                 properties: {
                     title: { type: "string", example: "Learn Express deeply" },
                     completed: { type: "boolean", example: true },
+                },
+            },
+            NewStudent: {
+                type: "object",
+                required: ["name"],
+                properties: {
+                    name: { type: "string", example: "Ada Lovelace" },
+                },
+            },
+            UpdateStudent: {
+                type: "object",
+                properties: {
+                    name: { type: "string", example: "Grace Hopper" },
+                    registrationActive: { type: "boolean", example: true },
                 },
             },
         },
@@ -230,6 +263,110 @@ export const openapi: OpenApiObject = {
                             },
                         },
                     },
+                },
+            },
+        },
+        "/api/students": {
+            get: {
+                tags: ["students"],
+                summary: "List all students",
+                parameters: [
+                    {
+                        name: "registrationActive",
+                        in: "query",
+                        required: false,
+                        description: "Optional filter for active registration status.",
+                        schema: { type: "string", enum: ["true", "false"] },
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "An array of students",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: { $ref: "#/components/schemas/Student" },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            post: {
+                tags: ["students"],
+                summary: "Create a new student",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/NewStudent" },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "The created student",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Student" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/students/{id}": {
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The student's positive-integer id.",
+                    schema: { type: "integer", minimum: 1 },
+                },
+            ],
+            get: {
+                tags: ["students"],
+                summary: "Fetch one student by id",
+                responses: {
+                    "200": {
+                        description: "The student",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Student" },
+                            },
+                        },
+                    },
+                },
+            },
+            put: {
+                tags: ["students"],
+                summary: "Update a student",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/UpdateStudent" },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "The updated student",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Student" },
+                            },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["students"],
+                summary: "Delete a student",
+                responses: {
+                    "204": { description: "Deleted (no response body)" },
                 },
             },
         },

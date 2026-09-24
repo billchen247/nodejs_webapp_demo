@@ -30,6 +30,11 @@ import { readFile, writeFile } from "node:fs/promises";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { DATA_FILE, writeTodos, type Todo } from "../src/models/todos.js";
+import {
+    DATA_FILE as STUDENTS_DATA_FILE,
+    writeStudents,
+    type Student,
+} from "../src/models/students.js";
 
 const SEED_TODOS: Todo[] = [
     {
@@ -46,7 +51,23 @@ const SEED_TODOS: Todo[] = [
     },
 ];
 
+const SEED_STUDENTS: Student[] = [
+    {
+        id: 1,
+        name: "Tom Wu",
+        registrationActive: false,
+        createdAt: "2026-09-24T12:00:00.000Z",
+    },
+    {
+        id: 2,
+        name: "Ada Lovelace",
+        registrationActive: true,
+        createdAt: "2026-09-24T12:05:00.000Z",
+    },
+];
+
 let originalFile: string | null;
+let originalStudentsFile: string | null;
 const app = createApp();
 
 beforeAll(async () => {
@@ -55,16 +76,25 @@ beforeAll(async () => {
     } catch {
         originalFile = null;
     }
+    try {
+        originalStudentsFile = await readFile(STUDENTS_DATA_FILE, "utf8");
+    } catch {
+        originalStudentsFile = null;
+    }
 });
 
 afterAll(async () => {
     if (originalFile !== null) {
         await writeFile(DATA_FILE, originalFile, "utf8");
     }
+    if (originalStudentsFile !== null) {
+        await writeFile(STUDENTS_DATA_FILE, originalStudentsFile, "utf8");
+    }
 });
 
 beforeEach(async () => {
     await writeTodos(SEED_TODOS);
+    await writeStudents(SEED_STUDENTS);
 });
 
 /* ---------------------------------------------------------------------------
@@ -233,6 +263,55 @@ describe("DELETE /api/todos/:id", () => {
     test("returns 404 when the todo does not exist", async () => {
         const res = await request(app).delete("/api/todos/999");
         expect(res.status).toBe(404);
+    });
+});
+
+/* ---------------------------------------------------------------------------
+ * Student REST resource
+ * -------------------------------------------------------------------------*/
+
+describe("/api/students", () => {
+    test("lists students and supports registrationActive filtering", async () => {
+        const all = await request(app).get("/api/students");
+        expect(all.status).toBe(200);
+        expect(all.body).toHaveLength(2);
+
+        const active = await request(app).get("/api/students?registrationActive=true");
+        expect(active.status).toBe(200);
+        expect(active.body).toHaveLength(1);
+        expect(active.body[0].name).toBe("Ada Lovelace");
+    });
+
+    test("creates, updates, and deletes a student", async () => {
+        const created = await request(app)
+            .post("/api/students")
+            .set("Content-Type", "application/json")
+            .send({ name: "Grace Hopper" });
+
+        expect(created.status).toBe(201);
+        expect(created.body.name).toBe("Grace Hopper");
+        expect(created.body.registrationActive).toBe(false);
+
+        const updated = await request(app)
+            .put(`/api/students/${created.body.id}`)
+            .set("Content-Type", "application/json")
+            .send({ registrationActive: true });
+        expect(updated.status).toBe(200);
+        expect(updated.body.registrationActive).toBe(true);
+
+        const deleted = await request(app).delete(`/api/students/${created.body.id}`);
+        expect(deleted.status).toBe(204);
+    });
+
+    test("validates student input and ids", async () => {
+        const invalidBody = await request(app)
+            .post("/api/students")
+            .set("Content-Type", "application/json")
+            .send({ name: "" });
+        expect(invalidBody.status).toBe(400);
+
+        const invalidId = await request(app).get("/api/students/nope");
+        expect(invalidId.status).toBe(400);
     });
 });
 

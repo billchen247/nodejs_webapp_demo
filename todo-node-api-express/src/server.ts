@@ -37,6 +37,7 @@ const server = app.listen(PORT, () => {
     console.log(`Todo API (Express 5 + TS) listening on http://localhost:${actualPort}`);
     console.log(`Home page:   http://localhost:${actualPort}/`);
     console.log(`API root:    http://localhost:${actualPort}/api/todos`);
+    console.log(`Students API: http://localhost:${actualPort}/api/students`);
     console.log(`Swagger UI:  http://localhost:${actualPort}/api-docs/`);
 });
 
