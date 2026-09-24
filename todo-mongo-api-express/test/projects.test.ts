@@ -247,6 +247,48 @@ describe("POST /api/todos with projectId", () => {
 });
 
 /* ---------------------------------------------------------------------------
+ * GET /api/projects/:id/tasks
+ * -------------------------------------------------------------------------*/
+
+describe("GET /api/projects/:id/tasks", () => {
+    test("returns only the tasks that belong to the project", async () => {
+        const { a, b } = await seedTwoProjects();
+        await TodoModel.create({ title: "in-a-1", projectId: a.id });
+        await TodoModel.create({ title: "in-a-2", projectId: a.id });
+        await TodoModel.create({ title: "in-b", projectId: b.id });
+        await TodoModel.create({ title: "orphan" });
+
+        const res = await request(app).get(`/api/projects/${a.id}/tasks`);
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveLength(2);
+        expect(res.body.map((t: { title: string }) => t.title).sort())
+            .toEqual(["in-a-1", "in-a-2"]);
+        expect(res.body[0].projectId).toBe(a.id);
+    });
+
+    test("returns an empty array when the project has no tasks", async () => {
+        const { a } = await seedTwoProjects();
+        const res = await request(app).get(`/api/projects/${a.id}/tasks`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([]);
+    });
+
+    test("returns 404 for a well-formed but unknown project id", async () => {
+        const res = await request(app).get(
+            "/api/projects/000000000000000000000000/tasks"
+        );
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe("Project not found");
+    });
+
+    test("returns 400 for a malformed project id", async () => {
+        const res = await request(app).get("/api/projects/not-an-oid/tasks");
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe("Invalid Project ID");
+    });
+});
+
+/* ---------------------------------------------------------------------------
  * GET /api/projects/:id/tasks — nested list
  * -------------------------------------------------------------------------*/
 

@@ -22,9 +22,20 @@ export const listProjects: RequestHandler = async (_req, res) => {
 // GET /api/projects/:id
 export const getProjectById: RequestHandler = async (req, res) => {
     const { id } = req.params as { id: string };
-    const project = await ProjectModel.findById(id).exec();
+    const project = await ProjectModel.findById(id);
     if (!project) throw notFound("Project not found");
     res.json(project);
+};
+
+// GET /api/projects/:id/tasks — list tasks belonging to a project.
+// 404 first if the project doesn't exist, so an empty array is meaningful.
+export const listProjectTasks: RequestHandler = async (req, res) => {
+    const { id } = req.params as { id: string };
+    const project = await ProjectModel.findById(id);
+    if (!project) throw notFound("Project not found");
+
+    const tasks = await TodoModel.find({ projectId: id }).sort({ createdAt: 1, _id: 1 });
+    res.json(tasks);
 };
 
 // POST /api/projects

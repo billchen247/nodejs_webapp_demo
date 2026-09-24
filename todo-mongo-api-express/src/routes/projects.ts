@@ -30,3 +30,8 @@ projectsRouter
         projects.updateProject
     )
     .delete(validate({ params: ProjectIdParamSchema }), projects.deleteProject);
+
+// Nested tasks collection: /api/projects/:id/tasks
+projectsRouter
+    .route("/:id/tasks")
+    .get(validate({ params: ProjectIdParamSchema }), projects.listProjectTasks);
