@@ -14,7 +14,8 @@ import { z } from "zod";
 
 /* -------- path params ---------------------------------------------------- */
 
-// /api/todos/:id — MongoDB ObjectIds are 24 lowercase hex chars.
+// MongoDB ObjectIds are 24 lowercase hex chars — shared regex for path
+// params AND foreign-key body fields (projectId).
 const OBJECT_ID_RE = /^[a-f\d]{24}$/i;
 
 export const TodoIdParamSchema = z.object({
@@ -41,13 +42,17 @@ export const TodoListQuerySchema = z.object({
 
 /* -------- request bodies ------------------------------------------------- */
 
-// POST /api/todos — only `title` is accepted from the client. The server owns
+// POST /api/todos — `title` required, `projectId` optional. The server owns
 // id, completed, createdAt, updatedAt.
 export const CreateTodoSchema = z.object({
     title: z
         .string({ required_error: "Field 'title' is required and must be a non-empty string" })
         .trim()
         .min(1, "Field 'title' is required and must be a non-empty string"),
+    projectId: z
+        .string()
+        .regex(OBJECT_ID_RE, "Field 'projectId' must be a 24-char hex string")
+        .optional(),
 });
 
 // PUT /api/todos/:id — both fields optional; missing fields leave the stored

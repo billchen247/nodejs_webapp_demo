@@ -21,6 +21,7 @@
 
 import type { RequestHandler } from "express";
 import { TodoModel } from "../models/todos.js";
+import { ProjectModel } from "../models/projects.js";
 import type {
     CreateTodoInput,
     UpdateTodoInput,
@@ -61,10 +62,20 @@ export const getTodoById: RequestHandler = async (req, res) => {
 export const createTodo: RequestHandler = async (req, res) => {
     const body = req.body as CreateTodoInput;
 
+    // If a projectId was supplied, verify the parent exists — otherwise the
+    // client would be able to create orphaned todos.
+    if (body.projectId !== undefined) {
+        const parent = await ProjectModel.findById(body.projectId);
+        if (!parent) throw notFound("Project not found");
+    }
+
     // `create` runs schema validation, so an all-whitespace title (already
     // trimmed by Zod) or a missing field still surfaces as a 400 via the
     // ValidationError branch in middleware/errors.ts.
-    const todo = await TodoModel.create({ title: body.title });
+    const todo = await TodoModel.create({
+        title: body.title,
+        ...(body.projectId !== undefined ? { projectId: body.projectId } : {}),
+    });
 
     // 201 Created is the correct status for "a new resource was made".
     res.status(201).json(todo);

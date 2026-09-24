@@ -33,6 +33,7 @@ export interface TodoDTO {
     id: string;
     title: string;
     completed: boolean;
+    projectId?: string;
     createdAt: string; // ISO-8601
     updatedAt: string; // ISO-8601
 }
@@ -50,6 +51,13 @@ const todoSchema = new Schema(
             required: true,
             default: false,
         },
+        // Optional parent project. Kept as a plain ObjectId (not a `ref:`) so
+        // the wire format stays a hex string, matching the rest of the API.
+        projectId: {
+            type: Schema.Types.ObjectId,
+            required: false,
+            index: true,
+        },
     },
     {
         // Mongoose adds `createdAt` and `updatedAt` for us and keeps them
@@ -62,6 +70,11 @@ const todoSchema = new Schema(
             transform: (_doc, ret: Record<string, unknown>) => {
                 ret["id"] = String(ret["_id"]);
                 delete ret["_id"];
+                // Render projectId as a string too — Mongoose stores it as
+                // an ObjectId, which JSON-serialises to an object otherwise.
+                if (ret["projectId"] != null) {
+                    ret["projectId"] = String(ret["projectId"]);
+                }
                 return ret;
             },
         },
