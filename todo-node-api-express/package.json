@@ -1,0 +1,56 @@
+{
+  "name": "todo-node-api-express",
+  "version": "1.0.0",
+  "description": "Educational Todo REST API built with Express 5 + TypeScript + ESM. Sister project to todo-connect-api (Connect) and todo-node-api (raw http).",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "express5",
+    "typescript",
+    "esm",
+    "rest",
+    "api",
+    "todo",
+    "educational"
+  ],
+  "author": "Educational Example",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.7.5",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.9.0",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@vitest/coverage-v8": "^2.1.5",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}
