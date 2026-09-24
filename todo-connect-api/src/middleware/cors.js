@@ -22,6 +22,7 @@
  * For "non-simple" requests (PUT/DELETE, custom headers, JSON bodies) the
  * browser first sends an OPTIONS "preflight" request. The server must reply
  * with the right CORS headers before the real request will be sent.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 // The origin our future React dev server will run on. In a real project you'd

@@ -18,6 +18,7 @@
  *
  * The rest — CORS, body parsing, security headers, request logging —
  * comes from small, single-purpose middleware packages.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import express, { type Express } from "express";

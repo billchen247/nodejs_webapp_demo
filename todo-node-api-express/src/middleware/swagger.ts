@@ -21,6 +21,7 @@
  *
  * The /swagger.json endpoint is a nice-to-have: some tooling (Postman, code
  * generators, docs aggregators) expects the raw spec at a well-known URL.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import type { Router } from "express";

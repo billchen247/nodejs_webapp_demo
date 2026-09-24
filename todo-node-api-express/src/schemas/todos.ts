@@ -14,6 +14,7 @@
  * are Joi and yup). We picked Zod because it plays especially well with
  * TypeScript — `z.infer<typeof S>` gives you the type "for free" without a
  * second declaration.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import { z } from "zod";

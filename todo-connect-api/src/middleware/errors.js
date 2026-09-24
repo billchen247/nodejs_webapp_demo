@@ -16,6 +16,7 @@
  * Contrast with ../todo-node-api: there, the top-level try/catch and the
  * "no route matched" fallback both live inside a single monolithic request
  * callback. Connect lets us pull each concern out into its own file.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const { sendError } = require("../utils/response");

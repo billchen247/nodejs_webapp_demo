@@ -19,6 +19,7 @@
  * bottom of each path — Express does not do this for us, but it is one
  * line per path here versus manual `res.setHeader("Allow", ...)` calls
  * scattered through the connect router.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const express = require("express");

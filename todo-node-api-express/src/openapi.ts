@@ -9,6 +9,7 @@
  * exactly one branch in src/routes/todos.ts + src/controllers/todos.ts. If
  * you add a route, add it here too — the docs are only as accurate as this
  * file.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 // We don't pull in `openapi-types` just for a type — swagger-ui-express takes

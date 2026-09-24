@@ -7,6 +7,7 @@
  * in a module-level variable, and pipe it out with a manual writeHead. Here
  * we just call `res.sendFile(path)` — Express handles the file read, the
  * Content-Type header, ETag caching, and streaming for us.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const path = require("path");

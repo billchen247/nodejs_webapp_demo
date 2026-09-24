@@ -39,6 +39,7 @@
  *     `undefined`.
  *   * Invalid JSON becomes a 400 response IMMEDIATELY, so controllers can
  *     assume `req.body` is a parsed object.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const { sendError } = require("../utils/response");

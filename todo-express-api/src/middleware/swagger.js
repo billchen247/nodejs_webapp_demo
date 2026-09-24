@@ -11,6 +11,7 @@
  *   GET /api-docs/            -> Swagger UI page (rendered against the spec)
  *   GET /api-docs/swagger.json -> our OpenAPI spec as JSON
  *   GET /api-docs/<asset>     -> swagger-ui-dist static assets (via swagger-ui-express)
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const express = require("express");

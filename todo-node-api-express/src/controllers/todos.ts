@@ -19,6 +19,7 @@
  *   - this one (Express 5) : Zod validation is a route-level middleware, so
  *                            controllers get typed inputs and only handle
  *                            the domain logic.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import type { RequestHandler } from "express";

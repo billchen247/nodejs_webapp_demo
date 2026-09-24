@@ -16,6 +16,7 @@
  *     blocking the rest of the server.
  *   - JSON.parse turns a JSON string on disk into a JavaScript array.
  *   - JSON.stringify does the opposite: JS value -> JSON text on disk.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const fs = require("fs/promises");

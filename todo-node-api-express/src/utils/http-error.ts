@@ -10,6 +10,7 @@
  *     automatically, so we don't need `try/catch` in every route.
  *   - Centralising the error->response mapping makes it easy to log/format
  *     every failure the same way.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 export class HttpError extends Error {

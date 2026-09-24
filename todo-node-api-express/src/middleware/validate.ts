@@ -11,6 +11,7 @@
  *     with `router.post("/", validate({ body: X }), handler)`.
  *   - Auto-400: parse errors throw ZodError, which the errorHandler in
  *     middleware/errors.ts already turns into a clean 400 response.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import type { RequestHandler } from "express";

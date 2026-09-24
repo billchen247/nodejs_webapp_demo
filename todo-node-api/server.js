@@ -17,6 +17,7 @@
  *   6. src/utils/          -- shared response + validation helpers
  *   7. src/views/home.html -- the landing page HTML
  * ===========================================================================
+ * @author Bill Chen
  */
 
 const { server } = require("./src/app");

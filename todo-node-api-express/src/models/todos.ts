@@ -14,6 +14,7 @@
  * `Todo` is exported so route handlers and the OpenAPI generator can share
  * one canonical shape. If we ever migrate to a real DB, this interface stays;
  * only `readTodos` / `writeTodos` change.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import { readFile, writeFile } from "node:fs/promises";

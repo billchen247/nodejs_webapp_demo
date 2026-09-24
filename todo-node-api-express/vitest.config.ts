@@ -1,3 +1,4 @@
+/* @author Bill Chen */
 import { defineConfig } from "vitest/config";
 
 /* ---------------------------------------------------------------------------

@@ -9,6 +9,7 @@
  *     res.status(200).json({ ... })     -> sendJson
  *     res.status(500).json({ error })   -> sendError
  *     res.status(200).type("html").send -> sendHtml
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 // Send a JSON response with the given status code and body.

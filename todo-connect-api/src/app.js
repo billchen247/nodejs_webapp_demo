@@ -44,6 +44,7 @@
  * Compare this to ../todo-node-api/src/app.js, which does all of this inside
  * a single hand-written `http.createServer` callback. Connect turns that
  * monolithic callback into a composable pipeline of small functions.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const http = require("http");

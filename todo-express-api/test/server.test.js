@@ -16,6 +16,7 @@
  * integration tests: middleware, routing, controllers, and file persistence
  * are all exercised end-to-end.
  * ===========================================================================
+ * @author Bill Chen
  */
 
 const test = require("node:test");

@@ -7,6 +7,7 @@
  * Express's `res.sendFile()` — which handles Content-Type, Content-Length,
  * ETag, and range requests for us. In the Connect version we did all of
  * that by hand.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import type { RequestHandler } from "express";

@@ -18,6 +18,7 @@
  * area over Express 4: async route handlers that throw or reject a promise
  * now forward the error to this handler automatically — you no longer need
  * `express-async-errors` or a `try { ... } catch (e) { next(e); }` wrapper.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 import type { ErrorRequestHandler, RequestHandler } from "express";

@@ -13,6 +13,7 @@
  * Every path, method, request body, and response type in this file mirrors
  * exactly one branch in src/router.js + src/controllers/todos.js. If you add
  * a route, add it here too — the docs are only as accurate as this file.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const todoSchema = {

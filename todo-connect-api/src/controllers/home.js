@@ -7,6 +7,7 @@
  * JSON. Here we read a static .html file from disk and stream it back with
  * a Content-Type of "text/html". This is the same thing Express's
  * `res.sendFile()` does under the hood.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const fs = require("fs/promises");

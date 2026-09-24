@@ -19,6 +19,7 @@
  * these handlers are async and Express 4.x+ funnels rejected promises to
  * `next(err)` when we return them. We use the returned-promise style below
  * so we never have to write a try/catch here.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const { readTodos, writeTodos } = require("../models/todos");

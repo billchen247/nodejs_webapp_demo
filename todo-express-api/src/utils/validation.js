@@ -4,6 +4,7 @@
  * Tiny input-validation helpers used by the controllers. Kept in their own
  * file so the controllers can stay focused on request handling instead of
  * regexes and type checks.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 // Convert a URL path segment like "42" into the number 42, rejecting anything

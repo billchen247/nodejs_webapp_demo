@@ -28,6 +28,7 @@
  * We collect Buffer chunks first (rather than concatenating strings) because
  * a single UTF-8 character can be split across two chunks; only combining
  * the raw bytes and THEN decoding avoids the "half a character" problem.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 function readRequestBody(req) {

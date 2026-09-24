@@ -31,6 +31,7 @@
  * temporarily rewrites `req.url` to `/foo.css` for the duration of this
  * middleware, then restores it afterwards. So inside this function we only
  * care about paths RELATIVE to the mount point.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const serveStatic = require("serve-static");

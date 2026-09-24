@@ -17,6 +17,7 @@
  * We also translate the specific "invalid JSON body" error that
  * express.json() throws into a clean 400. Without this, malformed JSON
  * would bubble up as a 500.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 function notFound(req, res) {

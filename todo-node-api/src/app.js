@@ -21,6 +21,7 @@
  *          |
  *          v
  *   any uncaught error?  --yes--> log + send 500
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const http = require("http");

@@ -13,6 +13,7 @@
  * Connect deliberately does NOT decorate `res` the way Express does — it
  * gives you the raw Node `http.ServerResponse`, and expects you to bring
  * your own conveniences. These helpers ARE those conveniences.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 // Send a JSON response with the given status code and body.

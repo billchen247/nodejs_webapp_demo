@@ -21,6 +21,7 @@
  * When the URL matches a known resource but the HTTP verb doesn't, we return
  * 405 Method Not Allowed with an `Allow` header — this is what the HTTP spec
  * requires.
+ * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
 const homeController = require("./controllers/home");
