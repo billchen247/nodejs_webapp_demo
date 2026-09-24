@@ -58,6 +58,7 @@ jobs:
         package:
           - todo-connect-api
           - todo-express-api
+          - todo-mongo-api-express
           - todo-node-api
           - todo-node-api-express
     steps:
