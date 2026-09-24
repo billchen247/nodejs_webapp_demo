@@ -7,8 +7,7 @@
  * -------------------------------------------------------------------------*/
 
 import { z } from "zod";
-
-const OBJECT_ID_RE = /^[a-f\d]{24}$/i;
+import { OBJECT_ID_RE } from "./object-id.js";
 
 export const ProjectIdParamSchema = z.object({
     id: z.string().regex(OBJECT_ID_RE, "Invalid Project ID"),

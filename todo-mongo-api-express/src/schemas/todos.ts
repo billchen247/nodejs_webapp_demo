@@ -11,12 +11,7 @@
  * -------------------------------------------------------------------------*/
 
 import { z } from "zod";
-
-/* -------- path params ---------------------------------------------------- */
-
-// MongoDB ObjectIds are 24 lowercase hex chars — shared regex for path
-// params AND foreign-key body fields (projectId).
-const OBJECT_ID_RE = /^[a-f\d]{24}$/i;
+import { OBJECT_ID_RE } from "./object-id.js";
 
 export const TodoIdParamSchema = z.object({
     id: z.string().regex(OBJECT_ID_RE, "Invalid Todo ID"),
