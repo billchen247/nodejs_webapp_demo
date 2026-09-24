@@ -61,6 +61,7 @@ const cors = require("cors");
 
 const homeController = require("./controllers/home");
 const todosRouter = require("./routes/todos");
+const studentsRouter = require("./routes/students");
 const swagger = require("./middleware/swagger");
 const { notFound, errorHandler } = require("./middleware/errors");
 
@@ -100,6 +101,7 @@ app.get("/", homeController.showHomePage);
 // router uses `:id` path params, which is the piece Connect deliberately
 // does not ship.
 app.use("/api/todos", todosRouter);
+app.use("/api/students", studentsRouter);
 
 // If we fall off the end of the chain, nothing matched: send a JSON 404.
 app.use(notFound);

@@ -19,8 +19,8 @@
   },
   {
     "id": 4,
-    "title": "Learn Express routing",
-    "completed": false,
+    "title": "Learn Node.js",
+    "completed": true,
     "createdAt": "2026-09-24T02:21:28.956Z"
   }
 ]
