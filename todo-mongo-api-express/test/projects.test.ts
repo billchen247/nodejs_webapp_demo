@@ -336,3 +336,23 @@ describe("POST /api/projects/:id/tasks", () => {
         expect(res.body.error).toMatch(/title/i);
     });
 });
+
+/* ---------------------------------------------------------------------------
+ * Cascade: deleting a project deletes its tasks
+ * -------------------------------------------------------------------------*/
+
+describe("DELETE /api/projects/:id — cascade", () => {
+    test("removes the project AND all its tasks; leaves other projects' tasks intact", async () => {
+        const { a, b } = await seedTwoProjects();
+        await TodoModel.create({ title: "a1", projectId: a.id });
+        await TodoModel.create({ title: "a2", projectId: a.id });
+        await TodoModel.create({ title: "b1", projectId: b.id });
+        await TodoModel.create({ title: "loose" }); // no projectId
+
+        const res = await request(app).delete(`/api/projects/${a.id}`);
+        expect(res.status).toBe(204);
+
+        const remaining = await TodoModel.find({}).sort({ title: 1 });
+        expect(remaining.map((t) => t.title).sort()).toEqual(["b1", "loose"]);
+    });
+});

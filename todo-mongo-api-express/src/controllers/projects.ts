@@ -60,10 +60,14 @@ export const createProject: RequestHandler = async (req, res) => {
 };
 
 // DELETE /api/projects/:id — 204 on success.
+// Cascade: any tasks with projectId === id are removed too. This keeps the
+// data consistent when a project goes away.
 export const deleteProject: RequestHandler = async (req, res) => {
     const { id } = req.params as { id: string };
     const result = await ProjectModel.findByIdAndDelete(id);
     if (!result) throw notFound("Project not found");
+
+    await TodoModel.deleteMany({ projectId: id });
     res.status(204).end();
 };
 
