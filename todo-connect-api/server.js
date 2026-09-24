@@ -33,6 +33,7 @@ const PORT = Number(process.env.PORT) || 3001;
 server.listen(PORT, () => {
     const actualPort = server.address().port;
     console.log(`Todo API (Connect) listening on http://localhost:${actualPort}`);
-    console.log(`Home page:  http://localhost:${actualPort}/`);
-    console.log(`API root:   http://localhost:${actualPort}/api/todos`);
+    console.log(`Home page:   http://localhost:${actualPort}/`);
+    console.log(`API root:    http://localhost:${actualPort}/api/todos`);
+    console.log(`Swagger UI:  http://localhost:${actualPort}/api-docs/`);
 });

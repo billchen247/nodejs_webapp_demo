@@ -273,6 +273,40 @@ test("Unknown routes return 404 with a JSON error body", async () => {
 });
 
 // ---------------------------------------------------------------------------
+// Swagger UI / OpenAPI spec
+// ---------------------------------------------------------------------------
+
+test("GET /api-docs/ serves the Swagger UI shell", async () => {
+    const res = await fetch(`${baseUrl}/api-docs/`);
+    assert.strictEqual(res.status, 200);
+    assert.match(res.headers.get("content-type"), /text\/html/);
+    const body = await res.text();
+    // Sanity-check: the HTML boots swagger-ui-bundle.js against our spec.
+    assert.match(body, /swagger-ui-bundle\.js/);
+    assert.match(body, /\.\/swagger\.json/);
+});
+
+test("GET /api-docs/swagger.json serves the OpenAPI spec", async () => {
+    const res = await fetch(`${baseUrl}/api-docs/swagger.json`);
+    assert.strictEqual(res.status, 200);
+    assert.match(res.headers.get("content-type"), /application\/json/);
+    const spec = await res.json();
+    assert.strictEqual(spec.openapi, "3.0.3");
+    assert.strictEqual(spec.info.title, "Todo Connect API");
+    // Every controller branch should be described.
+    assert.ok(spec.paths["/api/todos"], "spec must document /api/todos");
+    assert.ok(spec.paths["/api/todos/{id}"], "spec must document /api/todos/{id}");
+});
+
+test("GET /api-docs/ serves the Swagger UI static assets", async () => {
+    // Requesting an asset the swagger-ui-dist package ships. If our static
+    // middleware is wired up correctly, this returns 200 + JavaScript.
+    const res = await fetch(`${baseUrl}/api-docs/swagger-ui-bundle.js`);
+    assert.strictEqual(res.status, 200);
+    assert.match(res.headers.get("content-type"), /javascript/);
+});
+
+// ---------------------------------------------------------------------------
 // CORS preflight
 // ---------------------------------------------------------------------------
 

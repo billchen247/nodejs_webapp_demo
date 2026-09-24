@@ -135,11 +135,18 @@
             </p>
             <p>
                 Requests flow through a pipeline of middleware:
-                <code>cors</code> &rarr; <code>body</code> &rarr;
-                <code>router</code> &rarr; <code>notFound</code> &rarr;
-                <code>errorHandler</code>. Each middleware is a plain function
-                of <code>(req, res, next)</code> and lives in its own file
-                under <code>src/middleware/</code>.
+                <code>cors</code> &rarr; <code>swagger</code> &rarr;
+                <code>body</code> &rarr; <code>router</code> &rarr;
+                <code>notFound</code> &rarr; <code>errorHandler</code>. Each
+                middleware is a plain function of
+                <code>(req, res, next)</code> and lives in its own file under
+                <code>src/middleware/</code>.
+            </p>
+            <p>
+                Interactive API docs live at
+                <a href="/api-docs/"><code>/api-docs/</code></a> (Swagger UI),
+                and the raw OpenAPI spec is at
+                <a href="/api-docs/swagger.json"><code>/api-docs/swagger.json</code></a>.
             </p>
         </div>
 

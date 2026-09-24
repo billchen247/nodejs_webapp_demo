@@ -27,6 +27,9 @@
  *   [ cors ]              set Access-Control-* headers (+ answer OPTIONS 204)
  *        |
  *        v
+ *   [ swagger ]           mounted at /api-docs -- serves Swagger UI + spec
+ *        |
+ *        v
  *   [ body ]              parse JSON request body into req.body
  *        |
  *        v
@@ -48,6 +51,7 @@ const connect = require("connect");
 
 const cors = require("./middleware/cors");
 const body = require("./middleware/body");
+const swagger = require("./middleware/swagger");
 const { router } = require("./router");
 const { notFound, errorHandler } = require("./middleware/errors");
 
@@ -60,6 +64,12 @@ const app = connect();
 // before anything else touches them. The body parser runs before the router
 // so controllers can rely on `req.body` being populated.
 app.use(cors);
+
+// Swagger UI is mounted at /api-docs. Mounting BEFORE the body parser is
+// deliberate: the docs page is all GETs, so there is nothing to parse, and
+// skipping the parser keeps this branch cheap.
+app.use("/api-docs", swagger);
+
 app.use(body);
 app.use(router);
 

@@ -24,6 +24,8 @@
   "author": "Educational Example",
   "license": "MIT",
   "dependencies": {
-    "connect": "^3.7.0"
+    "connect": "^3.7.0",
+    "serve-static": "^2.2.1",
+    "swagger-ui-dist": "^5.33.0"
   }
 }

@@ -26,6 +26,7 @@ projects useful to compare.
 
 1. [What is Connect?](#what-is-connect)
 2. [Middleware chain in this app](#middleware-chain-in-this-app)
+   - [Interactive API docs (Swagger UI)](#interactive-api-docs-swagger-ui)
 3. [Running the project](#running-the-project)
 4. [API documentation](#api-documentation)
 5. [Testing](#testing)
@@ -82,6 +83,9 @@ request
 [ cors        ]   set Access-Control-* headers (+ answer OPTIONS 204)
    |
    v
+[ swagger     ]   mounted at /api-docs -- Swagger UI + OpenAPI spec
+   |
+   v
 [ body        ]   parse JSON request body into req.body
    |
    v
@@ -94,9 +98,29 @@ request
 [ errorHandler]   any next(err) upstream -> 500 JSON
 ```
 
-All five files live in `src/middleware/` (plus `src/router.js`, which is a
-middleware by convention rather than nesting depth). Follow the imports from
-`src/app.js` to see how they are wired together.
+All the middleware files live in `src/middleware/` (plus `src/router.js`,
+which is a middleware by convention rather than nesting depth). Follow the
+imports from `src/app.js` to see how they are wired together.
+
+### Interactive API docs (Swagger UI)
+
+The API is documented with an OpenAPI 3.0 spec in `src/openapi.js`. Two
+endpoints expose it:
+
+| Path                     | What it serves                                     |
+| ------------------------ | -------------------------------------------------- |
+| `/api-docs/`             | Swagger UI — browsable, "try it out" docs page     |
+| `/api-docs/swagger.json` | The raw OpenAPI 3.0 spec as JSON                   |
+
+Both are served by `src/middleware/swagger.js`, which combines
+[`swagger-ui-dist`](https://www.npmjs.com/package/swagger-ui-dist) (the
+static Swagger UI web app) with [`serve-static`](https://www.npmjs.com/package/serve-static)
+(a Connect-compatible static file middleware). We deliberately do **not**
+use `swagger-ui-express` — it hard-depends on Express's `res.send()` and
+would defeat the point of this project.
+
+If you add a route to `src/router.js`, add its schema to `src/openapi.js`
+too — the Swagger UI page is only as accurate as that file.
 
 ---
 
@@ -113,8 +137,13 @@ npm start
 npm run dev
 ```
 
-Then visit **http://localhost:3001/** for the browsable home page, or hit the
-API directly:
+Then open one of:
+
+* **http://localhost:3001/** — the browsable home page.
+* **http://localhost:3001/api-docs/** — the Swagger UI, where you can call
+  every endpoint from the browser.
+
+Or hit the API directly:
 
 ```bash
 curl http://localhost:3001/api/todos
@@ -133,6 +162,8 @@ sister `todo-node-api` project (which uses 3000).
 | Method   | Path                             | Description                              |
 | -------- | -------------------------------- | ---------------------------------------- |
 | `GET`    | `/`                              | HTML landing page                        |
+| `GET`    | `/api-docs/`                     | Swagger UI docs page                     |
+| `GET`    | `/api-docs/swagger.json`         | OpenAPI 3.0 spec (JSON)                  |
 | `GET`    | `/api/todos`                     | list all todos                           |
 | `GET`    | `/api/todos?completed=true`      | list completed todos                     |
 | `GET`    | `/api/todos?completed=false`     | list incomplete todos                    |
@@ -170,11 +201,13 @@ todo-connect-api/
 ├── src/
 │   ├── app.js               builds the Connect app + http.Server
 │   ├── router.js            router middleware (method + URL -> controller)
+│   ├── openapi.js           OpenAPI 3.0 spec (Swagger UI reads this)
 │   ├── controllers/
 │   │   ├── home.js          GET /  (serves the HTML page)
 │   │   └── todos.js         all /api/todos handlers
 │   ├── middleware/
 │   │   ├── cors.js          CORS headers + preflight
+│   │   ├── swagger.js       Swagger UI + spec, mounted at /api-docs
 │   │   ├── body.js          JSON body parser (populates req.body)
 │   │   └── errors.js        notFound + errorHandler
 │   ├── models/
