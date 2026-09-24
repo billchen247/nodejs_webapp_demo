@@ -26,21 +26,21 @@ const { readStudents, writeStudents } = require("../models/students");
 const { parseStudentId } = require("../utils/validation");
 
 // GET /api/students
-// GET /api/students?completed=true
-// GET /api/students?completed=false
+// GET /api/students?registrationActive=true
+// GET /api/students?registrationActive=false
 //
-// "completed" is a QUERY PARAMETER (after the "?"). Express parses the query
+// "registrationActive" is a QUERY PARAMETER (after the "?"). Express parses the query
 // string into req.query for us — the equivalent of url.searchParams in the
 // connect version.
 async function listStudents(req, res) {
     const students = await readStudents();
-    const completed = req.query.completed;
+    const registrationActive = req.query.registrationActive;
 
-    if (completed === "true") {
-        return res.json(students.filter((t) => t.completed === true));
+    if (registrationActive === "true") {
+        return res.json(students.filter((t) => t.registrationActive === true));
     }
-    if (completed === "false") {
-        return res.json(students.filter((t) => t.completed === false));
+    if (registrationActive === "false") {
+        return res.json(students.filter((t) => t.registrationActive === false));
     }
     res.json(students);
 }
@@ -61,18 +61,18 @@ async function getStudentById(req, res) {
 }
 
 // POST /api/students
-// Body: { "title": "Learn Express" }
+// Body: { "name": "Learn Express" }
 //
-// Only `title` is accepted from the client. The server generates `id`,
-// `completed` (defaults to false), and `createdAt` — never trust the
+// Only `name` is accepted from the client. The server generates `id`,
+// `registrationActive` (defaults to false), and `createdAt` — never trust the
 // client to invent primary keys or timestamps.
 async function createStudent(req, res) {
     const body = req.body || {};
 
-    if (typeof body.title !== "string" || body.title.trim() === "") {
+    if (typeof body.name !== "string" || body.name.trim() === "") {
         return res
             .status(400)
-            .json({ error: "Field 'title' is required and must be a non-empty string" });
+            .json({ error: "Field 'name' is required and must be a non-empty string" });
     }
 
     const students = await readStudents();
@@ -80,8 +80,8 @@ async function createStudent(req, res) {
 
     const student = {
         id: nextId,
-        title: body.title.trim(),
-        completed: false,
+        name: body.name.trim(),
+        registrationActive: false,
         createdAt: new Date().toISOString(),
     };
 
@@ -93,7 +93,7 @@ async function createStudent(req, res) {
 }
 
 // PUT /api/students/:id
-// Body: { "title": "...", "completed": true }
+// Body: { "name": "...", "registrationActive": true }
 //
 // Both fields are optional; missing fields are left unchanged. Unknown fields
 // (like a fake `id` or `createdAt`) are silently ignored.
@@ -107,21 +107,21 @@ async function updateStudent(req, res) {
     const index = students.findIndex((t) => t.id === id);
     if (index === -1) return res.status(404).json({ error: "Student not found" });
 
-    if (body.title !== undefined) {
-        if (typeof body.title !== "string" || body.title.trim() === "") {
+    if (body.name !== undefined) {
+        if (typeof body.name !== "string" || body.name.trim() === "") {
             return res
                 .status(400)
-                .json({ error: "Field 'title' must be a non-empty string" });
+                .json({ error: "Field 'name' must be a non-empty string" });
         }
-        students[index].title = body.title.trim();
+        students[index].name = body.name.trim();
     }
-    if (body.completed !== undefined) {
-        if (typeof body.completed !== "boolean") {
+    if (body.registrationActive !== undefined) {
+        if (typeof body.registrationActive !== "boolean") {
             return res
                 .status(400)
-                .json({ error: "Field 'completed' must be a boolean" });
+                .json({ error: "Field 'registrationActive' must be a boolean" });
         }
-        students[index].completed = body.completed;
+        students[index].registrationActive = body.registrationActive;
     }
 
     await writeStudents(students);
