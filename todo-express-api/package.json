@@ -1,0 +1,33 @@
+{
+  "name": "todo-express-api",
+  "version": "1.0.0",
+  "description": "Educational Todo REST API built with Express — the simplified sibling of todo-connect-api.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test test/",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-exclude='test/**' test/",
+    "pretest:coverage:lcov": "node -e \"require('fs').mkdirSync('coverage',{recursive:true})\"",
+    "test:coverage:lcov": "node --test --experimental-test-coverage --test-coverage-exclude='test/**' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info test/"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "rest",
+    "api",
+    "todo",
+    "educational"
+  ],
+  "author": "Educational Example",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
