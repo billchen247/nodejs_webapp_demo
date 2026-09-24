@@ -37,7 +37,7 @@ export const listTodos: RequestHandler = async (req, res) => {
     if (query.completed === "true") filter["completed"] = true;
     else if (query.completed === "false") filter["completed"] = false;
 
-    let cursor = TodoModel.find(filter).sort({ createdAt: 1 });
+    let cursor = TodoModel.find(filter).sort({ createdAt: 1, _id: 1 });
     if (typeof query.skip === "number") cursor = cursor.skip(query.skip);
     if (typeof query.limit === "number") cursor = cursor.limit(query.limit);
 
