@@ -190,6 +190,55 @@ Mocha. Tests start the server on a random free port and use the global
 `fetch()` (built into Node ≥ 18) to make real HTTP requests. See
 `test/server.test.js` for the whole thing.
 
+### Code coverage
+
+Node 20+ ships a coverage collector as a flag on the built-in test runner —
+no `nyc`, `c8`, or `jest --coverage` needed. Two scripts:
+
+```bash
+# 1. Terminal-only summary — a per-file table with line / branch / function
+#    percentages and the uncovered line numbers.
+npm run test:coverage
+
+# 2. Terminal summary PLUS a machine-readable coverage/lcov.info file.
+#    Point CI at the LCOV file, or install the "Coverage Gutters" VS Code
+#    extension and it will highlight covered / uncovered lines in red/green
+#    right in your editor.
+npm run test:coverage:lcov
+```
+
+Under the hood these run:
+
+```bash
+node --test \
+     --experimental-test-coverage \
+     --test-coverage-exclude='test/**' \
+     [--test-reporter=spec --test-reporter-destination=stdout \
+      --test-reporter=lcov --test-reporter-destination=coverage/lcov.info] \
+     test/
+```
+
+`--test-coverage-exclude` keeps the tests themselves out of the report —
+otherwise you get a misleading 100% on `test/server.test.js`. The `coverage/`
+directory is `.gitignore`d.
+
+Sample output:
+
+```
+ℹ file            | line % | branch % | funcs % | uncovered lines
+ℹ src             |        |          |         |
+ℹ  app.js         | 100.00 |   100.00 |  100.00 |
+ℹ  controllers    |        |          |         |
+ℹ   home.js       |  87.18 |    66.67 |  100.00 | 32-36
+ℹ   todos.js      |  97.20 |    80.00 |  100.00 | 108-109 114-115
+ℹ ...
+ℹ all files       |  96.67 |    82.65 |   96.15 |
+```
+
+The uncovered-lines column tells you what your tests are missing at a glance —
+in this project those are mostly error-recovery branches (a file that never
+throws in tests, a request that never disconnects mid-body).
+
 ---
 
 ## Project structure

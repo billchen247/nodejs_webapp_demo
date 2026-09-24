@@ -5,12 +5,15 @@
   "main": "server.js",
   "type": "commonjs",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-exclude='test/**' test/",
+    "pretest:coverage:lcov": "node -e \"require('fs').mkdirSync('coverage',{recursive:true})\"",
+    "test:coverage:lcov": "node --test --experimental-test-coverage --test-coverage-exclude='test/**' --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info test/"
   },
   "keywords": [
     "nodejs",
