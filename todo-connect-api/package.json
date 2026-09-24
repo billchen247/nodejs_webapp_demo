@@ -1,0 +1,29 @@
+{
+  "name": "todo-connect-api",
+  "version": "1.0.0",
+  "description": "Educational Todo REST API built with the Connect middleware framework (Express's minimalist ancestor).",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "nodejs",
+    "connect",
+    "middleware",
+    "rest",
+    "api",
+    "todo",
+    "educational"
+  ],
+  "author": "Educational Example",
+  "license": "MIT",
+  "dependencies": {
+    "connect": "^3.7.0"
+  }
+}

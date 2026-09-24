@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Connect API</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f7f7fa;
+            --card: #ffffff;
+            --ink: #1f2330;
+            --muted: #61667a;
+            --accent: #3a5ccc;
+            --border: #e3e5ee;
+            --code-bg: #2a2e3a;
+            --code-ink: #f5f6fa;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #14161d;
+                --card: #1c1f29;
+                --ink: #f0f2f8;
+                --muted: #9098ad;
+                --accent: #7f9dff;
+                --border: #2a2e3a;
+                --code-bg: #0d0f14;
+                --code-ink: #d8dbe4;
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 2rem 1rem 4rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                         Helvetica, Arial, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            line-height: 1.5;
+        }
+        main {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+        h1 { margin-top: 0; font-size: 2rem; }
+        h2 { margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .subtitle { color: var(--muted); margin-top: -0.5rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.55rem 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+        th { font-weight: 600; color: var(--muted); }
+        code {
+            background: var(--code-bg);
+            color: var(--code-ink);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.9rem;
+        }
+        .method {
+            display: inline-block;
+            min-width: 3.5rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            color: white;
+        }
+        .m-get    { background: #2f855a; }
+        .m-post   { background: #2b6cb0; }
+        .m-put    { background: #b7791f; }
+        .m-delete { background: #c53030; }
+        button {
+            font: inherit;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            background: transparent;
+            cursor: pointer;
+        }
+        button:hover { background: var(--accent); color: white; }
+        ul.todos {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0;
+        }
+        ul.todos li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        ul.todos li:last-child { border-bottom: none; }
+        .status {
+            font-size: 0.75rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 999px;
+            background: var(--border);
+            color: var(--muted);
+        }
+        .status.done { background: #2f855a; color: white; }
+        footer {
+            margin-top: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="card">
+            <h1>Todo Connect API</h1>
+            <p class="subtitle">
+                The same tiny REST API as <code>todo-node-api</code>, but built
+                on top of <a href="https://github.com/senchalabs/connect">Connect</a>
+                — a minimalist middleware framework (and Express's ancestor).
+            </p>
+            <p>
+                Requests flow through a pipeline of middleware:
+                <code>cors</code> &rarr; <code>body</code> &rarr;
+                <code>router</code> &rarr; <code>notFound</code> &rarr;
+                <code>errorHandler</code>. Each middleware is a plain function
+                of <code>(req, res, next)</code> and lives in its own file
+                under <code>src/middleware/</code>.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Endpoints</h2>
+            <table>
+                <thead>
+                    <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method m-get">GET</span></td>
+                        <td><code>/api/todos</code></td>
+                        <td>List every todo (optional <code>?completed=true|false</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-get">GET</span></td>
+                        <td><code>/api/todos/:id</code></td>
+                        <td>Fetch a single todo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-post">POST</span></td>
+                        <td><code>/api/todos</code></td>
+                        <td>Create a todo (body: <code>{"title":"..."}</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-put">PUT</span></td>
+                        <td><code>/api/todos/:id</code></td>
+                        <td>Update a todo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-delete">DELETE</span></td>
+                        <td><code>/api/todos/:id</code></td>
+                        <td>Delete a todo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Live todos</h2>
+            <p class="subtitle">
+                Loaded straight from <code>GET /api/todos</code> using the
+                browser's built-in <code>fetch()</code>. Refresh after
+                changing <code>data/todos.json</code> or hitting the API.
+            </p>
+            <button id="refresh">Refresh</button>
+            <ul id="todoList" class="todos"></ul>
+        </div>
+
+        <footer>
+            Todo Connect API &middot; built for learning &middot;
+            served through a Connect middleware chain
+        </footer>
+    </main>
+
+    <script>
+        async function loadTodos() {
+            const list = document.getElementById("todoList");
+            list.innerHTML = "<li>Loading&hellip;</li>";
+            try {
+                const res = await fetch("/api/todos");
+                const todos = await res.json();
+                if (todos.length === 0) {
+                    list.innerHTML = "<li>No todos yet.</li>";
+                    return;
+                }
+                list.innerHTML = todos.map(function (t) {
+                    var badge = t.completed
+                        ? '<span class="status done">done</span>'
+                        : '<span class="status">open</span>';
+                    var title = String(t.title)
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;");
+                    return "<li><span>#" + t.id + " &middot; " + title + "</span>" + badge + "</li>";
+                }).join("");
+            } catch (err) {
+                list.innerHTML = "<li>Failed to load todos.</li>";
+            }
+        }
+        document.getElementById("refresh").addEventListener("click", loadTodos);
+        loadTodos();
+    </script>
+</body>
+</html>
