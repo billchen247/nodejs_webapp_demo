@@ -1,23 +1,45 @@
 <%# views/partials/header.ejs — shared page header. Every top-level view
     starts with an include of this partial. `title` is passed in as a local
-    by the controller; falls back to a friendly default if a view forgets. %>
+    by the controller; falls back to a friendly default if a view forgets.
+    `currentUser` is set on `res.locals` by the injectCurrentUser middleware
+    so we can render either the "sign up / log in" links (anonymous) or
+    "Profile / Log out" (signed in). %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= typeof title !== 'undefined' ? title : 'Todo MVC' %> · Todo MVC</title>
+    <title><%= typeof title !== 'undefined' ? title : 'Task Manager' %> · Task Manager</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <header class="site-header">
         <div class="container">
-            <a class="site-title" href="/">Todo MVC</a>
-            <nav>
+            <a class="site-title" href="/">Task Manager</a>
+            <nav class="primary-nav">
                 <a href="/">Home</a>
+                <% if (locals.currentUser) { %>
+                    <a href="/projects">Projects</a>
+                    <a href="/users">Users</a>
+                <% } %>
                 <a href="/todos">Todos</a>
-                <a href="/todos/new">New</a>
+            </nav>
+            <nav class="auth-nav">
+                <% if (locals.currentUser) { %>
+                    <a href="/users/<%= currentUser.id %>"><%= currentUser.name %></a>
+                    <form method="post" action="/logout" class="inline-form">
+                        <button type="submit" class="link-button">Log out</button>
+                    </form>
+                <% } else { %>
+                    <a href="/login">Log in</a>
+                    <a href="/signup" class="button primary compact">Sign up</a>
+                <% } %>
             </nav>
         </div>
     </header>
     <main class="container">
+        <% if (locals.flash) { %>
+            <div class="flash flash-<%= flash.type %>" role="status">
+                <%= flash.message %>
+            </div>
+        <% } %>

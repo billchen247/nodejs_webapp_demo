@@ -1,0 +1,32 @@
+<%- include('../partials/header', { title: title }) %>
+
+<div class="auth-card">
+    <h1>Log in</h1>
+
+    <% if (errors._) { %>
+        <p class="form-error"><%= errors._ %></p>
+    <% } %>
+
+    <form method="post" action="/login" class="auth-form" novalidate>
+        <div class="field <%= errors.email ? 'has-error' : '' %>">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= values.email || '' %>"
+                   autofocus required maxlength="200" autocomplete="email">
+            <% if (errors.email) { %><p class="error"><%= errors.email %></p><% } %>
+        </div>
+
+        <div class="field <%= errors.password ? 'has-error' : '' %>">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                   required autocomplete="current-password">
+            <% if (errors.password) { %><p class="error"><%= errors.password %></p><% } %>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="button primary">Log in</button>
+            <a href="/signup" class="button">Create an account</a>
+        </div>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

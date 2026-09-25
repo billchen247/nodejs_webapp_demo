@@ -1,50 +1,74 @@
 <%- include('partials/header', { title: title }) %>
 
 <section class="hero">
-    <h1>Todo MVC</h1>
+    <h1>Task Manager</h1>
     <p class="subtitle">
-        Server-rendered CRUD on top of Express 5, TypeScript, MongoDB, and EJS.
+        Users, Projects, and Tasks — a classic server-rendered task manager on
+        Express 5 + TypeScript + MongoDB + EJS.
     </p>
 
-    <div class="stat-grid">
+    <div class="stat-grid stat-grid-3">
         <div class="stat">
-            <div class="stat-value"><%= counts.total %></div>
-            <div class="stat-label">Total</div>
+            <div class="stat-value"><%= managerCounts.users %></div>
+            <div class="stat-label">Users</div>
         </div>
         <div class="stat">
-            <div class="stat-value"><%= counts.active %></div>
-            <div class="stat-label">Active</div>
+            <div class="stat-value"><%= managerCounts.projects %></div>
+            <div class="stat-label">Projects</div>
         </div>
         <div class="stat">
-            <div class="stat-value"><%= counts.completed %></div>
-            <div class="stat-label">Completed</div>
+            <div class="stat-value"><%= managerCounts.tasks %></div>
+            <div class="stat-label">Tasks</div>
         </div>
     </div>
 
     <p class="cta">
-        <a class="button primary" href="/todos">View all todos</a>
-        <a class="button" href="/todos/new">Add a new todo</a>
+        <% if (locals.currentUser) { %>
+            <a class="button primary" href="/projects">Go to my projects</a>
+            <a class="button" href="/projects/new">New project</a>
+        <% } else { %>
+            <a class="button primary" href="/signup">Sign up</a>
+            <a class="button" href="/login">Log in</a>
+        <% } %>
     </p>
 </section>
 
 <section class="explainer">
-    <h2>What is this?</h2>
-    <p>
-        A tiny CRUD app that renders HTML on the server. Compare it to its
-        JSON-API sibling <code>todo-mongo-api-express</code> — same stack, same
-        database, but where that project returns JSON at
-        <code>/api/todos</code>, this one renders EJS templates and redirects
-        after form submits.
-    </p>
-    <p>
-        The controllers, models, and routes are laid out in the classic MVC
-        pattern:
-    </p>
+    <h2>How it fits together</h2>
     <ul>
-        <li><strong>M</strong>odel — <code>src/models/todo.ts</code> (Mongoose schema)</li>
-        <li><strong>V</strong>iew — <code>views/todos/*.ejs</code> (EJS templates)</li>
-        <li><strong>C</strong>ontroller — <code>src/controllers/todos.ts</code> (renders / redirects)</li>
+        <li><strong>User</strong> — signs up with an email and password. Owns projects and can be assigned tasks.</li>
+        <li><strong>Project</strong> — a bucket of tasks. Only the owner can edit or delete it (or its tasks).</li>
+        <li><strong>Task</strong> — has a status (todo / in progress / done), a priority, an optional due date, and an optional assignee. Rendered on the project's board.</li>
     </ul>
+</section>
+
+<section class="explainer">
+    <h2>The legacy Todo demo</h2>
+    <p>
+        The original single-user Todo list is preserved as the intro example.
+        Same stack, no auth — a good spot to compare the minimal MVC shape with
+        the richer task manager above.
+    </p>
+
+    <div class="stat-grid stat-grid-3">
+        <div class="stat">
+            <div class="stat-value"><%= todoCounts.total %></div>
+            <div class="stat-label">Todos</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value"><%= todoCounts.active %></div>
+            <div class="stat-label">Active</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value"><%= todoCounts.completed %></div>
+            <div class="stat-label">Done</div>
+        </div>
+    </div>
+
+    <p class="cta">
+        <a class="button" href="/todos">View all todos</a>
+        <a class="button" href="/todos/new">Add a new todo</a>
+    </p>
 </section>
 
 <%- include('partials/footer') %>

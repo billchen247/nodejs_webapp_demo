@@ -1,0 +1,71 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/projects">← All projects</a></p>
+
+<header class="project-detail-head">
+    <h1><%= project.name %></h1>
+    <p class="project-meta">
+        owner: <a href="/users/<%= project.owner %>"><%= project.ownerName %></a>
+        · <%= totalTasks %> task<%= totalTasks === 1 ? '' : 's' %>
+    </p>
+    <% if (project.description) { %>
+        <p class="project-blurb"><%= project.description %></p>
+    <% } %>
+    <div class="project-actions">
+        <% if (project.isMine) { %>
+            <a class="button primary" href="/projects/<%= project.id %>/tasks/new">+ New task</a>
+            <a class="button" href="/projects/<%= project.id %>/edit">Edit project</a>
+        <% } else { %>
+            <span class="hint">Only the owner can add or change tasks.</span>
+        <% } %>
+    </div>
+</header>
+
+<section class="board">
+    <% ['todo', 'in_progress', 'done'].forEach(function(col) { %>
+        <div class="board-column board-column-<%= col %>">
+            <h2>
+                <%= col === 'todo' ? 'To do' : col === 'in_progress' ? 'In progress' : 'Done' %>
+                <span class="col-count">(<%= board[col].length %>)</span>
+            </h2>
+
+            <% if (board[col].length === 0) { %>
+                <p class="empty small">Nothing here.</p>
+            <% } %>
+
+            <% board[col].forEach(function(t) { %>
+                <article class="task-card task-priority-<%= t.priority %>">
+                    <a class="task-title" href="/projects/<%= project.id %>/tasks/<%= t.id %>">
+                        <%= t.title %>
+                    </a>
+
+                    <div class="task-meta">
+                        <span class="pill pill-priority pill-<%= t.priority %>"><%= t.priority %></span>
+                        <% if (t.dueDate) { %>
+                            <span class="pill pill-date">due <%= new Date(t.dueDate).toISOString().slice(0, 10) %></span>
+                        <% } %>
+                        <% if (t.assigneeName) { %>
+                            <span class="pill pill-assignee">→ <%= t.assigneeName %></span>
+                        <% } %>
+                    </div>
+
+                    <% if (project.isMine) { %>
+                        <div class="task-quick-actions">
+                            <% ['todo', 'in_progress', 'done'].forEach(function(target) {
+                                if (target === t.status) return; %>
+                                <form method="post" action="/projects/<%= project.id %>/tasks/<%= t.id %>/status" class="inline-form">
+                                    <input type="hidden" name="status" value="<%= target %>">
+                                    <button type="submit" class="link-button">
+                                        → <%= target === 'todo' ? 'To do' : target === 'in_progress' ? 'In progress' : 'Done' %>
+                                    </button>
+                                </form>
+                            <% }); %>
+                        </div>
+                    <% } %>
+                </article>
+            <% }); %>
+        </div>
+    <% }); %>
+</section>
+
+<%- include('../partials/footer') %>

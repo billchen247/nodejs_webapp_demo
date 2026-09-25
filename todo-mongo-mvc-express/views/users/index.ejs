@@ -1,0 +1,21 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Users</h1>
+
+<% if (users.length === 0) { %>
+    <p class="empty">No users yet.</p>
+<% } else { %>
+    <ul class="user-list">
+        <% users.forEach(function(user) { %>
+            <li class="user-row">
+                <a class="user-name" href="/users/<%= user.id %>"><%= user.name %></a>
+                <span class="user-email"><%= user.email %></span>
+                <span class="user-meta">
+                    joined <%= user.createdAt.toISOString().slice(0, 10) %>
+                </span>
+            </li>
+        <% }); %>
+    </ul>
+<% } %>
+
+<%- include('../partials/footer') %>

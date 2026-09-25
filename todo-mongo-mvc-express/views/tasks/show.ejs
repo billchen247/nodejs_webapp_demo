@@ -1,0 +1,65 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/projects/<%= project.id %>">← Back to <%= project.name %></a></p>
+
+<article class="task-detail">
+    <h1><%= task.title %></h1>
+
+    <div class="task-meta-row">
+        <span class="pill pill-status pill-<%= task.status %>">
+            <%= statusLabels[task.status] %>
+        </span>
+        <span class="pill pill-priority pill-<%= task.priority %>">
+            <%= priorityLabels[task.priority] %> priority
+        </span>
+        <% if (task.dueDate) { %>
+            <span class="pill pill-date">
+                due <%= new Date(task.dueDate).toISOString().slice(0, 10) %>
+            </span>
+        <% } %>
+    </div>
+
+    <% if (task.description) { %>
+        <section class="task-description">
+            <h2>Description</h2>
+            <p><%= task.description %></p>
+        </section>
+    <% } %>
+
+    <dl class="meta">
+        <dt>Project</dt>
+        <dd><a href="/projects/<%= project._id %>"><%= project.name %></a></dd>
+
+        <dt>Assignee</dt>
+        <dd>
+            <% if (task.assignee) { %>
+                <a href="/users/<%= task.assignee.id %>"><%= task.assignee.name %></a>
+                <span class="hint">(<%= task.assignee.email %>)</span>
+            <% } else { %>
+                <em class="hint">Unassigned</em>
+            <% } %>
+        </dd>
+
+        <dt>Created by</dt>
+        <dd><%= task.createdBy.name %></dd>
+
+        <dt>Created</dt>
+        <dd><time datetime="<%= new Date(task.createdAt).toISOString() %>"><%= new Date(task.createdAt).toISOString() %></time></dd>
+
+        <dt>Updated</dt>
+        <dd><time datetime="<%= new Date(task.updatedAt).toISOString() %>"><%= new Date(task.updatedAt).toISOString() %></time></dd>
+    </dl>
+
+    <% if (isOwner) { %>
+        <div class="form-actions">
+            <a class="button primary" href="/projects/<%= project._id %>/tasks/<%= task.id %>/edit">Edit</a>
+            <form method="post" action="/projects/<%= project._id %>/tasks/<%= task.id %>?_method=DELETE"
+                  class="inline-form"
+                  onsubmit="return confirm('Delete this task?');">
+                <button type="submit" class="button danger">Delete</button>
+            </form>
+        </div>
+    <% } %>
+</article>
+
+<%- include('../partials/footer') %>

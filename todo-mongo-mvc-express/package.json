@@ -1,7 +1,7 @@
 {
   "name": "todo-mongo-mvc-express",
-  "version": "1.0.0",
-  "description": "Educational server-rendered Todo web app built with Express 5 + TypeScript + ESM + MongoDB (Mongoose) + EJS view engine. Sibling to todo-mongo-api-express — same stack, but renders HTML views instead of JSON.",
+  "version": "1.1.0",
+  "description": "Educational server-rendered Task Manager (+ legacy Todo) built with Express 5 + TypeScript + ESM + MongoDB (Mongoose) + EJS view engine. Users, Projects, and Tasks with session auth; the original Todo resource is preserved as the intro example.",
   "type": "module",
   "engines": {
     "node": ">=22.0.0"
@@ -34,11 +34,14 @@
   "author": "Bill Chen",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "compression": "^1.7.5",
+    "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
     "helmet": "^8.0.0",
     "method-override": "^3.0.0",
     "mongoose": "^8.8.0",
@@ -46,9 +49,11 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
     "@types/method-override": "^3.0.0",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.0.0",

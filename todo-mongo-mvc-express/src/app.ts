@@ -1,11 +1,22 @@
 /* ---------------------------------------------------------------------------
  * src/app.ts
  *
- * Assembles the Express application, wires up the EJS view engine, and mounts
- * the /todos router. Middleware order:
+ * Assembles the Express application, wires up the EJS view engine, sessions,
+ * auth middleware, and every top-level router.
  *
- *   security → rate-limit → compression → log → body/form parse →
- *   method-override → static assets → routes → notFound → errorHandler
+ * Middleware order (top → bottom = first → last):
+ *
+ *   security (Helmet)         →
+ *   rate-limit                →
+ *   compression + logging     →
+ *   body/form parsers         →
+ *   method-override           →
+ *   static assets             →
+ *   session                   →
+ *   flash (uses session)      →
+ *   injectCurrentUser (uses session + DB) →
+ *   routes                    →
+ *   notFound → errorHandler
  *
  * The MongoDB connection lifecycle lives OUTSIDE this function — it belongs
  * to whoever starts the process (server.ts in prod, the test suite in tests).
@@ -28,10 +39,25 @@ import morgan from "morgan";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import methodOverride from "method-override";
-import { IS_TEST } from "./config.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
+
+import {
+    IS_TEST,
+    IS_PROD,
+    SESSION_SECRET,
+    SESSION_COOKIE_NAME,
+    SESSION_MAX_AGE_MS,
+} from "./config.js";
 import { todosRouter } from "./routes/todos.js";
+import { authRouter } from "./routes/auth.js";
+import { projectsRouter } from "./routes/projects.js";
+import { usersRouter } from "./routes/users.js";
 import { showHomePage } from "./controllers/home.js";
 import { errorHandler, notFoundHandler } from "./middleware/errors.js";
+import { injectCurrentUser } from "./middleware/auth.js";
+import { flash } from "./middleware/flash.js";
 
 // Resolve /views and /public relative to THIS file so the app works the same
 // whether it's launched via `tsx src/server.ts` or `node dist/server.js`.
@@ -109,10 +135,53 @@ export function createApp(): Express {
     // Anything in /public is served at the URL root: /styles.css, /favicon.ico, ...
     app.use(express.static(path.join(PROJECT_ROOT, "public"), { maxAge: IS_TEST ? 0 : "1h" }));
 
+    /* --- session --------------------------------------------------------- */
+
+    // Sessions are stored server-side in MongoDB (via connect-mongo) so a
+    // process restart doesn't log everyone out. In test mode we skip the store
+    // config and fall back to express-session's in-process MemoryStore, which
+    // is exactly what we want for hermetic tests.
+    const sessionOptions: session.SessionOptions = {
+        secret: SESSION_SECRET,
+        name: SESSION_COOKIE_NAME,
+        resave: false,
+        saveUninitialized: false,
+        rolling: true,
+        cookie: {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: IS_PROD,
+            maxAge: SESSION_MAX_AGE_MS,
+        },
+    };
+    if (!IS_TEST) {
+        // Reuse Mongoose's live MongoClient so we don't open a second
+        // connection just for sessions. `connectToDatabase()` must have run
+        // before `createApp()` — which is exactly what server.ts does.
+        sessionOptions.store = MongoStore.create({
+            client: mongoose.connection.getClient() as unknown as Parameters<
+                typeof MongoStore.create
+            >[0]["client"],
+            collectionName: "sessions",
+            ttl: Math.floor(SESSION_MAX_AGE_MS / 1000),
+            touchAfter: 60, // rate-limit "just touched" updates to once/minute
+        });
+    }
+    app.use(session(sessionOptions));
+
+    // One-time flash message copy from session → res.locals.
+    app.use(flash);
+
+    // Populate `req.currentUser` and `res.locals.currentUser` on every request.
+    app.use(injectCurrentUser);
+
     /* --- routes ---------------------------------------------------------- */
 
     app.get("/", showHomePage);
-    app.use("/todos", todosRouter);
+    app.use("/", authRouter);                 // /signup, /login, /logout
+    app.use("/users", usersRouter);           // requires auth
+    app.use("/projects", projectsRouter);     // requires auth; nests /tasks
+    app.use("/todos", todosRouter);           // legacy demo — open access
 
     /* --- terminal handlers ----------------------------------------------- */
 

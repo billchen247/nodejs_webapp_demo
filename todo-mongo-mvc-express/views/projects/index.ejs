@@ -1,0 +1,41 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Projects</h1>
+
+<nav class="filter-tabs">
+    <a href="/projects?scope=all"  class="<%= scope === 'all' ? 'active' : '' %>">All</a>
+    <a href="/projects?scope=mine" class="<%= scope === 'mine' ? 'active' : '' %>">Mine</a>
+</nav>
+
+<p class="toolbar">
+    <a class="button primary" href="/projects/new">+ New project</a>
+</p>
+
+<% if (projects.length === 0) { %>
+    <p class="empty">
+        No projects to show. <a href="/projects/new">Create one</a>.
+    </p>
+<% } else { %>
+    <ul class="project-list">
+        <% projects.forEach(function(p) { %>
+            <li class="project-card">
+                <div class="project-heading">
+                    <a class="project-name" href="/projects/<%= p.id %>"><%= p.name %></a>
+                    <span class="task-count-pill"><%= p.taskCount %> task<%= p.taskCount === 1 ? '' : 's' %></span>
+                </div>
+                <% if (p.description) { %>
+                    <p class="project-blurb"><%= p.description %></p>
+                <% } %>
+                <div class="project-meta">
+                    <span>owner: <a href="/users/<%= p.owner %>"><%= p.ownerName %></a></span>
+                    <span>created <%= p.createdAt.toISOString().slice(0, 10) %></span>
+                    <% if (p.isMine) { %>
+                        <span class="badge badge-mine">Yours</span>
+                    <% } %>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+<% } %>
+
+<%- include('../partials/footer') %>

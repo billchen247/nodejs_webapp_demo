@@ -1,0 +1,25 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>New project</h1>
+
+<form method="post" action="/projects" class="entity-form" novalidate>
+    <div class="field <%= errors.name ? 'has-error' : '' %>">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name"
+               value="<%= values.name || '' %>" autofocus required maxlength="120">
+        <% if (errors.name) { %><p class="error"><%= errors.name %></p><% } %>
+    </div>
+
+    <div class="field <%= errors.description ? 'has-error' : '' %>">
+        <label for="description">Description <span class="hint">(optional)</span></label>
+        <textarea id="description" name="description" rows="4" maxlength="2000"><%= values.description || '' %></textarea>
+        <% if (errors.description) { %><p class="error"><%= errors.description %></p><% } %>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="button primary">Create project</button>
+        <a href="/projects" class="button">Cancel</a>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

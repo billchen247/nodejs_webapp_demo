@@ -1,0 +1,33 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Edit project</h1>
+
+<form method="post" action="/projects/<%= project.id %>?_method=PUT" class="entity-form" novalidate>
+    <div class="field <%= errors.name ? 'has-error' : '' %>">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name"
+               value="<%= values.name !== undefined ? values.name : project.name %>"
+               autofocus required maxlength="120">
+        <% if (errors.name) { %><p class="error"><%= errors.name %></p><% } %>
+    </div>
+
+    <div class="field <%= errors.description ? 'has-error' : '' %>">
+        <label for="description">Description <span class="hint">(optional)</span></label>
+        <textarea id="description" name="description" rows="4" maxlength="2000"><%= values.description !== undefined ? values.description : project.description %></textarea>
+        <% if (errors.description) { %><p class="error"><%= errors.description %></p><% } %>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="button primary">Save</button>
+        <a href="/projects/<%= project.id %>" class="button">Cancel</a>
+    </div>
+</form>
+
+<div class="danger-zone">
+    <form method="post" action="/projects/<%= project.id %>?_method=DELETE"
+          onsubmit="return confirm('Delete this project AND all its tasks?');">
+        <button type="submit" class="button danger">Delete project</button>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

@@ -51,7 +51,13 @@ function classify(err: unknown): { status: number; message: string } {
         return { status: err.status, message: err.message };
     }
     if (err instanceof mongoose.Error.CastError) {
-        return { status: 400, message: "Invalid Todo ID" };
+        // `CastError` doesn't type its `model` field publicly, but Mongoose
+        // does attach it at runtime for schema-driven casts. Reach in via a
+        // narrow shape so we can render "Invalid Project ID" instead of the
+        // generic message.
+        const modelName = (err as unknown as { model?: { modelName?: string } }).model?.modelName;
+        const label = modelName ?? "resource";
+        return { status: 400, message: `Invalid ${label} ID` };
     }
     if (err instanceof mongoose.Error.ValidationError) {
         const firstField = Object.values(err.errors)[0];

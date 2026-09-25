@@ -1,0 +1,38 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/users">← All users</a></p>
+
+<article class="user-detail">
+    <h1><%= user.name %></h1>
+    <p class="user-email"><%= user.email %></p>
+    <p class="user-meta">
+        Member since <%= new Date(user.createdAt).toISOString().slice(0, 10) %>
+    </p>
+
+    <% if (isSelf) { %>
+        <p><a class="button" href="/users/me/edit">Edit profile</a></p>
+    <% } %>
+
+    <h2>Projects owned</h2>
+    <% if (projects.length === 0) { %>
+        <p class="empty">
+            <%= isSelf ? "You don't own any projects yet." : "This user doesn't own any projects." %>
+            <% if (isSelf) { %>
+                <a href="/projects/new">Create one</a>.
+            <% } %>
+        </p>
+    <% } else { %>
+        <ul class="project-list-plain">
+            <% projects.forEach(function(p) { %>
+                <li>
+                    <a href="/projects/<%= p.id %>"><%= p.name %></a>
+                    <% if (p.description) { %>
+                        <span class="project-blurb">— <%= p.description %></span>
+                    <% } %>
+                </li>
+            <% }); %>
+        </ul>
+    <% } %>
+</article>
+
+<%- include('../partials/footer') %>

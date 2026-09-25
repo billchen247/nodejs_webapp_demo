@@ -34,3 +34,18 @@ export const MONGODB_URI: string =
 
 // Set NODE_ENV=test to silence morgan + rate-limit during Vitest runs.
 export const IS_TEST: boolean = process.env["NODE_ENV"] === "test";
+export const IS_PROD: boolean = process.env["NODE_ENV"] === "production";
+
+// Secret that signs the session cookie. A weak default is fine for local dev
+// and tests; production MUST override it via env (or the app will still boot,
+// but every restart will invalidate sessions since the secret is stable-ish).
+export const SESSION_SECRET: string =
+    process.env["SESSION_SECRET"] ?? "insecure-dev-session-secret-change-me";
+
+export const SESSION_COOKIE_NAME: string =
+    process.env["SESSION_COOKIE_NAME"] ?? "tm.sid";
+
+// How long a session lives on the server AND in the cookie. 7 days is a
+// reasonable balance for a demo — long enough that reloading the browser
+// tomorrow keeps you logged in, short enough that stale cookies expire.
+export const SESSION_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000;

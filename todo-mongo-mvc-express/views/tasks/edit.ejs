@@ -1,0 +1,29 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/projects/<%= project.id %>">← Back to <%= project.name %></a></p>
+
+<h1>Edit task</h1>
+
+<form method="post" action="/projects/<%= project.id %>/tasks/<%= task.id %>?_method=PUT" class="entity-form" novalidate>
+    <%- include('_form', {
+        values: values,
+        errors: errors,
+        assignees: assignees,
+        statusLabels: statusLabels,
+        priorityLabels: priorityLabels
+    }) %>
+
+    <div class="form-actions">
+        <button type="submit" class="button primary">Save</button>
+        <a href="/projects/<%= project.id %>" class="button">Cancel</a>
+    </div>
+</form>
+
+<div class="danger-zone">
+    <form method="post" action="/projects/<%= project.id %>/tasks/<%= task.id %>?_method=DELETE"
+          onsubmit="return confirm('Delete this task?');">
+        <button type="submit" class="button danger">Delete task</button>
+    </form>
+</div>
+
+<%- include('../partials/footer') %>

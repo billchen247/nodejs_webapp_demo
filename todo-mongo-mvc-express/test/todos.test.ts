@@ -45,8 +45,8 @@ describe("Home page GET /", () => {
 
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/text\/html/);
-        expect(res.text).toContain("Todo MVC");
-        // Total count of 2 should render somewhere on the page.
+        expect(res.text).toContain("Task Manager");
+        // The legacy todo count of 2 should render somewhere on the page.
         expect(res.text).toMatch(/stat-value">\s*2\s*</);
     });
 });

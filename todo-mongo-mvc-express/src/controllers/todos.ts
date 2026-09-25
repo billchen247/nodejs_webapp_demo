@@ -22,6 +22,7 @@ import mongoose from "mongoose";
 import { TodoModel } from "../models/todo.js";
 import { createTodoSchema, updateTodoSchema } from "../schemas/todo.js";
 import { HttpError } from "../utils/http-error.js";
+import { flattenZod } from "../utils/flatten-zod.js";
 
 /* --- GET /todos -------------------------------------------------------- */
 export const listTodos: RequestHandler = async (req, res) => {
@@ -183,14 +184,4 @@ function ensureValidId(id: string): void {
     if (!mongoose.isValidObjectId(id)) {
         throw new HttpError(400, "Invalid Todo ID");
     }
-}
-
-function flattenZod(err: import("zod").ZodError): Record<string, string> {
-    const out: Record<string, string> = {};
-    for (const issue of err.issues) {
-        const key = issue.path.join(".") || "_";
-        // Keep the first message per field only — that's what the form displays.
-        if (!(key in out)) out[key] = issue.message;
-    }
-    return out;
 }

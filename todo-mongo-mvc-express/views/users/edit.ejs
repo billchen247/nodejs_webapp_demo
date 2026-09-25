@@ -1,0 +1,65 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Edit profile</h1>
+
+<section class="card">
+    <h2>Details</h2>
+    <form method="post" action="/users/me?_method=PUT" class="auth-form" novalidate>
+        <div class="field <%= errors.name ? 'has-error' : '' %>">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="<%= values.name || '' %>"
+                   required maxlength="80">
+            <% if (errors.name) { %><p class="error"><%= errors.name %></p><% } %>
+        </div>
+
+        <div class="field <%= errors.email ? 'has-error' : '' %>">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= values.email || '' %>"
+                   required maxlength="200">
+            <% if (errors.email) { %><p class="error"><%= errors.email %></p><% } %>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="button primary">Save profile</button>
+            <a href="/users/<%= currentUser.id %>" class="button">Cancel</a>
+        </div>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Change password</h2>
+    <form method="post" action="/users/me/password" class="auth-form" novalidate>
+        <div class="field <%= passwordErrors.currentPassword ? 'has-error' : '' %>">
+            <label for="currentPassword">Current password</label>
+            <input type="password" id="currentPassword" name="currentPassword"
+                   required autocomplete="current-password">
+            <% if (passwordErrors.currentPassword) { %>
+                <p class="error"><%= passwordErrors.currentPassword %></p>
+            <% } %>
+        </div>
+
+        <div class="field <%= passwordErrors.newPassword ? 'has-error' : '' %>">
+            <label for="newPassword">New password</label>
+            <input type="password" id="newPassword" name="newPassword"
+                   required minlength="8" autocomplete="new-password">
+            <% if (passwordErrors.newPassword) { %>
+                <p class="error"><%= passwordErrors.newPassword %></p>
+            <% } %>
+        </div>
+
+        <div class="field <%= passwordErrors.confirmNewPassword ? 'has-error' : '' %>">
+            <label for="confirmNewPassword">Confirm new password</label>
+            <input type="password" id="confirmNewPassword" name="confirmNewPassword"
+                   required minlength="8" autocomplete="new-password">
+            <% if (passwordErrors.confirmNewPassword) { %>
+                <p class="error"><%= passwordErrors.confirmNewPassword %></p>
+            <% } %>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="button primary">Change password</button>
+        </div>
+    </form>
+</section>
+
+<%- include('../partials/footer') %>

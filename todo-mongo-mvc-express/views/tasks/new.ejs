@@ -1,0 +1,22 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/projects/<%= project.id %>">← Back to <%= project.name %></a></p>
+
+<h1>New task</h1>
+
+<form method="post" action="/projects/<%= project.id %>/tasks" class="entity-form" novalidate>
+    <%- include('_form', {
+        values: values,
+        errors: errors,
+        assignees: assignees,
+        statusLabels: statusLabels,
+        priorityLabels: priorityLabels
+    }) %>
+
+    <div class="form-actions">
+        <button type="submit" class="button primary">Create task</button>
+        <a href="/projects/<%= project.id %>" class="button">Cancel</a>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,62 @@
+<%# views/tasks/_form.ejs — shared field-set for the task create + edit forms.
+    Both new.ejs and edit.ejs include it so the layout stays identical. %>
+
+<div class="field <%= errors.title ? 'has-error' : '' %>">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= values.title || '' %>"
+           autofocus required maxlength="200">
+    <% if (errors.title) { %><p class="error"><%= errors.title %></p><% } %>
+</div>
+
+<div class="field <%= errors.description ? 'has-error' : '' %>">
+    <label for="description">Description <span class="hint">(optional)</span></label>
+    <textarea id="description" name="description" rows="4" maxlength="4000"><%= values.description || '' %></textarea>
+    <% if (errors.description) { %><p class="error"><%= errors.description %></p><% } %>
+</div>
+
+<div class="field-row">
+    <div class="field <%= errors.status ? 'has-error' : '' %>">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+            <% Object.keys(statusLabels).forEach(function(key) { %>
+                <option value="<%= key %>" <%= values.status === key ? 'selected' : '' %>>
+                    <%= statusLabels[key] %>
+                </option>
+            <% }); %>
+        </select>
+        <% if (errors.status) { %><p class="error"><%= errors.status %></p><% } %>
+    </div>
+
+    <div class="field <%= errors.priority ? 'has-error' : '' %>">
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority">
+            <% Object.keys(priorityLabels).forEach(function(key) { %>
+                <option value="<%= key %>" <%= values.priority === key ? 'selected' : '' %>>
+                    <%= priorityLabels[key] %>
+                </option>
+            <% }); %>
+        </select>
+        <% if (errors.priority) { %><p class="error"><%= errors.priority %></p><% } %>
+    </div>
+</div>
+
+<div class="field-row">
+    <div class="field <%= errors.dueDate ? 'has-error' : '' %>">
+        <label for="dueDate">Due date <span class="hint">(optional)</span></label>
+        <input type="date" id="dueDate" name="dueDate" value="<%= values.dueDate || '' %>">
+        <% if (errors.dueDate) { %><p class="error"><%= errors.dueDate %></p><% } %>
+    </div>
+
+    <div class="field <%= errors.assignee ? 'has-error' : '' %>">
+        <label for="assignee">Assignee <span class="hint">(optional)</span></label>
+        <select id="assignee" name="assignee">
+            <option value="">Unassigned</option>
+            <% assignees.forEach(function(u) { %>
+                <option value="<%= u.id %>" <%= String(values.assignee) === String(u.id) ? 'selected' : '' %>>
+                    <%= u.name %>
+                </option>
+            <% }); %>
+        </select>
+        <% if (errors.assignee) { %><p class="error"><%= errors.assignee %></p><% } %>
+    </div>
+</div>
