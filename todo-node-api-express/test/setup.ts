@@ -7,6 +7,11 @@ import {
     writeStudents,
     type Student,
 } from "../src/models/students.js";
+import {
+    DATA_FILE as PROJECTS_DATA_FILE,
+    writeProjects,
+    type Project,
+} from "../src/models/projects.js";
 
 export const app = createApp();
 
@@ -40,22 +45,41 @@ const SEED_STUDENTS: Student[] = [
     },
 ];
 
+const SEED_PROJECTS: Project[] = [
+    {
+        id: 1,
+        name: "Express Learning API",
+        description: "Practice building REST resources.",
+        createdAt: "2026-09-24T12:00:00.000Z",
+    },
+    {
+        id: 2,
+        name: "Todo Dashboard",
+        description: "A future client for the todo APIs.",
+        createdAt: "2026-09-24T12:05:00.000Z",
+    },
+];
+
 let originalTodosFile: string | null;
 let originalStudentsFile: string | null;
+let originalProjectsFile: string | null;
 
 beforeAll(async () => {
     originalTodosFile = await readFileIfPresent(DATA_FILE);
     originalStudentsFile = await readFileIfPresent(STUDENTS_DATA_FILE);
+    originalProjectsFile = await readFileIfPresent(PROJECTS_DATA_FILE);
 });
 
 afterAll(async () => {
     await restoreFile(DATA_FILE, originalTodosFile);
     await restoreFile(STUDENTS_DATA_FILE, originalStudentsFile);
+    await restoreFile(PROJECTS_DATA_FILE, originalProjectsFile);
 });
 
 beforeEach(async () => {
     await writeTodos(SEED_TODOS);
     await writeStudents(SEED_STUDENTS);
+    await writeProjects(SEED_PROJECTS);
 });
 
 async function readFileIfPresent(filePath: string): Promise<string | null> {

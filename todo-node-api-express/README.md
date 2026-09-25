@@ -185,6 +185,11 @@ the two sister projects (`todo-node-api` on 3000, `todo-connect-api` on
 | `POST`   | `/api/students`                  | create a student — body `{ "name": "..." }` |
 | `PUT`    | `/api/students/:id`               | update name or registration status       |
 | `DELETE` | `/api/students/:id`               | delete a student                         |
+| `GET`    | `/api/projects`                   | list all projects                        |
+| `GET`    | `/api/projects/:id`               | fetch one project by id                  |
+| `POST`   | `/api/projects`                   | create a project — body `{ "name": "...", "description": "..." }` |
+| `PUT`    | `/api/projects/:id`               | update a project's name or description   |
+| `DELETE` | `/api/projects/:id`               | delete a project                         |
 
 Every error response has the shape `{ "error": "message" }`. Standard
 status codes: 200/201/204 for success, 400 for validation errors, 404 for

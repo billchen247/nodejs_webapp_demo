@@ -68,6 +68,7 @@ export const openapi: OpenApiObject = {
     tags: [
         { name: "todos", description: "CRUD operations on todos" },
         { name: "students", description: "CRUD operations on students" },
+        { name: "projects", description: "CRUD operations on projects" },
     ],
     components: {
         schemas: {
@@ -100,6 +101,31 @@ export const openapi: OpenApiObject = {
                 properties: {
                     name: { type: "string", example: "Grace Hopper" },
                     registrationActive: { type: "boolean", example: true },
+                },
+            },
+            Project: {
+                type: "object",
+                required: ["id", "name", "description", "createdAt"],
+                properties: {
+                    id: { type: "integer", minimum: 1, example: 1 },
+                    name: { type: "string", example: "Express Learning API" },
+                    description: { type: "string", example: "Practice REST APIs" },
+                    createdAt: { type: "string", format: "date-time" },
+                },
+            },
+            NewProject: {
+                type: "object",
+                required: ["name"],
+                properties: {
+                    name: { type: "string", example: "Express Learning API" },
+                    description: { type: "string", example: "Practice REST APIs" },
+                },
+            },
+            UpdateProject: {
+                type: "object",
+                properties: {
+                    name: { type: "string", example: "Updated API project" },
+                    description: { type: "string", example: "Updated description" },
                 },
             },
         },
@@ -365,6 +391,101 @@ export const openapi: OpenApiObject = {
             delete: {
                 tags: ["students"],
                 summary: "Delete a student",
+                responses: {
+                    "204": { description: "Deleted (no response body)" },
+                },
+            },
+        },
+        "/api/projects": {
+            get: {
+                tags: ["projects"],
+                summary: "List all projects",
+                responses: {
+                    "200": {
+                        description: "An array of projects",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: { $ref: "#/components/schemas/Project" },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            post: {
+                tags: ["projects"],
+                summary: "Create a new project",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/NewProject" },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "The created project",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/projects/{id}": {
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The project's positive-integer id.",
+                    schema: { type: "integer", minimum: 1 },
+                },
+            ],
+            get: {
+                tags: ["projects"],
+                summary: "Fetch one project by id",
+                responses: {
+                    "200": {
+                        description: "The project",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                },
+            },
+            put: {
+                tags: ["projects"],
+                summary: "Update a project",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/UpdateProject" },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "The updated project",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["projects"],
+                summary: "Delete a project",
                 responses: {
                     "204": { description: "Deleted (no response body)" },
                 },
