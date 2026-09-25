@@ -1,0 +1,50 @@
+<%- include('partials/header', { title: title }) %>
+
+<section class="hero">
+    <h1>Todo MVC</h1>
+    <p class="subtitle">
+        Server-rendered CRUD on top of Express 5, TypeScript, MongoDB, and EJS.
+    </p>
+
+    <div class="stat-grid">
+        <div class="stat">
+            <div class="stat-value"><%= counts.total %></div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value"><%= counts.active %></div>
+            <div class="stat-label">Active</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value"><%= counts.completed %></div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <p class="cta">
+        <a class="button primary" href="/todos">View all todos</a>
+        <a class="button" href="/todos/new">Add a new todo</a>
+    </p>
+</section>
+
+<section class="explainer">
+    <h2>What is this?</h2>
+    <p>
+        A tiny CRUD app that renders HTML on the server. Compare it to its
+        JSON-API sibling <code>todo-mongo-api-express</code> — same stack, same
+        database, but where that project returns JSON at
+        <code>/api/todos</code>, this one renders EJS templates and redirects
+        after form submits.
+    </p>
+    <p>
+        The controllers, models, and routes are laid out in the classic MVC
+        pattern:
+    </p>
+    <ul>
+        <li><strong>M</strong>odel — <code>src/models/todo.ts</code> (Mongoose schema)</li>
+        <li><strong>V</strong>iew — <code>views/todos/*.ejs</code> (EJS templates)</li>
+        <li><strong>C</strong>ontroller — <code>src/controllers/todos.ts</code> (renders / redirects)</li>
+    </ul>
+</section>
+
+<%- include('partials/footer') %>

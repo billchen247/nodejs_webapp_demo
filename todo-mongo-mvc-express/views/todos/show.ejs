@@ -1,0 +1,44 @@
+<%- include('../partials/header', { title: title }) %>
+
+<p><a href="/todos">← Back to all todos</a></p>
+
+<article class="todo-detail">
+    <h1 class="<%= todo.completed ? 'done' : '' %>">
+        <%= todo.title %>
+    </h1>
+
+    <dl class="meta">
+        <dt>Status</dt>
+        <dd>
+            <span class="badge <%= todo.completed ? 'badge-done' : 'badge-active' %>">
+                <%= todo.completed ? 'completed' : 'active' %>
+            </span>
+        </dd>
+
+        <dt>ID</dt>
+        <dd><code><%= todo.id %></code></dd>
+
+        <dt>Created</dt>
+        <dd><time datetime="<%= todo.createdAt.toISOString() %>"><%= todo.createdAt.toISOString() %></time></dd>
+
+        <dt>Updated</dt>
+        <dd><time datetime="<%= todo.updatedAt.toISOString() %>"><%= todo.updatedAt.toISOString() %></time></dd>
+    </dl>
+
+    <div class="form-actions">
+        <a class="button primary" href="/todos/<%= todo.id %>/edit">Edit</a>
+
+        <form method="post" action="/todos/<%= todo.id %>/toggle" style="display:inline">
+            <button type="submit" class="button">
+                Mark as <%= todo.completed ? 'active' : 'completed' %>
+            </button>
+        </form>
+
+        <form method="post" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline"
+              onsubmit="return confirm('Delete this todo?');">
+            <button type="submit" class="button danger">Delete</button>
+        </form>
+    </div>
+</article>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,23 @@
+<%# views/partials/header.ejs — shared page header. Every top-level view
+    starts with an include of this partial. `title` is passed in as a local
+    by the controller; falls back to a friendly default if a view forgets. %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Todo MVC' %> · Todo MVC</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a class="site-title" href="/">Todo MVC</a>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/todos">Todos</a>
+                <a href="/todos/new">New</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">

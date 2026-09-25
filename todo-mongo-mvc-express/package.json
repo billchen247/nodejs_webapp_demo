@@ -1,0 +1,63 @@
+{
+  "name": "todo-mongo-mvc-express",
+  "version": "1.0.0",
+  "description": "Educational server-rendered Todo web app built with Express 5 + TypeScript + ESM + MongoDB (Mongoose) + EJS view engine. Sibling to todo-mongo-api-express — same stack, but renders HTML views instead of JSON.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "express5",
+    "mongodb",
+    "mongoose",
+    "typescript",
+    "esm",
+    "ejs",
+    "mvc",
+    "server-rendered",
+    "todo",
+    "educational",
+    "mern"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "dependencies": {
+    "compression": "^1.7.5",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^8.8.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.0",
+    "@types/method-override": "^3.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.2",
+    "@vitest/coverage-v8": "^2.1.5",
+    "mongodb-memory-server": "^10.1.2",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}

@@ -1,0 +1,49 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Todos</h1>
+
+<nav class="filter-tabs">
+    <a href="/todos?filter=all"       class="<%= filter === 'all' ? 'active' : '' %>">All (<%= counts.total %>)</a>
+    <a href="/todos?filter=active"    class="<%= filter === 'active' ? 'active' : '' %>">Active (<%= counts.active %>)</a>
+    <a href="/todos?filter=completed" class="<%= filter === 'completed' ? 'active' : '' %>">Completed (<%= counts.completed %>)</a>
+</nav>
+
+<p class="toolbar">
+    <a class="button primary" href="/todos/new">+ New todo</a>
+</p>
+
+<% if (todos.length === 0) { %>
+    <p class="empty">
+        No todos yet. <a href="/todos/new">Create one</a>.
+    </p>
+<% } else { %>
+    <ul class="todo-list">
+        <% todos.forEach(function(todo) { %>
+            <li class="todo <%= todo.completed ? 'done' : '' %>">
+                <form class="toggle-form" method="post" action="/todos/<%= todo.id %>/toggle">
+                    <button type="submit" aria-label="Toggle completed">
+                        <%= todo.completed ? '☑' : '☐' %>
+                    </button>
+                </form>
+
+                <a class="todo-title" href="/todos/<%= todo.id %>">
+                    <%= todo.title %>
+                </a>
+
+                <span class="todo-meta">
+                    added <%= todo.createdAt.toISOString().slice(0, 10) %>
+                </span>
+
+                <span class="todo-actions">
+                    <a href="/todos/<%= todo.id %>/edit">Edit</a>
+                    <form method="post" action="/todos/<%= todo.id %>?_method=DELETE"
+                          onsubmit="return confirm('Delete this todo?');">
+                        <button type="submit" class="link-button">Delete</button>
+                    </form>
+                </span>
+            </li>
+        <% }); %>
+    </ul>
+<% } %>
+
+<%- include('../partials/footer') %>

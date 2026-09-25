@@ -1,0 +1,45 @@
+<%- include('../partials/header', { title: title }) %>
+
+<h1>Edit todo</h1>
+
+<!--
+  HTML forms only send GET and POST. `method-override` middleware upgrades
+  this POST to a PUT because of `?_method=PUT` in the action URL.
+-->
+<form method="post" action="/todos/<%= todo.id %>?_method=PUT" class="todo-form" novalidate>
+    <div class="field <%= errors.title ? 'has-error' : '' %>">
+        <label for="title">Title</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            value="<%= (values.title !== undefined ? values.title : todo.title) %>"
+            autofocus
+            required
+            maxlength="200"
+        >
+        <% if (errors.title) { %>
+            <p class="error"><%= errors.title %></p>
+        <% } %>
+    </div>
+
+    <div class="field-inline">
+        <input type="checkbox" id="completed" name="completed"
+               <%= (values.completed !== undefined ? values.completed : todo.completed) ? 'checked' : '' %>>
+        <label for="completed">Completed</label>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="button primary">Save</button>
+        <a href="/todos" class="button">Cancel</a>
+    </div>
+</form>
+
+<p class="danger-zone">
+    <form method="post" action="/todos/<%= todo.id %>?_method=DELETE"
+          onsubmit="return confirm('Permanently delete this todo?');">
+        <button type="submit" class="button danger">Delete this todo</button>
+    </form>
+</p>
+
+<%- include('../partials/footer') %>
