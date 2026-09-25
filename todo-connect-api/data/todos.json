@@ -10,11 +10,5 @@
     "title": "Understand Connect middleware",
     "completed": true,
     "createdAt": "2026-09-23T12:05:00.000Z"
-  },
-  {
-    "id": 3,
-    "title": "Compare Connect with the raw http module",
-    "completed": false,
-    "createdAt": "2026-09-23T12:10:00.000Z"
   }
 ]

@@ -81,6 +81,7 @@ test.before(async () => {
 });
 
 test.after(async () => {
+    server.closeAllConnections();
     await new Promise((resolve) => server.close(resolve));
     if (originalFile !== null) {
         await fs.writeFile(DATA_FILE, originalFile, "utf8");
