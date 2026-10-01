@@ -24,6 +24,11 @@ const todoSchema: OpenApiObject = {
         },
         title: { type: "string", example: "Learn Mongoose" },
         completed: { type: "boolean", example: false },
+        projectId: {
+            type: "string",
+            description: "Optional parent project's MongoDB ObjectId.",
+            example: "665f1f77bcf86cd799439012",
+        },
         createdAt: {
             type: "string",
             format: "date-time",
@@ -34,6 +39,41 @@ const todoSchema: OpenApiObject = {
             format: "date-time",
             example: "2026-09-23T12:00:00.000Z",
         },
+    },
+};
+
+const taskSchema: OpenApiObject = {
+    type: "object",
+    required: [
+        "id",
+        "title",
+        "description",
+        "status",
+        "priority",
+        "completed",
+        "labels",
+        "createdAt",
+        "updatedAt",
+    ],
+    properties: {
+        id: { type: "string", description: "MongoDB ObjectId, 24-char hex." },
+        title: { type: "string", maxLength: 200, example: "Implement task filters" },
+        description: { type: "string", maxLength: 5000, example: "Add status and priority filters." },
+        status: {
+            type: "string",
+            enum: ["backlog", "todo", "in_progress", "in_review", "done"],
+        },
+        priority: { type: "string", enum: ["low", "medium", "high", "urgent"] },
+        completed: {
+            type: "boolean",
+            description: "Compatibility field; synchronized with status === 'done'.",
+        },
+        projectId: { type: "string", description: "Optional parent project's ObjectId." },
+        assigneeId: { type: "string", description: "Optional assignee's ObjectId." },
+        dueDate: { type: "string", format: "date-time" },
+        labels: { type: "array", maxItems: 20, items: { type: "string", maxLength: 40 } },
+        createdAt: { type: "string", format: "date-time" },
+        updatedAt: { type: "string", format: "date-time" },
     },
 };
 
@@ -74,11 +114,13 @@ export const openapi: OpenApiObject = {
     servers: [{ url: "/", description: "This server" }],
     tags: [
         { name: "todos", description: "CRUD operations on todos" },
+        { name: "tasks", description: "Project task management with status, priority, and assignment" },
         { name: "projects", description: "CRUD operations on projects (task-manager parent)" },
     ],
     components: {
         schemas: {
             Todo: todoSchema,
+            Task: taskSchema,
             Project: projectSchema,
             Error: errorSchema,
             NewTodo: {
@@ -93,11 +135,58 @@ export const openapi: OpenApiObject = {
                     },
                 },
             },
+            NewTask: {
+                type: "object",
+                required: ["title"],
+                properties: {
+                    title: { type: "string", maxLength: 200, example: "Implement task filters" },
+                    description: { type: "string", maxLength: 5000 },
+                    status: {
+                        type: "string",
+                        enum: ["backlog", "todo", "in_progress", "in_review", "done"],
+                        default: "todo",
+                    },
+                    priority: {
+                        type: "string",
+                        enum: ["low", "medium", "high", "urgent"],
+                        default: "medium",
+                    },
+                    projectId: {
+                        type: "string",
+                        pattern: "^[a-f\\d]{24}$",
+                        description: "Optional parent project.",
+                    },
+                    assigneeId: { type: "string", pattern: "^[a-f\\d]{24}$" },
+                    dueDate: { type: "string", format: "date-time" },
+                    labels: { type: "array", maxItems: 20, items: { type: "string" } },
+                },
+            },
             UpdateTodo: {
                 type: "object",
                 properties: {
                     title: { type: "string", example: "Learn Mongoose deeply" },
                     completed: { type: "boolean", example: true },
+                },
+            },
+            UpdateTask: {
+                type: "object",
+                properties: {
+                    title: { type: "string", maxLength: 200 },
+                    description: { type: "string", maxLength: 5000 },
+                    status: {
+                        type: "string",
+                        enum: ["backlog", "todo", "in_progress", "in_review", "done"],
+                    },
+                    priority: { type: "string", enum: ["low", "medium", "high", "urgent"] },
+                    completed: { type: "boolean", example: true },
+                    projectId: {
+                        type: "string",
+                        nullable: true,
+                        description: "Set to null to clear the project.",
+                    },
+                    assigneeId: { type: "string", nullable: true },
+                    dueDate: { type: "string", format: "date-time", nullable: true },
+                    labels: { type: "array", maxItems: 20, items: { type: "string" } },
                 },
             },
             NewProject: {
@@ -116,6 +205,155 @@ export const openapi: OpenApiObject = {
         },
     },
     paths: {
+        "/api/tasks": {
+            get: {
+                tags: ["tasks"],
+                summary: "List all tasks",
+                parameters: [
+                    {
+                        name: "completed",
+                        in: "query",
+                        required: false,
+                        description: "Optional filter: only completed or only open tasks.",
+                        schema: { type: "string", enum: ["true", "false"] },
+                    },
+                    {
+                        name: "status",
+                        in: "query",
+                        required: false,
+                        schema: {
+                            type: "string",
+                            enum: ["backlog", "todo", "in_progress", "in_review", "done"],
+                        },
+                    },
+                    {
+                        name: "priority",
+                        in: "query",
+                        required: false,
+                        schema: { type: "string", enum: ["low", "medium", "high", "urgent"] },
+                    },
+                    { name: "projectId", in: "query", required: false, schema: { type: "string" } },
+                    { name: "assigneeId", in: "query", required: false, schema: { type: "string" } },
+                    {
+                        name: "limit",
+                        in: "query",
+                        required: false,
+                        description: "Page size (1 – 200).",
+                        schema: { type: "integer", minimum: 1, maximum: 200 },
+                    },
+                    {
+                        name: "skip",
+                        in: "query",
+                        required: false,
+                        description: "How many documents to skip before returning results.",
+                        schema: { type: "integer", minimum: 0 },
+                    },
+                ],
+                responses: {
+                    "200": {
+                        description: "An array of tasks",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: { $ref: "#/components/schemas/Task" },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            post: {
+                tags: ["tasks"],
+                summary: "Create a new task",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/NewTask" },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "The created task",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Task" },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Missing or malformed request body",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Error" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/tasks/{id}": {
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The task's 24-char MongoDB ObjectId.",
+                    schema: { type: "string", pattern: "^[a-f\\d]{24}$" },
+                },
+            ],
+            get: {
+                tags: ["tasks"],
+                summary: "Fetch one task by id",
+                responses: {
+                    "200": {
+                        description: "The task",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Task" },
+                            },
+                        },
+                    },
+                    "400": { description: "Invalid id" },
+                    "404": { description: "No task with that id" },
+                },
+            },
+            put: {
+                tags: ["tasks"],
+                summary: "Update fields on an existing task",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/UpdateTask" },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "The updated task",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Task" },
+                            },
+                        },
+                    },
+                    "400": { description: "Invalid id or body" },
+                    "404": { description: "No task with that id" },
+                },
+            },
+            delete: {
+                tags: ["tasks"],
+                summary: "Delete a task",
+                responses: {
+                    "204": { description: "Deleted (no response body)" },
+                    "400": { description: "Invalid id" },
+                    "404": { description: "No task with that id" },
+                },
+            },
+        },
         "/api/todos": {
             get: {
                 tags: ["todos"],
@@ -309,16 +547,21 @@ export const openapi: OpenApiObject = {
                 },
             ],
             get: {
-                tags: ["projects", "todos"],
+                tags: ["projects", "tasks"],
                 summary: "List tasks that belong to this project",
                 responses: {
                     "200": {
-                        description: "An array of todos scoped to the project",
+                        description: "Tasks and legacy todos scoped to the project",
                         content: {
                             "application/json": {
                                 schema: {
                                     type: "array",
-                                    items: { $ref: "#/components/schemas/Todo" },
+                                    items: {
+                                        oneOf: [
+                                            { $ref: "#/components/schemas/Task" },
+                                            { $ref: "#/components/schemas/Todo" },
+                                        ],
+                                    },
                                 },
                             },
                         },
@@ -328,22 +571,22 @@ export const openapi: OpenApiObject = {
                 },
             },
             post: {
-                tags: ["projects", "todos"],
+                tags: ["projects", "tasks"],
                 summary: "Create a task nested under this project",
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: { $ref: "#/components/schemas/NewTodo" },
+                            schema: { $ref: "#/components/schemas/NewTask" },
                         },
                     },
                 },
                 responses: {
                     "201": {
-                        description: "The created todo, projectId set from the path",
+                        description: "The created task, projectId set from the path",
                         content: {
                             "application/json": {
-                                schema: { $ref: "#/components/schemas/Todo" },
+                                schema: { $ref: "#/components/schemas/Task" },
                             },
                         },
                     },

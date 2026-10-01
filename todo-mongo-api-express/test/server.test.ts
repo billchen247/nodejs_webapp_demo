@@ -18,7 +18,7 @@
  *            +------------- expect() <------- response --------------------+
  *
  * beforeAll starts the memory server and connects Mongoose to it.
- * beforeEach clears the `todos` collection so tests don't leak state.
+ * beforeEach clears the `todos` and `tasks` collections so tests don't leak state.
  * afterAll disconnects Mongoose and shuts the memory server down.
  * ===========================================================================
  * @author Bill Chen
@@ -30,6 +30,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import { createApp } from "../src/app.js";
 import { connectToDatabase, disconnectFromDatabase } from "../src/db.js";
 import { TodoModel } from "../src/models/todos.js";
+import { TaskModel } from "../src/models/tasks.js";
 
 let mongo: MongoMemoryServer;
 const app = createApp();
@@ -46,6 +47,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
     await TodoModel.deleteMany({});
+    await TaskModel.deleteMany({});
 });
 
 async function seedTwo() {
@@ -273,6 +275,84 @@ describe("DELETE /api/todos/:id", () => {
 });
 
 /* ---------------------------------------------------------------------------
+ * First-class /api/tasks resource
+ * -------------------------------------------------------------------------*/
+
+describe("/api/tasks", () => {
+    test("creates and retrieves project task fields with sensible defaults", async () => {
+        const created = await request(app)
+            .post("/api/tasks")
+            .send({
+                title: "Plan project task",
+                description: "Break down the first release.",
+                status: "in_progress",
+                priority: "high",
+                dueDate: "2026-10-15T17:00:00.000Z",
+                labels: ["planning", "release"],
+            });
+        expect(created.status).toBe(201);
+        expect(created.body.title).toBe("Plan project task");
+        expect(created.body.description).toBe("Break down the first release.");
+        expect(created.body.status).toBe("in_progress");
+        expect(created.body.priority).toBe("high");
+        expect(created.body.completed).toBe(false);
+        expect(created.body.dueDate).toBe("2026-10-15T17:00:00.000Z");
+        expect(created.body.labels).toEqual(["planning", "release"]);
+
+        const listed = await request(app).get("/api/tasks?status=in_progress&priority=high");
+        expect(listed.status).toBe(200);
+        expect(listed.body.map((task: { id: string }) => task.id)).toContain(
+            created.body.id
+        );
+
+        const fetched = await request(app).get(`/api/tasks/${created.body.id}`);
+        expect(fetched.status).toBe(200);
+        expect(fetched.body.id).toBe(created.body.id);
+
+        const updated = await request(app)
+            .put(`/api/tasks/${created.body.id}`)
+            .send({ status: "done" });
+        expect(updated.status).toBe(200);
+        expect(updated.body.status).toBe("done");
+        expect(updated.body.completed).toBe(true);
+
+        const listedAsTodo = await request(app).get("/api/todos");
+        expect(listedAsTodo.body).toEqual([]);
+
+        const removed = await request(app).delete(`/api/tasks/${created.body.id}`);
+        expect(removed.status).toBe(204);
+        expect((await request(app).get(`/api/tasks/${created.body.id}`)).status).toBe(404);
+    });
+
+    test("keeps the legacy completed field synchronized with task status", async () => {
+        const created = await request(app).post("/api/tasks").send({ title: "Compatibility" });
+        const completed = await request(app)
+            .put(`/api/tasks/${created.body.id}`)
+            .send({ completed: true });
+        expect(completed.body.status).toBe("done");
+        expect(completed.body.completed).toBe(true);
+
+        const reopened = await request(app)
+            .put(`/api/tasks/${created.body.id}`)
+            .send({ status: "in_review" });
+        expect(reopened.body.status).toBe("in_review");
+        expect(reopened.body.completed).toBe(false);
+    });
+
+    test("rejects unsupported task statuses and priorities", async () => {
+        const badStatus = await request(app)
+            .post("/api/tasks")
+            .send({ title: "Invalid status", status: "blocked" });
+        expect(badStatus.status).toBe(400);
+
+        const badPriority = await request(app)
+            .post("/api/tasks")
+            .send({ title: "Invalid priority", priority: "immediate" });
+        expect(badPriority.status).toBe(400);
+    });
+});
+
+/* ---------------------------------------------------------------------------
  * Unknown routes
  * -------------------------------------------------------------------------*/
 
@@ -304,6 +384,8 @@ describe("swagger", () => {
         expect(res.body.info.title).toBe("Todo Mongo Express API");
         expect(res.body.paths["/api/todos"]).toBeTruthy();
         expect(res.body.paths["/api/todos/{id}"]).toBeTruthy();
+        expect(res.body.paths["/api/tasks"]).toBeTruthy();
+        expect(res.body.paths["/api/tasks/{id}"]).toBeTruthy();
     });
 });
 

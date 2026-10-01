@@ -48,6 +48,7 @@ Then open:
 
 * **Home page:**   http://localhost:3003/
 * **REST root:**   http://localhost:3003/api/todos
+* **Task REST root:** http://localhost:3003/api/tasks
 * **Swagger UI:**  http://localhost:3003/api-docs/
 * **Raw OpenAPI:** http://localhost:3003/api-docs/swagger.json
 
@@ -64,6 +65,38 @@ The four sibling projects default to ports 3000 / 3001 / 3002, so all five can r
 | GET    | `/api/todos/:id`    | Fetch one by ObjectId                                           |
 | PUT    | `/api/todos/:id`    | Update fields (`title`, `completed`)                            |
 | DELETE | `/api/todos/:id`    | Delete a todo                                                   |
+
+Project-management tasks are available at `/api/tasks` with `GET`, `POST`,
+`GET /:id`, `PUT /:id`, and `DELETE /:id`. Tasks are stored separately from
+the simpler `/api/todos` records. A task can be associated with a project and
+supports status, priority, assignment, due date, description, and labels.
+
+### Task document shape
+
+```json
+{
+  "id": "665f1f77bcf86cd799439011",
+  "title": "Implement task filters",
+  "description": "Add status and priority filtering.",
+  "status": "in_progress",
+  "priority": "high",
+  "completed": false,
+  "projectId": "665f1f77bcf86cd799439012",
+  "assigneeId": "665f1f77bcf86cd799439013",
+  "dueDate": "2026-10-15T17:00:00.000Z",
+  "labels": ["api", "backend"],
+  "createdAt": "2026-09-23T12:00:00.000Z",
+  "updatedAt": "2026-09-23T12:00:00.000Z"
+}
+```
+
+Task status is one of `backlog`, `todo`, `in_progress`, `in_review`, or `done`.
+Priority is `low`, `medium`, `high`, or `urgent`. `completed` remains available
+for older clients and stays synchronized with whether status is `done`.
+Optional `projectId` must identify an existing project; `assigneeId` is an
+ObjectId placeholder for a user record (this API does not yet include users).
+Tasks can be filtered with `?status=todo`, `?priority=high`, `?projectId=...`,
+`?assigneeId=...`, or the legacy `?completed=true|false` parameter.
 
 ### Todo document shape
 
@@ -110,6 +143,7 @@ todo-mongo-api-express/
 │   ├── db.ts                   ← Mongoose connect / disconnect
 │   ├── openapi.ts              ← OpenAPI 3.0 spec (served by Swagger UI)
 │   ├── routes/todos.ts         ← the /api/todos router table
+│   ├── routes/tasks.ts         ← project task-management CRUD
 │   ├── controllers/
 │   │   ├── home.ts             ← GET /
 │   │   └── todos.ts            ← CRUD handlers
@@ -117,7 +151,9 @@ todo-mongo-api-express/
 │   │   ├── errors.ts           ← notFound + errorHandler (Zod + Mongoose aware)
 │   │   ├── swagger.ts          ← mounts swagger-ui-express
 │   │   └── validate.ts         ← Zod-schema-to-middleware factory
-│   ├── models/todos.ts         ← Mongoose schema + Model + toJSON transform
+│   ├── models/todos.ts         ← Todo Mongoose schema + Model + JSON transform
+│   ├── models/tasks.ts         ← Task schema + Model + JSON transform
+│   ├── schemas/tasks.ts        ← task request validation and inferred types
 │   ├── schemas/todos.ts        ← Zod request schemas (+ inferred TS types)
 │   └── utils/http-error.ts     ← HttpError class + badRequest / notFound
 ├── views/home.html             ← static landing page

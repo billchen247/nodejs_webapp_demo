@@ -14,7 +14,7 @@ import {
     ProjectIdParamSchema,
     UpdateProjectSchema,
 } from "../schemas/projects.js";
-import { CreateTodoSchema } from "../schemas/todos.js";
+import { CreateTaskSchema } from "../schemas/tasks.js";
 
 export const projectsRouter = Router();
 
@@ -37,6 +37,6 @@ projectsRouter
     .route("/:id/tasks")
     .get(validate({ params: ProjectIdParamSchema }), projects.listProjectTasks)
     .post(
-        validate({ params: ProjectIdParamSchema, body: CreateTodoSchema }),
+        validate({ params: ProjectIdParamSchema, body: CreateTaskSchema }),
         projects.createProjectTask
     );

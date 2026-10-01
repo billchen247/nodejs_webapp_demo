@@ -19,6 +19,7 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 import { ALLOWED_ORIGIN, IS_TEST } from "./config.js";
 import { todosRouter } from "./routes/todos.js";
+import { tasksRouter } from "./routes/tasks.js";
 import { projectsRouter } from "./routes/projects.js";
 import { showHomePage } from "./controllers/home.js";
 import { createSwaggerRouter } from "./middleware/swagger.js";
@@ -86,6 +87,7 @@ export function createApp(): Express {
     app.get("/", showHomePage);
     app.use("/api-docs", createSwaggerRouter());
     app.use("/api/todos", todosRouter);
+    app.use("/api/tasks", tasksRouter);
     app.use("/api/projects", projectsRouter);
 
     /* --- terminal handlers ----------------------------------------------- */

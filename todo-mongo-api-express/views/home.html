@@ -150,6 +150,31 @@
                 <tbody>
                     <tr>
                         <td><span class="method m-get">GET</span></td>
+                        <td><code>/api/tasks</code></td>
+                        <td>List every task (optional <code>?completed=</code>, <code>?limit=</code>, <code>?skip=</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-get">GET</span></td>
+                        <td><code>/api/tasks/:id</code></td>
+                        <td>Fetch a single task</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-post">POST</span></td>
+                        <td><code>/api/tasks</code></td>
+                        <td>Create a task (body: <code>{"title":"..."}</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-put">PUT</span></td>
+                        <td><code>/api/tasks/:id</code></td>
+                        <td>Update a task</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-delete">DELETE</span></td>
+                        <td><code>/api/tasks/:id</code></td>
+                        <td>Delete a task</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method m-get">GET</span></td>
                         <td><code>/api/todos</code></td>
                         <td>List every todo (optional <code>?completed=</code>, <code>?limit=</code>, <code>?skip=</code>)</td>
                     </tr>

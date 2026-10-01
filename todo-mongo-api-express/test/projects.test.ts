@@ -15,6 +15,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import { createApp } from "../src/app.js";
 import { connectToDatabase, disconnectFromDatabase } from "../src/db.js";
 import { ProjectModel } from "../src/models/projects.js";
+import { TaskModel } from "../src/models/tasks.js";
 import { TodoModel } from "../src/models/todos.js";
 
 let mongo: MongoMemoryServer;
@@ -32,6 +33,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
     await ProjectModel.deleteMany({});
+    await TaskModel.deleteMany({});
     await TodoModel.deleteMany({});
 });
 
@@ -257,12 +259,13 @@ describe("GET /api/projects/:id/tasks", () => {
         await TodoModel.create({ title: "in-a-2", projectId: a.id });
         await TodoModel.create({ title: "in-b", projectId: b.id });
         await TodoModel.create({ title: "orphan" });
+        await TaskModel.create({ title: "in-a-task", projectId: a.id });
 
         const res = await request(app).get(`/api/projects/${a.id}/tasks`);
         expect(res.status).toBe(200);
-        expect(res.body).toHaveLength(2);
+        expect(res.body).toHaveLength(3);
         expect(res.body.map((t: { title: string }) => t.title).sort())
-            .toEqual(["in-a-1", "in-a-2"]);
+            .toEqual(["in-a-1", "in-a-2", "in-a-task"]);
         expect(res.body[0].projectId).toBe(a.id);
     });
 
@@ -298,11 +301,13 @@ describe("POST /api/projects/:id/tasks", () => {
         const res = await request(app)
             .post(`/api/projects/${a.id}/tasks`)
             .set("Content-Type", "application/json")
-            .send({ title: "Write proposal" });
+            .send({ title: "Write proposal", status: "in_progress", priority: "high" });
 
         expect(res.status).toBe(201);
         expect(res.body.title).toBe("Write proposal");
         expect(res.body.projectId).toBe(a.id);
+        expect(res.body.status).toBe("in_progress");
+        expect(res.body.priority).toBe("high");
         expect(res.body.completed).toBe(false);
     });
 
@@ -363,11 +368,13 @@ describe("DELETE /api/projects/:id — cascade", () => {
         await TodoModel.create({ title: "a2", projectId: a.id });
         await TodoModel.create({ title: "b1", projectId: b.id });
         await TodoModel.create({ title: "loose" }); // no projectId
+        await TaskModel.create({ title: "project task", projectId: a.id });
 
         const res = await request(app).delete(`/api/projects/${a.id}`);
         expect(res.status).toBe(204);
 
         const remaining = await TodoModel.find({}).sort({ title: 1 });
         expect(remaining.map((t) => t.title).sort()).toEqual(["b1", "loose"]);
+        expect(await TaskModel.countDocuments({ projectId: a.id })).toBe(0);
     });
 });

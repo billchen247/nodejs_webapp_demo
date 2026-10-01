@@ -9,8 +9,10 @@
 
 import type { RequestHandler } from "express";
 import { ProjectModel } from "../models/projects.js";
+import { TaskModel } from "../models/tasks.js";
 import { TodoModel } from "../models/todos.js";
 import type { CreateProjectInput, UpdateProjectInput } from "../schemas/projects.js";
+import type { CreateTaskInput } from "../schemas/tasks.js";
 import { notFound } from "../utils/http-error.js";
 
 // GET /api/projects
@@ -34,20 +36,30 @@ export const listProjectTasks: RequestHandler = async (req, res) => {
     const project = await ProjectModel.findById(id);
     if (!project) throw notFound("Project not found");
 
-    const tasks = await TodoModel.find({ projectId: id }).sort({ createdAt: 1, _id: 1 });
-    res.json(tasks);
+    const [todos, tasks] = await Promise.all([
+        TodoModel.find({ projectId: id }).exec(),
+        TaskModel.find({ projectId: id }).exec(),
+    ]);
+    const allTasks = [...todos, ...tasks].sort(
+        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+    );
+    res.json(allTasks);
 };
 
 // POST /api/projects/:id/tasks — create a task nested under the project.
-// Body: { title: string } — the path id overrides any projectId in the body.
+// The path id overrides any projectId in the body.
 export const createProjectTask: RequestHandler = async (req, res) => {
     const { id } = req.params as { id: string };
-    const body = req.body as { title: string };
+    const body = req.body as CreateTaskInput;
 
     const project = await ProjectModel.findById(id);
     if (!project) throw notFound("Project not found");
 
-    const task = await TodoModel.create({ title: body.title, projectId: id });
+    const task = await TaskModel.create({
+        ...body,
+        projectId: id,
+        completed: body.status === "done",
+    });
     res.status(201).json(task);
 };
 
@@ -67,7 +79,10 @@ export const deleteProject: RequestHandler = async (req, res) => {
     const result = await ProjectModel.findByIdAndDelete(id);
     if (!result) throw notFound("Project not found");
 
-    await TodoModel.deleteMany({ projectId: id });
+    await Promise.all([
+        TodoModel.deleteMany({ projectId: id }),
+        TaskModel.deleteMany({ projectId: id }),
+    ]);
     res.status(204).end();
 };
 
