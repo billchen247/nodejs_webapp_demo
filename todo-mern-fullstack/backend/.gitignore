@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# .gitignore — files git should never track for the backend.
+# @author Bill Chen
+# ---------------------------------------------------------------------------
+
+node_modules/
+package-lock.json
+dist/
+coverage/
+
+# Secrets — committing a real .env is the classic beginner mistake.
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor junk
+.DS_Store
+.idea/
+.vscode/

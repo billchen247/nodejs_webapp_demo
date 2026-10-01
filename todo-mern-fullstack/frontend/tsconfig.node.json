@@ -1,0 +1,22 @@
+{
+    "//": "Author: Bill Chen — TypeScript config for Node-side files like vite.config.ts. These run in Node, NOT in the browser, so the lib set is different (no DOM) and target is ES2023 (modern Node).",
+    "compilerOptions": {
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true
+    },
+    "include": ["vite.config.ts"]
+}

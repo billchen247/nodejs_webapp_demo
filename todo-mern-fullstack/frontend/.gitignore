@@ -1,0 +1,23 @@
+# Author: Bill Chen — frontend ignores.
+node_modules/
+package-lock.json
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Secrets — Vite inlines VITE_* vars into the public bundle, but the raw
+# .env file itself still shouldn't be committed. Share defaults via
+# .env.example instead.
+.env
+.env.local
+.env.*.local
+
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*

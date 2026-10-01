@@ -1,0 +1,8 @@
+{
+    "//": "Author: Bill Chen — root tsconfig that references the two project configs below. Modern Vite + React setups use split tsconfigs so editor tooling can type-check both the browser code and the Node side (vite.config.ts) with the correct lib settings.",
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
+    ]
+}

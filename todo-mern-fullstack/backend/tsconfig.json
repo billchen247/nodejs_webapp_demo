@@ -1,0 +1,56 @@
+{
+    /* ---------------------------------------------------------------------
+     * tsconfig.json — backend TypeScript compiler options
+     * ---------------------------------------------------------------------
+     * This file tells `tsc` (and `tsx` for dev mode) how to compile the
+     * backend source. The code targets modern Node.js (22+) running as ESM.
+     *
+     * Key choices (and why):
+     *
+     *   • "module" / "moduleResolution": "NodeNext"
+     *     Node's own ESM-aware resolver. This REQUIRES explicit ".js"
+     *     extensions on *relative* imports, even in `.ts` files — TypeScript
+     *     resolves the `.ts` source but the emitted code is loaded by Node
+     *     with the `.js` filename at runtime. If you see `ERR_MODULE_NOT_FOUND`,
+     *     check that your import ends in `.js`.
+     *
+     *   • "strict": true + the extra `noUn...` flags
+     *     Turn on every type-safety guardrail. Finding bugs at compile time
+     *     is cheaper than finding them in production.
+     *
+     *   • "target": "ES2023"
+     *     Node 22 supports every ES2023 feature natively, so no down-leveling.
+     *
+     * @author Bill Chen
+     * ------------------------------------------------------------------- */
+    "compilerOptions": {
+        "target": "ES2023",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ES2023"],
+
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "sourceMap": true,
+        "declaration": false,
+        "removeComments": false,
+
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
+
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+
+        "skipLibCheck": true,
+        "isolatedModules": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+}

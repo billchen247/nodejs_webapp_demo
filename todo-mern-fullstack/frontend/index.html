@@ -1,0 +1,23 @@
+<!doctype html>
+<!--
+    index.html — the only HTML page in a Single-Page App (SPA).
+    Vite serves this file and injects the compiled React bundle. All UI
+    rendering happens inside <div id="root"></div> via React.
+    Author: Bill Chen
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo — MERN Fullstack</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <!--
+            Vite rewrites this script path for production and injects the
+            correct hashed filename. During dev it serves `src/main.tsx`
+            directly through its ESM module graph.
+        -->
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

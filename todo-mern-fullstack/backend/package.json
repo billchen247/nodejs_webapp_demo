@@ -1,0 +1,48 @@
+{
+  "name": "todo-mern-fullstack-backend",
+  "version": "1.0.0",
+  "description": "MERN fullstack TODO — Express 5 + TypeScript + MongoDB (Mongoose) backend.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mern",
+    "nodejs",
+    "express",
+    "express5",
+    "mongodb",
+    "mongoose",
+    "typescript",
+    "esm",
+    "rest",
+    "api",
+    "todo",
+    "educational"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.8.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
