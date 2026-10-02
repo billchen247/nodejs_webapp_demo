@@ -44,6 +44,9 @@ async function main(): Promise<void> {
         console.log(
             `[server] Todos:   http://localhost:${config.port}/api/todos`,
         );
+        console.log(
+            `[server] Docs:    http://localhost:${config.port}/api-docs`,
+        );
     });
 
     // -----------------------------------------------------------------

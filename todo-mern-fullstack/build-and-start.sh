@@ -23,8 +23,35 @@ install_if_needed() {
   fi
 }
 
+free_port() {
+  local port="$1"
+  local label="$2"
+  local pids
+  pids=$(lsof -ti tcp:"$port" -sTCP:LISTEN 2>/dev/null || true)
+  if [[ -n "$pids" ]]; then
+    echo "[port] killing existing $label listener(s) on :$port (pid: $(echo "$pids" | tr '\n' ' '))"
+    kill $pids 2>/dev/null || true
+    sleep 1
+    pids=$(lsof -ti tcp:"$port" -sTCP:LISTEN 2>/dev/null || true)
+    if [[ -n "$pids" ]]; then
+      echo "[port] forcing kill -9 on $label :$port"
+      kill -9 $pids 2>/dev/null || true
+    fi
+  fi
+}
+
+BACKEND_PORT="${BACKEND_PORT:-4000}"
+if [[ "$MODE" == "prod" ]]; then
+  FRONTEND_PORT="${FRONTEND_PORT:-4173}"
+else
+  FRONTEND_PORT="${FRONTEND_PORT:-5173}"
+fi
+
 install_if_needed "$BACKEND"
 install_if_needed "$FRONTEND"
+
+free_port "$BACKEND_PORT" "backend"
+free_port "$FRONTEND_PORT" "frontend"
 
 if [[ ! -f "$BACKEND/.env" && -f "$BACKEND/.env.example" ]]; then
   echo "[env] copying backend/.env.example -> backend/.env"

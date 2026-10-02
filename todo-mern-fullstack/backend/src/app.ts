@@ -23,11 +23,13 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 
 import { config } from "./config/index.js";
 import { todosRouter } from "./routes/todos.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { openApiSpec } from "./openapi.js";
 
 export function createApp(): Express {
     const app = express();
@@ -59,7 +61,37 @@ export function createApp(): Express {
     app.use(express.urlencoded({ extended: true }));
 
     /* ------------------------------------------------------------------
-     * 4. Simple health check — handy for Docker / Kubernetes probes
+     * 4a. Home page — a tiny HTML landing page so hitting the server
+     *     root in a browser shows something useful (links to the docs,
+     *     the health probe, and the raw API) instead of a 404.
+     * ---------------------------------------------------------------- */
+    app.get("/", (_req, res) => {
+        res.type("html").send(`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Todo API</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
+  code { background: #f4f4f4; padding: 0.1rem 0.3rem; border-radius: 3px; }
+  li { margin: 0.3rem 0; }
+</style>
+</head>
+<body>
+  <h1>Todo API</h1>
+  <p>Backend is running (<code>${config.nodeEnv}</code>).</p>
+  <ul>
+    <li><a href="/api-docs">/api-docs</a> — interactive Swagger UI</li>
+    <li><a href="/api-docs.json">/api-docs.json</a> — raw OpenAPI spec</li>
+    <li><a href="/api/todos">/api/todos</a> — list todos</li>
+    <li><a href="/health">/health</a> — liveness probe</li>
+  </ul>
+</body>
+</html>`);
+    });
+
+    /* ------------------------------------------------------------------
+     * 4b. Simple health check — handy for Docker / Kubernetes probes
      *    and for quickly confirming the server is alive.
      * ---------------------------------------------------------------- */
     app.get("/health", (_req, res) => {
@@ -70,6 +102,22 @@ export function createApp(): Express {
      * 5. API routes — mount sub-routers under their URL prefix.
      * ---------------------------------------------------------------- */
     app.use("/api/todos", todosRouter);
+
+    /* ------------------------------------------------------------------
+     * 5b. Interactive API docs — Swagger UI at /api-docs, raw spec at
+     *     /api-docs.json. Mount AFTER the real routes but BEFORE the
+     *     404 handler so the swagger paths actually resolve.
+     * ---------------------------------------------------------------- */
+    app.get("/api-docs.json", (_req, res) => {
+        res.json(openApiSpec);
+    });
+    app.use(
+        "/api-docs",
+        swaggerUi.serve,
+        swaggerUi.setup(openApiSpec, {
+            customSiteTitle: "Todo API — Swagger UI",
+        }),
+    );
 
     /* ------------------------------------------------------------------
      * 6. Fall-through: anything else is a 404, then the error handler.
