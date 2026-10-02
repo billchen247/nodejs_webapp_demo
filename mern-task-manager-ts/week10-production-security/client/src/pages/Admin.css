@@ -1,0 +1,143 @@
+/*
+ * Author: Bill Chen
+ * Project: MERN Task Manager
+ * Week: Week 10
+ * File: client/src/pages/Admin.css
+ */
+
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.admin__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.admin__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.admin__subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.admin__error {
+  background: color-mix(in oklab, var(--color-danger) 12%, var(--color-surface));
+  border: 1px solid var(--color-danger);
+  color: var(--color-text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.admin__loading,
+.admin__empty {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+
+.admin__table {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin__table th,
+.admin__table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin__table tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin__table th {
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin__role {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.admin__role--user {
+  background: color-mix(in oklab, var(--color-text-muted) 20%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.admin__role--admin {
+  background: color-mix(in oklab, var(--color-primary) 20%, var(--color-surface));
+  color: var(--color-primary);
+}
+
+.admin__actions-col {
+  text-align: right;
+}
+
+.admin__action {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.admin__action:hover:not([disabled]) {
+  background: var(--color-primary-hover);
+}
+
+.admin__action[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .admin__table,
+  .admin__table thead,
+  .admin__table tbody,
+  .admin__table th,
+  .admin__table td,
+  .admin__table tr {
+    display: block;
+  }
+
+  .admin__table thead {
+    display: none;
+  }
+
+  .admin__table tr {
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3);
+  }
+
+  .admin__table td {
+    border-bottom: 0;
+    padding: var(--space-1) 0;
+  }
+
+  .admin__actions-col {
+    text-align: left;
+  }
+}

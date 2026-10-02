@@ -1,0 +1,19 @@
+{
+  "name": "week09-authorization",
+  "version": "1.0.0",
+  "description": "Week 9 of the MERN Task Manager — role-based authorization. 'user' vs 'admin', requireRole, admin APIs, admin dashboard.",
+  "private": true,
+  "author": "Bill Chen",
+  "license": "MIT",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "test:server": "npm --prefix server run test",
+    "test:server:coverage": "npm --prefix server run test:coverage",
+    "test:client": "npm --prefix client run test",
+    "test:client:coverage": "npm --prefix client run test:coverage",
+    "test": "npm run test:server && npm run test:client",
+    "test:coverage": "npm run test:server:coverage && npm run test:client:coverage"
+  }
+}

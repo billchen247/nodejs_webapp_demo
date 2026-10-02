@@ -1,0 +1,119 @@
+/*
+ * Author: Bill Chen
+ * Project: MERN Task Manager
+ * Week: Week 10
+ * File: client/src/pages/AuthForm.css
+ */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: var(--color-surface);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.auth-form__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.auth-form__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.auth-form__row label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.auth-form__row input {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.auth-form__row input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+.auth-form__hint {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.auth-form__error {
+  background: color-mix(in oklab, var(--color-danger) 15%, var(--color-surface));
+  border: 1px solid var(--color-danger);
+  color: var(--color-text);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.auth-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.auth-form__submit {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
+.auth-form__submit:hover:not([disabled]) {
+  background: var(--color-primary-hover);
+}
+
+.auth-form__submit[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-form__link {
+  background: transparent;
+  border: 0;
+  color: var(--color-primary);
+  padding: var(--space-2);
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.auth-form__success {
+  background: color-mix(in oklab, var(--color-primary) 12%, var(--color-surface));
+  border: 1px solid var(--color-primary);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.auth-form__dev {
+  background: color-mix(in oklab, #e8ba00 25%, var(--color-surface));
+  border: 1px dashed #c89300;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+}
+
+.auth-form__dev-token {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  word-break: break-all;
+  background: var(--color-surface-alt);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+}

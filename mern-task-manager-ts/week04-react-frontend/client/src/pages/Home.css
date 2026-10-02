@@ -1,0 +1,53 @@
+/*
+ * Author: Bill Chen
+ * Project: MERN Task Manager
+ * Week: Week 04
+ * File: client/src/pages/Home.css
+ */
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.home__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.home__count {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.home__filters {
+  display: inline-flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.home__filter {
+  border: 0;
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.home__filter:hover {
+  color: var(--color-text);
+}
+
+.home__filter--on {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}

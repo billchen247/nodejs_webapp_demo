@@ -1,0 +1,86 @@
+/*
+ * Author: Bill Chen
+ * Project: MERN Task Manager
+ * Week: Week 09
+ * File: client/src/pages/Home.css
+ */
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.home__loading {
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+
+.home__error {
+  background: color-mix(in oklab, var(--color-danger) 12%, var(--color-surface));
+  border: 1px solid var(--color-danger);
+  color: var(--color-text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.home__retry {
+  margin-left: auto;
+  background: var(--color-danger);
+  color: var(--color-primary-contrast);
+  border: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.home__retry:hover {
+  filter: brightness(1.05);
+}
+
+.home__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.home__count {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.home__filters {
+  display: inline-flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.home__filter {
+  border: 0;
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.home__filter:hover {
+  color: var(--color-text);
+}
+
+.home__filter--on {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
