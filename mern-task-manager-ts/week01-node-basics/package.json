@@ -1,0 +1,24 @@
+{
+  "name": "week01-node-basics",
+  "version": "1.0.0",
+  "description": "Week 1 of the MERN Task Manager — pure Node.js HTTP server with TypeScript.",
+  "type": "module",
+  "author": "Bill Chen",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

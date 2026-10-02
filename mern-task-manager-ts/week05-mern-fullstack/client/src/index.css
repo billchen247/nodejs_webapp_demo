@@ -1,0 +1,94 @@
+/*
+ * Author: Bill Chen
+ * Project: MERN Task Manager
+ * Week: Week 05
+ * File: client/src/index.css
+ *
+ * Global styles and design tokens.
+ *
+ * We expose a tiny design system through CSS custom properties so every
+ * component can share the same colours, spacing, and typography. Students
+ * can change the look of the whole app by editing this file.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Colour palette */
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f0f2f5;
+  --color-border: #e2e5ea;
+  --color-text: #1a1d21;
+  --color-text-muted: #5a6472;
+  --color-primary: #3b5bdb;
+  --color-primary-hover: #2f49b2;
+  --color-primary-contrast: #ffffff;
+  --color-danger: #c92a2a;
+  --color-success: #2b8a3e;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  /* Radii + shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+
+  /* Typography */
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+
+  font-family: var(--font-stack);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #15181c;
+    --color-surface: #1e2227;
+    --color-surface-alt: #262a30;
+    --color-border: #2e333a;
+    --color-text: #ecedee;
+    --color-text-muted: #9aa0a6;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Keyboard users deserve visible focus. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
