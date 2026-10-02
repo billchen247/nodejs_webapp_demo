@@ -1,0 +1,45 @@
+{
+  "name": "week09-server",
+  "version": "1.0.0",
+  "description": "Week 9 — Authorization with user roles (user/admin).",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js",
+    "make-admin": "node --env-file=.env scripts/makeAdmin.js",
+    "test": "cross-env NODE_ENV=test vitest run",
+    "test:watch": "cross-env NODE_ENV=test vitest",
+    "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
+  },
+  "keywords": [
+    "mern",
+    "auth",
+    "authorization",
+    "teaching"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "cross-env": "^7.0.3",
+    "mongodb-memory-server": "^10.1.2",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.9"
+  },
+  "allowScripts": {
+    "bcrypt@5.1.1": true,
+    "esbuild@0.21.5": true,
+    "mongodb-memory-server@10.4.3": true,
+    "fsevents@2.3.3": true
+  }
+}

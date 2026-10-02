@@ -1,0 +1,38 @@
+{
+  "name": "week08-server",
+  "version": "1.0.0",
+  "description": "Week 8 — Protected API with per-user task ownership, paired with the Week 8 React auth client.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js",
+    "test": "cross-env NODE_ENV=test JWT_SECRET=test-only-secret-do-not-use-in-prod vitest run",
+    "test:watch": "cross-env NODE_ENV=test JWT_SECRET=test-only-secret-do-not-use-in-prod vitest",
+    "test:coverage": "cross-env NODE_ENV=test JWT_SECRET=test-only-secret-do-not-use-in-prod vitest run --coverage"
+  },
+  "keywords": [
+    "mern",
+    "auth",
+    "authorization",
+    "teaching"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "cross-env": "^7.0.3",
+    "mongodb-memory-server": "^10.1.2",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.9"
+  }
+}

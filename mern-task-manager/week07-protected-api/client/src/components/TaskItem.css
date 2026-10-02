@@ -1,0 +1,71 @@
+.task-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-4);
+  align-items: start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.task-item--done .task-item__title {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.task-item__check input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: var(--space-1);
+  accent-color: var(--color-primary);
+}
+
+.task-item__body {
+  min-width: 0;
+}
+
+.task-item__title {
+  margin: 0;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+.task-item__description {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  word-wrap: break-word;
+}
+
+.task-item__edit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-item__edit-input {
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.task-item__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* On narrow screens, let the actions wrap under the content. */
+@media (max-width: 540px) {
+  .task-item {
+    grid-template-columns: auto 1fr;
+  }
+  .task-item__actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}

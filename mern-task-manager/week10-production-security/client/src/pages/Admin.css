@@ -1,0 +1,67 @@
+.admin {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin__lede {
+  color: var(--color-text-muted);
+  margin-top: 0;
+}
+
+.admin__error {
+  background: #fdecec;
+  border: 1px solid #f3b4b4;
+  color: #7a1414;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+.admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-4);
+}
+
+.admin__table th,
+.admin__table td {
+  text-align: left;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.95rem;
+}
+
+.admin__table th {
+  background: var(--color-bg);
+  font-weight: 600;
+}
+
+.admin__role {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin__role--admin {
+  background: #ffe9c7;
+  color: #7a4a00;
+}
+
+.admin__role--user {
+  background: #e4ebff;
+  color: #253371;
+}
+
+/* On narrow screens, let the table scroll horizontally. */
+@media (max-width: 540px) {
+  .admin__table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

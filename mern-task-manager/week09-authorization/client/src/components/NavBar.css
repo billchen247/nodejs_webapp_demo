@@ -1,0 +1,58 @@
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navbar__list {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-4);
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.navbar__link {
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-weight: 500;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.navbar__link:hover {
+  background: var(--color-bg);
+}
+
+.navbar__link--active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.navbar__user {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.navbar__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.navbar__badge--admin {
+  background: #ffe9c7;
+  color: #7a4a00;
+}

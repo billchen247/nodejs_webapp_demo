@@ -1,0 +1,27 @@
+{
+  "name": "week01-node-basics",
+  "version": "1.0.0",
+  "description": "Week 1 — Node.js basics: a plain HTTP server using Node's built-in http module.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "node",
+    "http",
+    "teaching",
+    "mern"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.9"
+  }
+}

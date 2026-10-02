@@ -1,0 +1,37 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.home__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.home__filter {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: 999px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.home__filter:hover {
+  background: var(--color-bg);
+}
+
+.home__filter--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.home__count {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}

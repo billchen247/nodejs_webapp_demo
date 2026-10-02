@@ -1,0 +1,35 @@
+{
+  "name": "week04-server",
+  "version": "1.0.0",
+  "description": "Week 4 — Express + MongoDB server (same API as Week 3), paired with the Week 4 React client.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js",
+    "test": "cross-env NODE_ENV=test vitest run",
+    "test:watch": "cross-env NODE_ENV=test vitest",
+    "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "express",
+    "teaching",
+    "mern"
+  ],
+  "author": "Bill Chen",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "cross-env": "^7.0.3",
+    "mongodb-memory-server": "^10.1.2",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.9"
+  }
+}

@@ -1,0 +1,81 @@
+/*
+ * Global styles.
+ *
+ * CSS custom properties (variables) live on :root so every component can
+ * use them. They make it easy to change the look of the whole app in one
+ * place and keep spacing / colors / typography consistent.
+ */
+
+:root {
+  /* color palette */
+  --color-bg: #f6f7fb;
+  --color-surface: #ffffff;
+  --color-border: #e4e6ef;
+  --color-text: #1f2430;
+  --color-text-muted: #5c6373;
+  --color-primary: #3755f6;
+  --color-primary-hover: #2a44d6;
+  --color-danger: #d63838;
+  --color-danger-hover: #b02828;
+  --color-success: #22a06b;
+
+  /* spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* radius + shadow */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+
+  /* typography */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-size-base: clamp(0.95rem, 0.9rem + 0.2vw, 1rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Keyboard focus — intentionally visible for accessibility. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

@@ -1,0 +1,12 @@
+.dashboard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.dashboard h2 {
+  margin-top: 0;
+}
