@@ -1,31 +1,24 @@
 import type { Request, Response } from "express";
 
-import mongoose from "mongoose";
-import { z } from "zod/v4";
-
 import Project from "../models/project.js";
+import {
+  isValidProjectId,
+  projectInputSchema,
+  projectPatchSchema,
+  projectQuerySchema,
+} from "../schemas/project.js";
 
 type ProjectIdParams = { id: string };
 
-const projectNameSchema = z.string().trim().min(1).max(200);
-const projectDescriptionSchema = z.string().trim().max(2000);
+export async function listProjects(req: Request, res: Response): Promise<void> {
+  const result = projectQuerySchema.safeParse(req.query);
+  if (!result.success) {
+    res.status(400).json({ message: "Invalid project query", issues: result.error.issues });
+    return;
+  }
 
-const projectInputSchema = z.object({
-  name: projectNameSchema,
-  description: projectDescriptionSchema.default(""),
-}).strict();
-
-const projectPatchSchema = z.object({
-  name: projectNameSchema.optional(),
-  description: projectDescriptionSchema.optional(),
-}).strict().refine(project => Object.keys(project).length > 0, "At least one field must be provided");
-
-function isValidProjectId(id: string): boolean {
-  return mongoose.isObjectIdOrHexString(id);
-}
-
-export async function listProjects(_req: Request, res: Response): Promise<void> {
-  const projects = await Project.find().sort({ createdAt: -1 });
+  const filter = result.data.name ? { name: result.data.name } : {};
+  const projects = await Project.find(filter).sort({ createdAt: -1 });
   res.json(projects);
 }
 

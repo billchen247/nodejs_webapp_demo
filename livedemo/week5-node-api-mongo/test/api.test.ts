@@ -24,6 +24,36 @@ describe("GET /api/v1/emojis", () => {
 });
 
 describe("Project API validation", () => {
+  it("rejects an empty project name query", () =>
+    request(app)
+      .get("/api/v1/projects?name=%20%20")
+      .expect(400)
+      .expect(({ body }) => {
+        if (body.message !== "Invalid project query") {
+          throw new Error("Invalid project query response message");
+        }
+      }));
+
+  it("rejects unsupported project query parameters", () =>
+    request(app)
+      .get("/api/v1/projects?unknown=value")
+      .expect(400)
+      .expect(({ body }) => {
+        if (body.message !== "Invalid project query") {
+          throw new Error("Invalid project query response message");
+        }
+      }));
+
+  it("rejects repeated project name query parameters", () =>
+    request(app)
+      .get("/api/v1/projects?name=First&name=Second")
+      .expect(400)
+      .expect(({ body }) => {
+        if (body.message !== "Invalid project query") {
+          throw new Error("Invalid project query response message");
+        }
+      }));
+
   it("rejects a project without a name", () =>
     request(app)
       .post("/api/v1/projects")
@@ -32,6 +62,20 @@ describe("Project API validation", () => {
       .expect(({ body }) => {
         if (body.message !== "Invalid project") {
           throw new Error("Invalid project response message");
+        }
+      }));
+
+  it("rejects a project name that contains no letters", () =>
+    request(app)
+      .post("/api/v1/projects")
+      .send({ name: "12345" })
+      .expect(400)
+      .expect(({ body }) => {
+        const issue = body.issues?.find(
+          (item: { message?: string }) => item.message === "Project name must contain at least one letter",
+        );
+        if (!issue) {
+          throw new Error("Expected the custom project-name validation issue");
         }
       }));
 

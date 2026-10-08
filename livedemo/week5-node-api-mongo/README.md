@@ -157,7 +157,7 @@ Projects are stored in MongoDB and available under `/api/v1/projects`:
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| `GET` | `/api/v1/projects` | List projects, newest first |
+| `GET` | `/api/v1/projects` | List projects, newest first; optionally filter by name |
 | `POST` | `/api/v1/projects` | Create a project |
 | `GET` | `/api/v1/projects/:id` | Get a project |
 | `PUT` | `/api/v1/projects/:id` | Replace a project |
@@ -178,6 +178,17 @@ missing projects return `404`, and a successful delete returns `204`.
 Project routes, controllers, and Mongoose persistence are separated into
 `src/routes/projects.ts`, `src/controllers/projects.ts`, and
 `src/models/project.ts`.
+
+Project names in create, replace, and patch request bodies must contain at
+least one letter. This is an example of custom HTTP input validation using
+Zod's `.refine()` in `src/schemas/project.ts`. To add a different rule, change
+the refinement callback and its error message; invalid input returns `400`
+with the validation issue.
+
+Filter the project list by an exact name with the `name` query parameter:
+`GET /api/v1/projects?name=Express%20Learning%20API`. Query names are trimmed
+and must contain between 1 and 200 characters; invalid or unsupported query
+parameters return `400`.
 
 ## Lint
 

@@ -53,6 +53,14 @@ const openApiDocument = {
     "/api/v1/projects": {
       get: {
         summary: "List projects",
+        description: "List projects, optionally filtering by an exact project name.",
+        parameters: [{
+          name: "name",
+          in: "query",
+          required: false,
+          schema: { type: "string", minLength: 1, maxLength: 200 },
+          description: "Exact project name to match.",
+        }],
         responses: {
           200: {
             description: "Projects, newest first",
@@ -65,6 +73,7 @@ const openApiDocument = {
               },
             },
           },
+          400: { description: "Invalid project query" },
         },
       },
       post: {
@@ -290,7 +299,13 @@ const openApiDocument = {
       ProjectInput: {
         type: "object",
         properties: {
-          name: { type: "string", minLength: 1, maxLength: 200 },
+          name: {
+            type: "string",
+            minLength: 1,
+            maxLength: 200,
+            pattern: ".*[A-Za-z].*",
+            description: "Must contain at least one letter.",
+          },
           description: { type: "string", maxLength: 2000, default: "" },
         },
         required: ["name"],
@@ -300,7 +315,13 @@ const openApiDocument = {
         type: "object",
         minProperties: 1,
         properties: {
-          name: { type: "string", minLength: 1, maxLength: 200 },
+          name: {
+            type: "string",
+            minLength: 1,
+            maxLength: 200,
+            pattern: ".*[A-Za-z].*",
+            description: "Must contain at least one letter.",
+          },
           description: { type: "string", maxLength: 2000 },
         },
         additionalProperties: false,
