@@ -8,6 +8,83 @@ How to use this template:
 pnpm dlx create-express-api@latest --typescript --directory my-api-name
 ```
 
+## Initialize an Express + MongoDB REST API
+
+To start a small Node.js REST API from scratch with JavaScript ES modules,
+Express, and MongoDB, create a project and install its runtime and development
+dependencies:
+
+```sh
+mkdir express-mongo-api
+cd express-mongo-api
+npm init -y
+npm install express mongoose dotenv
+npm install --save-dev nodemon
+npm pkg set type=module
+npm pkg set "scripts.dev=nodemon src/index.js"
+npm pkg set "scripts.start=node src/index.js"
+mkdir -p src/models src/routes src/controllers
+touch .gitignore
+```
+
+Create a `.env` file in the project root and set a local MongoDB URI or your
+MongoDB Atlas connection string:
+
+```dotenv
+MONGODB_URI=mongodb://127.0.0.1:27017/my_app
+PORT=3000
+```
+
+Add `.env` to `.gitignore` so database credentials are not committed. In
+`.gitignore`, include both `.env` and `node_modules/`. Start MongoDB locally
+or make sure your Atlas cluster is reachable. Then create `src/index.js`:
+
+```js
+import "dotenv/config";
+import express from "express";
+import mongoose from "mongoose";
+
+const app = express();
+app.use(express.json());
+app.get("/api/v1/health", (_req, res) => res.json({ status: "ok" }));
+
+const { MONGODB_URI, PORT = "3000" } = process.env;
+if (!MONGODB_URI) throw new Error("MONGODB_URI is required");
+
+await mongoose.connect(MONGODB_URI);
+app.listen(Number(PORT), () => {
+  console.log("API listening on port " + PORT);
+});
+```
+
+This connects to MongoDB with `mongoose.connect()` **before** calling
+`app.listen()`, so the API does not accept requests before its database is
+ready. Start it with `npm run dev`, then request
+`GET http://localhost:3000/api/v1/health` to confirm it is running.
+
+Organize the API as it grows:
+
+- `src/index.js` starts the database connection and HTTP listener.
+- `src/app.js` configures Express middleware and mounts route modules.
+- `src/routes/` maps versioned paths such as `/api/v1/items` to handlers.
+- `src/controllers/` validates input, calls the data layer, and sends HTTP responses.
+- `src/models/` defines Mongoose schemas and MongoDB persistence.
+
+For a resource such as `items`, build the REST operations incrementally:
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/v1/items` | List records |
+| `POST` | `/api/v1/items` | Create a record |
+| `GET` | `/api/v1/items/:id` | Get one record |
+| `PATCH` | `/api/v1/items/:id` | Update a record |
+| `DELETE` | `/api/v1/items/:id` | Delete a record |
+
+Validate request bodies and route IDs, return appropriate status codes (for
+example, `400` for invalid input and `404` when a record is missing), and add
+a final error-handling middleware. Run the service with `npm run dev`; test
+both normal requests and failure cases before adding more resources.
+
 Includes API Server utilities:
 
 - [morgan](https://www.npmjs.com/package/morgan)

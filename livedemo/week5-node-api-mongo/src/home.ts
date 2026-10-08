@@ -69,6 +69,14 @@ const homePage = `<!doctype html>
       .step h3 { color: #fff; }
       .step p { color: #bdcadd; font-size: .9rem; line-height: 1.65; }
       .step code { display: inline-block; margin-top: 5px; background: #0d1829; color: #b9e9d9; }
+      .guide-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .guide-card { padding: 22px; border: 1px solid #e1e7f0; border-radius: 14px; background: #fff; }
+      .guide-card h3 { margin-top: 0; }
+      .guide-card p, .guide-card li { color: #5b687d; font-size: .92rem; line-height: 1.65; }
+      .guide-card ul { margin: 10px 0 0; padding-left: 20px; }
+      .guide-card pre { overflow-x: auto; margin: 12px 0 0; padding: 14px; border-radius: 9px; background: #0b1220; color: #c9d7eb; font: .78rem/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .guide-card pre code { padding: 0; background: transparent; color: inherit; }
+      .guide-card .route-path { color: #264c75; }
       .resources { display: flex; flex-wrap: wrap; gap: 12px; }
       .resource { padding: 11px 14px; border: 1px solid #dce4ee; border-radius: 9px; background: #fff; color: #294969; font-size: .9rem; font-weight: 700; text-decoration: none; }
       .resource:hover { border-color: #8bbcae; }
@@ -78,6 +86,7 @@ const homePage = `<!doctype html>
         .hero-inner { grid-template-columns: 1fr; gap: 32px; }
         .hero { padding: 54px 0; }
         .grid, .steps { grid-template-columns: 1fr; }
+        .guide-grid { grid-template-columns: 1fr; }
         .nav-links { gap: 13px; font-size: .82rem; }
         .nav { min-height: 62px; }
       }
@@ -95,6 +104,7 @@ const homePage = `<!doctype html>
         <a class="brand" href="/">NODE / EXPRESS LAB</a>
         <div class="nav-links">
           <a href="#learn">Learn</a>
+          <a href="#start-project">Start a project</a>
           <a href="#endpoints">API routes</a>
           <a href="#run">Run locally</a>
           <a href="/api-docs">Swagger UI</a>
@@ -137,6 +147,73 @@ Accept: application/json
           <article class="card"><span class="card-number">03</span><h3>MongoDB connection</h3><p>Mongoose connects the app to MongoDB when the server starts. Todo records are stored in MongoDB through a Mongoose model; the emoji endpoint remains a static example.</p></article>
         </div>
         <div class="note"><strong>Request flow:</strong> browser or client → Express middleware → matching route → MongoDB model → JSON response.</div>
+      </section>
+      <section id="start-project">
+        <div class="section-head">
+          <p class="section-label">Start from scratch</p>
+          <h2>Initialize an Express + MongoDB REST API</h2>
+          <p class="section-copy">Create a small Node.js service, connect it to MongoDB with Mongoose, then organize endpoints into models, routes, and controllers.</p>
+        </div>
+        <div class="guide-grid">
+          <article class="guide-card">
+            <h3>1. Create the project</h3>
+            <p>Initialize an npm project, install the server and database packages, and add a development runner.</p>
+            <pre><code>mkdir express-mongo-api
+cd express-mongo-api
+npm init -y
+npm install express mongoose dotenv
+npm install --save-dev nodemon
+npm pkg set type=module
+npm pkg set "scripts.dev=nodemon src/index.js"
+npm pkg set "scripts.start=node src/index.js"
+mkdir -p src/models src/routes src/controllers
+touch .gitignore</code></pre>
+          </article>
+          <article class="guide-card">
+            <h3>2. Configure MongoDB</h3>
+            <p>Create a <code>.env</code> file in the project root. Use a local MongoDB URI or your MongoDB Atlas connection string, and keep credentials out of source control.</p>
+            <pre><code>MONGODB_URI=mongodb://127.0.0.1:27017/my_app
+PORT=3000</code></pre>
+            <ul>
+              <li>Add <code>.env</code> to <code>.gitignore</code>.</li>
+              <li>Load settings with <code>dotenv</code>.</li>
+              <li>Do not start the listener until <code>mongoose.connect()</code> succeeds.</li>
+            </ul>
+          </article>
+          <article class="guide-card">
+            <h3>3. Build the REST API</h3>
+            <p>Use <code>express.json()</code> to parse request bodies. Define Mongoose schemas in <code>models/</code>, endpoint handlers in <code>controllers/</code>, and mount route modules under a versioned prefix such as <code>/api/v1</code>.</p>
+            <ul>
+              <li><span class="route-path">GET /api/v1/items</span> — list records</li>
+              <li><span class="route-path">POST /api/v1/items</span> — create a record</li>
+              <li><span class="route-path">GET /api/v1/items/:id</span> — get one record</li>
+              <li><span class="route-path">PATCH /api/v1/items/:id</span> — update a record</li>
+              <li><span class="route-path">DELETE /api/v1/items/:id</span> — delete a record</li>
+            </ul>
+          </article>
+          <article class="guide-card">
+            <h3>4. Run and verify</h3>
+            <p>Start with a health endpoint and connect to MongoDB before listening for requests. Save this as <code>src/index.js</code>:</p>
+            <pre><code>import "dotenv/config";
+import express from "express";
+import mongoose from "mongoose";
+
+const app = express();
+app.use(express.json());
+app.get("/api/v1/health", (_req, res) =&gt; res.json({ status: "ok" }));
+
+const { MONGODB_URI, PORT = "3000" } = process.env;
+if (!MONGODB_URI) throw new Error("MONGODB_URI is required");
+
+await mongoose.connect(MONGODB_URI);
+app.listen(Number(PORT), () =&gt; {
+  console.log("API listening on port " + PORT);
+});</code></pre>
+            <p>Run <code>npm run dev</code>, then request <code>GET http://localhost:3000/api/v1/health</code>. Validate input, return suitable status codes, and add a final error-handling middleware as the API grows.</p>
+            <p>Test success cases and failures, including invalid input, malformed IDs, missing records, and database connection errors.</p>
+          </article>
+        </div>
+        <div class="note"><strong>Project shape:</strong> <code>src/index.js</code> starts the app and database connection; <code>src/app.js</code> configures Express; <code>src/routes/</code>, <code>src/controllers/</code>, and <code>src/models/</code> separate HTTP routing, request logic, and MongoDB data.</div>
       </section>
       <section id="endpoints">
         <div class="section-head">
