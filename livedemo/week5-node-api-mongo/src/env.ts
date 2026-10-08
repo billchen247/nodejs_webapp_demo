@@ -2,6 +2,7 @@ import { z } from "zod/v4";
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  MONGODB_URI: z.string().min(1).default("mongodb://127.0.0.1:27017/week5-node-api-mongo"),
   PORT: z.coerce.number().default(3000),
 });
 
@@ -11,7 +12,7 @@ try {
 }
 catch (error) {
   if (error instanceof z.ZodError) {
-    console.error("Missing environment variables:", error.issues.flatMap(issue => issue.path));
+    console.error("Error: Missing environment variables:", error.issues.flatMap(issue => issue.path));
   }
   else {
     console.error(error);

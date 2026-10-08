@@ -38,6 +38,10 @@ Development utilities:
 pnpm install
 ```
 
+Set `MONGODB_URI` in `.env` to your MongoDB connection string. The default is
+`mongodb://127.0.0.1:27017/week5-node-api-mongo`; start a local MongoDB server
+before running the API. The HTTP server starts only after MongoDB connects.
+
 ## Lint
 
 ```
