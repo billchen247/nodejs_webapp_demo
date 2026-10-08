@@ -39,7 +39,9 @@ export async function listProjects(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const filter = result.data.name ? { name: result.data.name } : {};
+  const filter = result.data.name
+    ? { name: new RegExp(result.data.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }
+    : {};
   const projects = await Project.find(filter).sort({ createdAt: -1 });
   res.json(projects);
 }
