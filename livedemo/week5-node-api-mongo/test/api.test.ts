@@ -1,9 +1,11 @@
+import mongoose from "mongoose";
 import request from "supertest";
 import type { Test } from "supertest";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import app from "../src/app.js";
 import Project from "../src/models/project.js";
+import Todo from "../src/models/todo.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -68,6 +70,29 @@ describe("Project API validation", () => {
           throw new Error("Invalid project query response message");
         }
       }));
+
+  it("filters project names by a case-insensitive substring", async () => {
+    const sort = vi.fn().mockResolvedValue([]);
+    vi.spyOn(Project, "find").mockReturnValue({ sort } as never);
+
+    await request(app)
+      .get("/api/v1/projects?name=web%20api")
+      .expect(200, []);
+
+    expect(Project.find).toHaveBeenCalledWith({ name: /web api/i });
+    expect(sort).toHaveBeenCalledWith({ createdAt: -1 });
+  });
+
+  it("treats project name query text literally when searching", async () => {
+    const sort = vi.fn().mockResolvedValue([]);
+    vi.spyOn(Project, "find").mockReturnValue({ sort } as never);
+
+    await request(app)
+      .get("/api/v1/projects?name=Build%20%28API%29")
+      .expect(200, []);
+
+    expect(Project.find).toHaveBeenCalledWith({ name: /Build \(API\)/i });
+  });
 
   it("rejects a project without a name", () =>
     request(app)
@@ -146,5 +171,87 @@ describe("Todo project validation", () => {
         expect(body.issues).toEqual(expect.arrayContaining([
           expect.objectContaining({ path: ["projectId"], message: "Invalid project id" }),
         ]));
+      }));
+});
+
+describe("Todo title uniqueness and list queries", () => {
+  it("has a unique MongoDB index for todo titles", () => {
+    const hasUniqueTitleIndex = Todo.schema.indexes().some(([fields, options]) =>
+      fields.title === 1 && options.unique === true);
+
+    expect(hasUniqueTitleIndex).toBe(true);
+  });
+
+  it("rejects a duplicate title when creating a todo", async () => {
+    vi.spyOn(Todo, "exists").mockResolvedValue({ _id: "507f191e810c19729de860eb" } as never);
+
+    await request(app)
+      .post("/api/v1/todos")
+      .send({ title: "Duplicate title" })
+      .expect(409, { message: "Todo title already exists" });
+
+    expect(Todo.exists).toHaveBeenCalledWith({ title: "Duplicate title" });
+  });
+
+  it("returns a conflict if another request creates the same title concurrently", async () => {
+    vi.spyOn(Todo, "exists").mockResolvedValue(null);
+    vi.spyOn(Todo, "create").mockRejectedValue({
+      code: 11000,
+      keyPattern: { title: 1 },
+    });
+
+    await request(app)
+      .post("/api/v1/todos")
+      .send({ title: "Concurrent title" })
+      .expect(409, { message: "Todo title already exists" });
+  });
+
+  it("rejects a duplicate title when updating a todo", async () => {
+    vi.spyOn(Todo, "exists").mockResolvedValue({ _id: "507f191e810c19729de860eb" } as never);
+
+    await request(app)
+      .patch("/api/v1/todos/507f191e810c19729de860ea")
+      .send({ title: "Duplicate title" })
+      .expect(409, { message: "Todo title already exists" });
+
+    expect(Todo.exists).toHaveBeenCalledWith({
+      title: "Duplicate title",
+      _id: { $ne: expect.any(mongoose.Types.ObjectId) },
+    });
+  });
+
+  it("filters todos by title, completion, and project", async () => {
+    const sort = vi.fn().mockResolvedValue([]);
+    vi.spyOn(Todo, "find").mockReturnValue({ sort } as never);
+
+    await request(app)
+      .get("/api/v1/todos?title=Write%20docs&completed=false&projectId=507f191e810c19729de860ea")
+      .expect(200, []);
+
+    expect(Todo.find).toHaveBeenCalledWith({
+      title: /Write docs/i,
+      completed: false,
+      projectId: expect.any(mongoose.Types.ObjectId),
+    });
+    expect(sort).toHaveBeenCalledWith({ createdAt: -1 });
+  });
+
+  it("treats title query text literally when searching", async () => {
+    const sort = vi.fn().mockResolvedValue([]);
+    vi.spyOn(Todo, "find").mockReturnValue({ sort } as never);
+
+    await request(app)
+      .get("/api/v1/todos?title=Build%20%28API%29")
+      .expect(200, []);
+
+    expect(Todo.find).toHaveBeenCalledWith({ title: /Build \(API\)/i });
+  });
+
+  it("rejects invalid todo list query parameters", () =>
+    request(app)
+      .get("/api/v1/todos?completed=maybe")
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.message).toBe("Invalid todo query");
       }));
 });

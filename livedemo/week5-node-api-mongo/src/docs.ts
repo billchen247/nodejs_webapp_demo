@@ -53,13 +53,13 @@ const openApiDocument = {
     "/api/v1/projects": {
       get: {
         summary: "List projects",
-        description: "List projects, optionally filtering by an exact project name.",
+        description: "List projects, optionally filtering by a case-insensitive substring of the project name.",
         parameters: [{
           name: "name",
           in: "query",
           required: false,
           schema: { type: "string", minLength: 1, maxLength: 200 },
-          description: "Exact project name to match.",
+          description: "Text to find within project names, matched case-insensitively.",
         }],
         responses: {
           200: {
@@ -182,6 +182,25 @@ const openApiDocument = {
     "/api/v1/todos": {
       get: {
         summary: "List todos",
+        parameters: [
+          {
+            name: "title",
+            in: "query",
+            schema: { type: "string", minLength: 1, maxLength: 200 },
+            description: "Match todo titles containing this text, case-insensitively.",
+          },
+          {
+            name: "completed",
+            in: "query",
+            schema: { type: "boolean" },
+          },
+          {
+            name: "projectId",
+            in: "query",
+            schema: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
+            description: "Match todos associated with this project.",
+          },
+        ],
         responses: {
           200: {
             description: "Todos, newest first",
@@ -194,6 +213,7 @@ const openApiDocument = {
               },
             },
           },
+          400: { description: "Invalid todo query" },
         },
       },
       post: {
@@ -216,6 +236,7 @@ const openApiDocument = {
             },
           },
           400: { description: "Invalid todo" },
+          409: { description: "Todo title already exists" },
         },
       },
     },
@@ -261,6 +282,7 @@ const openApiDocument = {
             },
           },
           400: { description: "Invalid id or todo" },
+          409: { description: "Todo title already exists" },
           404: { description: "Todo not found" },
         },
       },
@@ -284,6 +306,7 @@ const openApiDocument = {
             },
           },
           400: { description: "Invalid id or todo" },
+          409: { description: "Todo title already exists" },
           404: { description: "Todo not found" },
         },
       },
@@ -353,6 +376,7 @@ const openApiDocument = {
           },
           completed: { type: "boolean", default: false },
         },
+        description: "Todo titles must be unique.",
         required: ["title"],
         additionalProperties: false,
       },
@@ -369,6 +393,7 @@ const openApiDocument = {
           },
           completed: { type: "boolean" },
         },
+        description: "Todo titles must be unique.",
         additionalProperties: false,
       },
       Todo: {

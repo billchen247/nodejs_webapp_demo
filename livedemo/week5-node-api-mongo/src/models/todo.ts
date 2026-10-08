@@ -26,6 +26,8 @@ const todoSchema = new Schema({
   versionKey: false,
 });
 
+todoSchema.index({ title: 1 }, { unique: true });
+
 export type Todo = InferSchemaType<typeof todoSchema>;
 
 const TodoModel = model<Todo>("Todo", todoSchema);
