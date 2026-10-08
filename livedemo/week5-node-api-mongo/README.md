@@ -59,3 +59,15 @@ pnpm run test
 ```
 pnpm run dev
 ```
+
+## Learning Homepage
+
+Open [http://localhost:3000](http://localhost:3000) while the server is running
+for an overview of the project, its request flow, API endpoints, and local setup.
+
+## API Documentation
+
+With the API running, open [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+to browse the Swagger UI. The OpenAPI document is also available at
+`/api-docs/openapi.json`. The UI bundle is loaded from unpkg, so the browser
+needs internet access to display the interactive interface.
