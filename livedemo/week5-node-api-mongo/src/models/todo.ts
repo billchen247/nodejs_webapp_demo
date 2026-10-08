@@ -13,6 +13,10 @@ const todoSchema = new Schema({
     default: "",
     trim: true,
   },
+  projectId: {
+    type: Schema.Types.ObjectId,
+    ref: "Project",
+  },
   completed: {
     type: Boolean,
     default: false,

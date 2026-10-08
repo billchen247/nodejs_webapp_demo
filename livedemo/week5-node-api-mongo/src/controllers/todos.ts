@@ -2,13 +2,19 @@ import type { Request, Response } from "express";
 import mongoose from "mongoose";
 import { z } from "zod/v4";
 
+import Project from "../models/project.js";
 import Todo from "../models/todo.js";
+import { isValidProjectId } from "../schemas/project.js";
 
 type TodoIdParams = { id: string };
 
 const todoInputSchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).default(""),
+  projectId: z.string()
+    .refine(isValidProjectId, "Invalid project id")
+    .transform(projectId => new mongoose.Types.ObjectId(projectId))
+    .optional(),
   completed: z.boolean().default(false),
 }).strict();
 
@@ -17,6 +23,17 @@ const todoPatchSchema = todoInputSchema.partial()
 
 function isValidTodoId(id: string): boolean {
   return mongoose.isObjectIdOrHexString(id);
+}
+
+async function hasExistingProject(projectId?: mongoose.Types.ObjectId): Promise<boolean> {
+  return !projectId || Boolean(await Project.exists({ _id: projectId }));
+}
+
+function sendMissingProjectError(res: Response): void {
+  res.status(400).json({
+    message: "Invalid todo",
+    issues: [{ code: "custom", path: ["projectId"], message: "Project does not exist" }],
+  });
 }
 
 export async function listTodos(_req: Request, res: Response): Promise<void> {
@@ -28,6 +45,11 @@ export async function createTodo(req: Request, res: Response): Promise<void> {
   const result = todoInputSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({ message: "Invalid todo", issues: result.error.issues });
+    return;
+  }
+
+  if (!await hasExistingProject(result.data.projectId)) {
+    sendMissingProjectError(res);
     return;
   }
 
@@ -64,6 +86,11 @@ export async function replaceTodo(req: Request<TodoIdParams>, res: Response): Pr
     return;
   }
 
+  if (!await hasExistingProject(result.data.projectId)) {
+    sendMissingProjectError(res);
+    return;
+  }
+
   const todo = await Todo.findByIdAndUpdate(id, result.data, {
     new: true,
     runValidators: true,
@@ -86,6 +113,11 @@ export async function updateTodo(req: Request<TodoIdParams>, res: Response): Pro
   const result = todoPatchSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({ message: "Invalid todo", issues: result.error.issues });
+    return;
+  }
+
+  if (!await hasExistingProject(result.data.projectId)) {
+    sendMissingProjectError(res);
     return;
   }
 

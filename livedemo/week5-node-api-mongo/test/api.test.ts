@@ -1,8 +1,13 @@
 import request from "supertest";
-import { describe, it } from "vitest";
+import type { Test } from "supertest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import app from "../src/app.js";
 import Project from "../src/models/project.js";
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("GET /api/v1", () => {
   it("responds with a json message", () =>
@@ -103,5 +108,43 @@ describe("Project API validation", () => {
         if (body.message !== "Invalid project") {
           throw new Error("Invalid project response message");
         }
+      }));
+});
+
+describe("Todo project validation", () => {
+  const missingProjectId = "507f191e810c19729de860ea";
+
+  async function expectMissingProjectRejected(testRequest: Test): Promise<void> {
+    vi.spyOn(Project, "exists").mockResolvedValue(null);
+
+    const response = await testRequest
+      .send({ title: "Todo", projectId: missingProjectId })
+      .expect(400);
+
+    expect(response.body).toMatchObject({
+      message: "Invalid todo",
+      issues: [{ path: ["projectId"], message: "Project does not exist" }],
+    });
+  }
+
+  it("rejects a nonexistent project when creating a todo", () =>
+    expectMissingProjectRejected(request(app).post("/api/v1/todos")));
+
+  it("rejects a nonexistent project when replacing a todo", () =>
+    expectMissingProjectRejected(request(app).put("/api/v1/todos/507f1f77bcf86cd799439011")));
+
+  it("rejects a nonexistent project when patching a todo", () =>
+    expectMissingProjectRejected(request(app).patch("/api/v1/todos/507f1f77bcf86cd799439011")));
+
+  it("rejects malformed project IDs before checking project existence", () =>
+    request(app)
+      .post("/api/v1/todos")
+      .send({ title: "Todo", projectId: "not-an-object-id" })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.message).toBe("Invalid todo");
+        expect(body.issues).toEqual(expect.arrayContaining([
+          expect.objectContaining({ path: ["projectId"], message: "Invalid project id" }),
+        ]));
       }));
 });

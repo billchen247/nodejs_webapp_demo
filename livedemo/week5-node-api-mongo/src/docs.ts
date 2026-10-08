@@ -346,6 +346,11 @@ const openApiDocument = {
         properties: {
           title: { type: "string", minLength: 1, maxLength: 200 },
           description: { type: "string", maxLength: 2000, default: "" },
+          projectId: {
+            type: "string",
+            pattern: "^[a-fA-F0-9]{24}$",
+            description: "Optional ID of an existing project.",
+          },
           completed: { type: "boolean", default: false },
         },
         required: ["title"],
@@ -357,6 +362,11 @@ const openApiDocument = {
         properties: {
           title: { type: "string", minLength: 1, maxLength: 200 },
           description: { type: "string", maxLength: 2000 },
+          projectId: {
+            type: "string",
+            pattern: "^[a-fA-F0-9]{24}$",
+            description: "Optional ID of an existing project.",
+          },
           completed: { type: "boolean" },
         },
         additionalProperties: false,
@@ -367,6 +377,7 @@ const openApiDocument = {
           _id: { type: "string" },
           title: { type: "string", minLength: 1, maxLength: 200 },
           description: { type: "string", maxLength: 2000 },
+          projectId: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
           completed: { type: "boolean" },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
