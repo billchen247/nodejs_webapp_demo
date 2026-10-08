@@ -3,10 +3,10 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import api from "./api/index.js";
 import docs from "./docs.js";
 import homePage from "./home.js";
 import * as middlewares from "./middlewares.js";
+import api from "./routes/index.js";
 
 const app = express();
 

@@ -134,9 +134,9 @@ Accept: application/json
         <div class="grid">
           <article class="card"><span class="card-number">01</span><h3>Node.js + TypeScript</h3><p>Run JavaScript on the server, then use TypeScript types to make request handlers and API data easier to understand.</p></article>
           <article class="card"><span class="card-number">02</span><h3>Express routes</h3><p>Map HTTP methods and URL paths to handlers. Middleware such as logging, CORS, JSON parsing, and error handling surrounds those routes.</p></article>
-          <article class="card"><span class="card-number">03</span><h3>MongoDB connection</h3><p>Mongoose connects the app to MongoDB when the server starts. The sample emoji endpoint is intentionally static; it is not yet stored in the database.</p></article>
+          <article class="card"><span class="card-number">03</span><h3>MongoDB connection</h3><p>Mongoose connects the app to MongoDB when the server starts. Todo records are stored in MongoDB through a Mongoose model; the emoji endpoint remains a static example.</p></article>
         </div>
-        <div class="note"><strong>Request flow:</strong> browser or client → Express middleware → matching route → JSON response. MongoDB is connected during startup and is ready for future model-backed routes.</div>
+        <div class="note"><strong>Request flow:</strong> browser or client → Express middleware → matching route → MongoDB model → JSON response.</div>
       </section>
       <section id="endpoints">
         <div class="section-head">
@@ -147,6 +147,9 @@ Accept: application/json
         <div class="routes">
           <a class="route" href="/api/v1"><span class="method">GET</span><span><span class="route-path">/api/v1</span><div class="route-desc">A simple API welcome response</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
           <a class="route" href="/api/v1/emojis"><span class="method">GET</span><span><span class="route-path">/api/v1/emojis</span><div class="route-desc">A sample JSON array of emojis</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
+          <a class="route" href="/api/v1/todos"><span class="method">GET</span><span><span class="route-path">/api/v1/todos</span><div class="route-desc">List todos stored in MongoDB</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
+          <a class="route" href="/api/v1/todos"><span class="method">POST</span><span><span class="route-path">/api/v1/todos</span><div class="route-desc">Create a todo with a JSON request</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
+          <a class="route" href="/api-docs"><span class="method">CRUD</span><span><span class="route-path">/api/v1/todos/:id</span><div class="route-desc">Read, replace, partially update, or delete a todo</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
           <a class="route" href="/api-docs"><span class="method">DOCS</span><span><span class="route-path">/api-docs</span><div class="route-desc">Interactive Swagger UI and OpenAPI specification</div></span><span class="route-arrow" aria-hidden="true">↗</span></a>
         </div>
       </section>

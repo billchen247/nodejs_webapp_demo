@@ -50,6 +50,160 @@ const openApiDocument = {
         },
       },
     },
+    "/api/v1/todos": {
+      get: {
+        summary: "List todos",
+        responses: {
+          "200": {
+            description: "Todos, newest first",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Todo" },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: "Create a todo",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TodoInput" },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Todo created",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Todo" },
+              },
+            },
+          },
+          "400": { description: "Invalid todo" },
+        },
+      },
+    },
+    "/api/v1/todos/{id}": {
+      parameters: [{
+        name: "id",
+        in: "path",
+        required: true,
+        schema: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
+      }],
+      get: {
+        summary: "Get a todo",
+        responses: {
+          "200": {
+            description: "Todo found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Todo" },
+              },
+            },
+          },
+          "400": { description: "Invalid todo id" },
+          "404": { description: "Todo not found" },
+        },
+      },
+      put: {
+        summary: "Replace a todo",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TodoInput" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Todo replaced",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Todo" },
+              },
+            },
+          },
+          "400": { description: "Invalid id or todo" },
+          "404": { description: "Todo not found" },
+        },
+      },
+      patch: {
+        summary: "Update fields on a todo",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TodoPatch" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Todo updated",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Todo" },
+              },
+            },
+          },
+          "400": { description: "Invalid id or todo" },
+          "404": { description: "Todo not found" },
+        },
+      },
+      delete: {
+        summary: "Delete a todo",
+        responses: {
+          "204": { description: "Todo deleted" },
+          "400": { description: "Invalid todo id" },
+          "404": { description: "Todo not found" },
+        },
+      },
+    },
+  },
+  components: {
+    schemas: {
+      TodoInput: {
+        type: "object",
+        properties: {
+          title: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000, default: "" },
+          completed: { type: "boolean", default: false },
+        },
+        required: ["title"],
+        additionalProperties: false,
+      },
+      TodoPatch: {
+        type: "object",
+        minProperties: 1,
+        properties: {
+          title: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000 },
+          completed: { type: "boolean" },
+        },
+        additionalProperties: false,
+      },
+      Todo: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          title: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000 },
+          completed: { type: "boolean" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+        required: ["_id", "title", "description", "completed", "createdAt", "updatedAt"],
+        additionalProperties: false,
+      },
+    },
   },
 };
 

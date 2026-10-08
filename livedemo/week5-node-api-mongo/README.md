@@ -42,6 +42,38 @@ Set `MONGODB_URI` in `.env` to your MongoDB connection string. The default is
 `mongodb://127.0.0.1:27017/week5-node-api-mongo`; start a local MongoDB server
 before running the API. The HTTP server starts only after MongoDB connects.
 
+## Todo REST API
+
+Todos are stored in MongoDB and are available under `/api/v1/todos`:
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/todos` | List todos, newest first |
+| `POST` | `/api/v1/todos` | Create a todo |
+| `GET` | `/api/v1/todos/:id` | Get a todo |
+| `PUT` | `/api/v1/todos/:id` | Replace a todo |
+| `PATCH` | `/api/v1/todos/:id` | Update todo fields |
+| `DELETE` | `/api/v1/todos/:id` | Delete a todo |
+
+Send JSON todo data with a required `title` and optional `description` and
+`completed` fields. For example:
+
+```json
+{
+  "title": "Learn Express",
+  "description": "Build the todo API",
+  "completed": false
+}
+```
+
+Todo IDs are MongoDB ObjectIds. Invalid request data or IDs return `400`,
+missing todos return `404`, and a successful delete returns `204`. Browse the
+full request and response schemas in Swagger UI at `/api-docs`.
+
+The API follows a simple MVC structure: `src/routes/` registers endpoints,
+`src/controllers/` handles request validation and actions, and `src/models/`
+defines MongoDB persistence.
+
 ## Lint
 
 ```

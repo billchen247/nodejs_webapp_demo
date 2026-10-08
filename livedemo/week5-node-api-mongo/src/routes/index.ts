@@ -3,15 +3,17 @@ import express from "express";
 import type MessageResponse from "../interfaces/message-response.js";
 
 import emojis from "./emojis.js";
+import todos from "./todos.js";
 
 const router = express.Router();
 
-router.get<object, MessageResponse>("/", (req, res) => {
+router.get<object, MessageResponse>("/", (_req, res) => {
   res.json({
-    message: "API - 👋🌎🌍🌏",
+    message: "hello world API in sec403 live demo - 👋🌎🌍🌏",
   });
 });
 
 router.use("/emojis", emojis);
+router.use("/todos", todos);
 
 export default router;
