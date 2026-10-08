@@ -25,8 +25,9 @@ describe("GET /", () => {
           "Express routes",
           "MongoDB connection",
           "/api/v1/emojis",
+          "/api/v1/projects",
           "/api-docs",
-          "not yet stored in the database",
+          "Todo and project records are stored in MongoDB",
         ]) {
           if (!res.text.includes(content)) {
             throw new Error(`Homepage is missing expected learning content: ${content}`);
@@ -62,6 +63,17 @@ describe("Swagger UI", () => {
         expect(Object.keys(document.paths)).toEqual([
           "/api/v1",
           "/api/v1/emojis",
+          "/api/v1/projects",
+          "/api/v1/projects/{id}",
+          "/api/v1/todos",
+          "/api/v1/todos/{id}",
         ]);
+        const projectCollection = document.paths["/api/v1/projects"] as Record<string, unknown>;
+        const projectById = document.paths["/api/v1/projects/{id}"] as Record<string, unknown>;
+        expect(projectCollection).toHaveProperty("get");
+        expect(projectCollection).toHaveProperty("post");
+        expect(projectById).toHaveProperty("delete");
+        expect(projectById).toHaveProperty("patch");
+        expect(projectById).toHaveProperty("put");
       }));
 });

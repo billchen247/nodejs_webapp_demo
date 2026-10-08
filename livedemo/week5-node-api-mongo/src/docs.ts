@@ -1,5 +1,5 @@
-import { randomBytes } from "node:crypto";
 import express from "express";
+import { randomBytes } from "node:crypto";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ const openApiDocument = {
       get: {
         summary: "Get the API welcome message",
         responses: {
-          "200": {
+          200: {
             description: "API welcome message",
             content: {
               "application/json": {
@@ -36,7 +36,7 @@ const openApiDocument = {
       get: {
         summary: "List example emojis",
         responses: {
-          "200": {
+          200: {
             description: "An array of emojis",
             content: {
               "application/json": {
@@ -50,11 +50,128 @@ const openApiDocument = {
         },
       },
     },
+    "/api/v1/projects": {
+      get: {
+        summary: "List projects",
+        responses: {
+          200: {
+            description: "Projects, newest first",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Project" },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: "Create a project",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ProjectInput" },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Project created",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Project" },
+              },
+            },
+          },
+          400: { description: "Invalid project" },
+        },
+      },
+    },
+    "/api/v1/projects/{id}": {
+      parameters: [{
+        name: "id",
+        in: "path",
+        required: true,
+        schema: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
+      }],
+      get: {
+        summary: "Get a project",
+        responses: {
+          200: {
+            description: "Project found",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Project" },
+              },
+            },
+          },
+          400: { description: "Invalid project id" },
+          404: { description: "Project not found" },
+        },
+      },
+      put: {
+        summary: "Replace a project",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ProjectInput" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Project replaced",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Project" },
+              },
+            },
+          },
+          400: { description: "Invalid id or project" },
+          404: { description: "Project not found" },
+        },
+      },
+      patch: {
+        summary: "Update fields on a project",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ProjectPatch" },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Project updated",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Project" },
+              },
+            },
+          },
+          400: { description: "Invalid id or project" },
+          404: { description: "Project not found" },
+        },
+      },
+      delete: {
+        summary: "Delete a project",
+        responses: {
+          204: { description: "Project deleted" },
+          400: { description: "Invalid project id" },
+          404: { description: "Project not found" },
+        },
+      },
+    },
     "/api/v1/todos": {
       get: {
         summary: "List todos",
         responses: {
-          "200": {
+          200: {
             description: "Todos, newest first",
             content: {
               "application/json": {
@@ -78,7 +195,7 @@ const openApiDocument = {
           },
         },
         responses: {
-          "201": {
+          201: {
             description: "Todo created",
             content: {
               "application/json": {
@@ -86,7 +203,7 @@ const openApiDocument = {
               },
             },
           },
-          "400": { description: "Invalid todo" },
+          400: { description: "Invalid todo" },
         },
       },
     },
@@ -100,7 +217,7 @@ const openApiDocument = {
       get: {
         summary: "Get a todo",
         responses: {
-          "200": {
+          200: {
             description: "Todo found",
             content: {
               "application/json": {
@@ -108,8 +225,8 @@ const openApiDocument = {
               },
             },
           },
-          "400": { description: "Invalid todo id" },
-          "404": { description: "Todo not found" },
+          400: { description: "Invalid todo id" },
+          404: { description: "Todo not found" },
         },
       },
       put: {
@@ -123,7 +240,7 @@ const openApiDocument = {
           },
         },
         responses: {
-          "200": {
+          200: {
             description: "Todo replaced",
             content: {
               "application/json": {
@@ -131,8 +248,8 @@ const openApiDocument = {
               },
             },
           },
-          "400": { description: "Invalid id or todo" },
-          "404": { description: "Todo not found" },
+          400: { description: "Invalid id or todo" },
+          404: { description: "Todo not found" },
         },
       },
       patch: {
@@ -146,7 +263,7 @@ const openApiDocument = {
           },
         },
         responses: {
-          "200": {
+          200: {
             description: "Todo updated",
             content: {
               "application/json": {
@@ -154,22 +271,52 @@ const openApiDocument = {
               },
             },
           },
-          "400": { description: "Invalid id or todo" },
-          "404": { description: "Todo not found" },
+          400: { description: "Invalid id or todo" },
+          404: { description: "Todo not found" },
         },
       },
       delete: {
         summary: "Delete a todo",
         responses: {
-          "204": { description: "Todo deleted" },
-          "400": { description: "Invalid todo id" },
-          "404": { description: "Todo not found" },
+          204: { description: "Todo deleted" },
+          400: { description: "Invalid todo id" },
+          404: { description: "Todo not found" },
         },
       },
     },
   },
   components: {
     schemas: {
+      ProjectInput: {
+        type: "object",
+        properties: {
+          name: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000, default: "" },
+        },
+        required: ["name"],
+        additionalProperties: false,
+      },
+      ProjectPatch: {
+        type: "object",
+        minProperties: 1,
+        properties: {
+          name: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000 },
+        },
+        additionalProperties: false,
+      },
+      Project: {
+        type: "object",
+        properties: {
+          _id: { type: "string" },
+          name: { type: "string", minLength: 1, maxLength: 200 },
+          description: { type: "string", maxLength: 2000 },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+        required: ["_id", "name", "description", "createdAt", "updatedAt"],
+        additionalProperties: false,
+      },
       TodoInput: {
         type: "object",
         properties: {

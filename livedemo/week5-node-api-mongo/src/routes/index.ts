@@ -3,6 +3,7 @@ import express from "express";
 import type MessageResponse from "../interfaces/message-response.js";
 
 import emojis from "./emojis.js";
+import projects from "./projects.js";
 import todos from "./todos.js";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router.get<object, MessageResponse>("/", (_req, res) => {
 });
 
 router.use("/emojis", emojis);
+router.use("/projects", projects);
 router.use("/todos", todos);
 
 export default router;

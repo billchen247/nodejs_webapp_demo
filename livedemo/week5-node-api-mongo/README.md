@@ -151,6 +151,34 @@ The API follows a simple MVC structure: `src/routes/` registers endpoints,
 `src/controllers/` handles request validation and actions, and `src/models/`
 defines MongoDB persistence.
 
+## Project REST API
+
+Projects are stored in MongoDB and available under `/api/v1/projects`:
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/projects` | List projects, newest first |
+| `POST` | `/api/v1/projects` | Create a project |
+| `GET` | `/api/v1/projects/:id` | Get a project |
+| `PUT` | `/api/v1/projects/:id` | Replace a project |
+| `PATCH` | `/api/v1/projects/:id` | Update project fields |
+| `DELETE` | `/api/v1/projects/:id` | Delete a project |
+
+Send a JSON object with a required `name` and optional `description`:
+
+```json
+{
+  "name": "Express Learning API",
+  "description": "Practice REST APIs with MongoDB"
+}
+```
+
+Project IDs are MongoDB ObjectIds. Invalid request data or IDs return `400`,
+missing projects return `404`, and a successful delete returns `204`.
+Project routes, controllers, and Mongoose persistence are separated into
+`src/routes/projects.ts`, `src/controllers/projects.ts`, and
+`src/models/project.ts`.
+
 ## Lint
 
 ```
