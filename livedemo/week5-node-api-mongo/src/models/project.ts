@@ -9,6 +9,7 @@ const projectSchema = new Schema({
     trim: true,
     minlength: 1,
     maxlength: 200,
+    unique: true,
   },
   description: {
     type: String,

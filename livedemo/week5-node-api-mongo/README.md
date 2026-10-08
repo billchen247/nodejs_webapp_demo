@@ -185,6 +185,12 @@ Zod's `.refine()` in `src/schemas/project.ts`. To add a different rule, change
 the refinement callback and its error message; invalid input returns `400`
 with the validation issue.
 
+Project names must also be unique (case-sensitive). The API checks for an
+existing name and returns `409` if one is already in use; a MongoDB unique
+index enforces the same rule if concurrent requests try to save duplicate
+names. If a database already contains duplicate project names, those records
+must be resolved before MongoDB can build the unique index.
+
 Filter the project list by an exact name with the `name` query parameter:
 `GET /api/v1/projects?name=Express%20Learning%20API`. Query names are trimmed
 and must contain between 1 and 200 characters; invalid or unsupported query

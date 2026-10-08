@@ -2,6 +2,7 @@ import request from "supertest";
 import { describe, it } from "vitest";
 
 import app from "../src/app.js";
+import Project from "../src/models/project.js";
 
 describe("GET /api/v1", () => {
   it("responds with a json message", () =>
@@ -24,6 +25,15 @@ describe("GET /api/v1/emojis", () => {
 });
 
 describe("Project API validation", () => {
+  it("has a unique MongoDB index for project names", () => {
+    const hasUniqueNameIndex = Project.schema.indexes().some(([fields, options]) =>
+      fields.name === 1 && options.unique === true);
+
+    if (!hasUniqueNameIndex) {
+      throw new Error("Expected a unique MongoDB index on project name");
+    }
+  });
+
   it("rejects an empty project name query", () =>
     request(app)
       .get("/api/v1/projects?name=%20%20")
