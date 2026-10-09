@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.get<object, MessageResponse>("/", (req, res) => {
   res.json({
-    message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
+    message: "this is sec404 live demo. 🦄🌈✨👋🌎🌍🌏✨🌈🦄",
   });
 });
 

@@ -1,8 +1,11 @@
 import app from "./app.js";
 import { env } from "./env.js";
+import { connectDatabase } from "./db.js";
 
 const port = env.PORT;
-const server = app.listen(port, () => {
+const server = app.listen(port, async () => {
+  await connectDatabase();
+
   /* eslint-disable no-console */
   console.log(`Listening: http://localhost:${port}`);
   /* eslint-enable no-console */
