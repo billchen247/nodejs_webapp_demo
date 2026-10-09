@@ -1,11 +1,9 @@
 import express from "express";
 
+import { emojisController } from "../controllers/emojis.controller.js";
+
 const router = express.Router();
 
-type EmojiResponse = string[];
-
-router.get<object, EmojiResponse>("/", (req, res) => {
-  res.json(["😀", "😳", "🙄", "🙄"]);
-});
+router.get("/", emojisController.index);
 
 export default router;

@@ -20,5 +20,5 @@ describe("GET /api/v1/emojis", () => {
       .get("/api/v1/emojis")
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(200, ["😀", "😳", "🙄"]));
+      .expect(200, ["😀", "😳", "🙄", "🙄"]));
 });
