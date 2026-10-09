@@ -6,6 +6,7 @@ export const homeController = {
   index: (_req: Request, res: Response<MessageResponse>) => {
     res.json({
       message: "this is sec404 live demo. 🦄🌈✨👋🌎🌍🌏✨🌈🦄",
+      documentation: "/api-docs",
     });
   },
 };

@@ -55,3 +55,10 @@ pnpm run test
 ```
 pnpm run dev
 ```
+
+## API documentation
+
+With the server running, open [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+to browse and try the API in Swagger UI. The UI loads its assets from `unpkg.com`, so
+the browser needs internet access. The OpenAPI specification is available at
+`/api-docs/openapi.json`.
