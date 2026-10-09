@@ -9,8 +9,7 @@
  *   - Consistency: one place decides what "invalid input" looks like.
  *   - Composability: `validate({ body: X, params: Y })` chains onto any route
  *     with `router.post("/", validate({ body: X }), handler)`.
- *   - Auto-400: parse errors throw ZodError, which the errorHandler in
- *     middleware/errors.ts already turns into a clean 400 response.
+ *   - Parse errors throw ZodError, which the shared error handler maps to 400.
  * @author Bill Chen
  * -------------------------------------------------------------------------*/
 
