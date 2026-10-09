@@ -23,7 +23,7 @@
     "helmet": "^8.1.0",
     "mongoose": "^9.11.1",
     "morgan": "^1.10.1",
-    "zod": "^4.1.12"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
