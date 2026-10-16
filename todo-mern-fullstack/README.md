@@ -79,7 +79,7 @@ todo-mern-fullstack/
 
 ## Prerequisites
 
-1. **Node.js ≥ 22** — `node --version`
+1. **Node.js ≥ 22.6** — `node --version` (required by the frontend's built-in TypeScript test runner)
 2. **MongoDB running locally** on `mongodb://localhost:27017`
    - Easiest option: `brew install mongodb-community && brew services start mongodb-community`
    - Or Docker: `docker run -d -p 27017:27017 --name mongo mongo:7`
@@ -125,6 +125,25 @@ npm run dev                # opens http://localhost:5173
 Vite is configured to **proxy** `/api` requests to the backend, so the browser
 code can just call `fetch("/api/todos")` and it will reach the Express server
 transparently.
+
+---
+
+## Unit tests and coverage
+
+Tests run locally and do not require a MongoDB server:
+
+```bash
+cd backend
+npm test
+npm run test:coverage
+
+cd ../frontend
+npm test
+npm run test:coverage
+```
+
+The coverage scripts use Node's built-in test coverage report; no additional
+test-runner dependencies are needed.
 
 ---
 
