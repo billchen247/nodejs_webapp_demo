@@ -21,8 +21,10 @@ import {
     updateTodo,
     deleteTodo,
 } from "../controllers/todos.js";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 export const todosRouter = Router();
+todosRouter.use(requireAuth);
 
 // Collection endpoints
 todosRouter.get("/", listTodos);

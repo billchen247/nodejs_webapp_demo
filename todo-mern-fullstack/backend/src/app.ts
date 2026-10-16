@@ -30,6 +30,8 @@ import { todosRouter } from "./routes/todos.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { openApiSpec } from "./openapi.js";
+import { authRouter } from "./routes/auth.js";
+import { profileRouter } from "./routes/profile.js";
 
 export function createApp(): Express {
     const app = express();
@@ -49,7 +51,7 @@ export function createApp(): Express {
     app.use(
         cors({
             origin: config.clientOrigin,
-            credentials: false, // we don't use cookies in this learning app
+            credentials: true,
         }),
     );
 
@@ -102,6 +104,8 @@ export function createApp(): Express {
      * 5. API routes — mount sub-routers under their URL prefix.
      * ---------------------------------------------------------------- */
     app.use("/api/todos", todosRouter);
+    app.use("/api/auth", authRouter);
+    app.use("/api/profile", profileRouter);
 
     /* ------------------------------------------------------------------
      * 5b. Interactive API docs — Swagger UI at /api-docs, raw spec at

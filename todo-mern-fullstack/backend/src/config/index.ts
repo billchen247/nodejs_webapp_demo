@@ -33,6 +33,14 @@ function required(name: string, fallback?: string): string {
     return value;
 }
 
+function jwtSecret(): string {
+    const value = required("JWT_SECRET");
+    if (Buffer.byteLength(value, "utf8") < 32) {
+        throw new Error("JWT_SECRET must be at least 32 bytes long.");
+    }
+    return value;
+}
+
 export const config = Object.freeze({
     port: Number(process.env.PORT ?? 4000),
 
@@ -46,7 +54,9 @@ export const config = Object.freeze({
 
     // CORS allow-list — the React dev server's URL. In production you would
     // set this to the deployed frontend domain.
-    clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5273",
+    clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+
+    jwtSecret: jwtSecret(),
 });
 
 export type AppConfig = typeof config;

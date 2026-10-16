@@ -26,10 +26,47 @@ export const openApiSpec = {
     ],
     tags: [
         { name: "Health", description: "Liveness probe" },
+        { name: "Authentication", description: "Account registration and sessions" },
+        { name: "Profile", description: "Current authenticated user" },
         { name: "Todos", description: "CRUD operations on todo items" },
     ],
     components: {
+        securitySchemes: {
+            cookieAuth: {
+                type: "apiKey",
+                in: "cookie",
+                name: "token",
+                description: "Short-lived HttpOnly JWT cookie.",
+            },
+        },
         schemas: {
+            User: {
+                type: "object",
+                required: ["id", "name", "email", "role"],
+                properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    email: { type: "string", format: "email" },
+                    role: { type: "string", example: "student" },
+                },
+            },
+            RegisterInput: {
+                type: "object",
+                required: ["name", "email", "password"],
+                properties: {
+                    name: { type: "string", minLength: 1, maxLength: 100 },
+                    email: { type: "string", format: "email", maxLength: 254 },
+                    password: { type: "string", minLength: 8, maxLength: 128 },
+                },
+            },
+            LoginInput: {
+                type: "object",
+                required: ["email", "password"],
+                properties: {
+                    email: { type: "string", format: "email", maxLength: 254 },
+                    password: { type: "string", minLength: 1, maxLength: 128 },
+                },
+            },
             Todo: {
                 type: "object",
                 required: ["id", "title", "completed", "createdAt", "updatedAt"],
@@ -123,10 +160,99 @@ export const openApiSpec = {
                 },
             },
         },
+        "/api/auth/register": {
+            post: {
+                tags: ["Authentication"],
+                summary: "Register a student account and sign in",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/RegisterInput" },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "Account created; JWT set in an HttpOnly cookie.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: { user: { $ref: "#/components/schemas/User" } },
+                                },
+                            },
+                        },
+                    },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "409": { description: "Email address is already registered." },
+                },
+            },
+        },
+        "/api/auth/login": {
+            post: {
+                tags: ["Authentication"],
+                summary: "Verify credentials and sign in",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/LoginInput" },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Signed in; JWT set in an HttpOnly cookie.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: { user: { $ref: "#/components/schemas/User" } },
+                                },
+                            },
+                        },
+                    },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "401": { description: "Invalid email or password." },
+                },
+            },
+        },
+        "/api/auth/logout": {
+            post: {
+                tags: ["Authentication"],
+                summary: "Clear the authentication cookie",
+                responses: {
+                    "200": { description: "Signed out." },
+                },
+            },
+        },
+        "/api/profile": {
+            get: {
+                tags: ["Profile"],
+                summary: "Get the current authenticated user's profile",
+                security: [{ cookieAuth: [] }],
+                responses: {
+                    "200": {
+                        description: "Current user.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: { user: { $ref: "#/components/schemas/User" } },
+                                },
+                            },
+                        },
+                    },
+                    "401": { description: "Authentication required." },
+                },
+            },
+        },
         "/api/todos": {
             get: {
                 tags: ["Todos"],
                 summary: "List all todos (newest first)",
+                security: [{ cookieAuth: [] }],
                 responses: {
                     "200": {
                         description: "Array of todos.",
@@ -144,6 +270,7 @@ export const openApiSpec = {
             post: {
                 tags: ["Todos"],
                 summary: "Create a new todo",
+                security: [{ cookieAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -169,6 +296,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Todos"],
                 summary: "Fetch one todo by id",
+                security: [{ cookieAuth: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 responses: {
                     "200": {
@@ -186,6 +314,7 @@ export const openApiSpec = {
             patch: {
                 tags: ["Todos"],
                 summary: "Partially update a todo",
+                security: [{ cookieAuth: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 requestBody: {
                     required: true,
@@ -211,6 +340,7 @@ export const openApiSpec = {
             delete: {
                 tags: ["Todos"],
                 summary: "Delete a todo",
+                security: [{ cookieAuth: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 responses: {
                     "204": { description: "Deleted." },
