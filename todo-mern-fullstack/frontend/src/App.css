@@ -88,6 +88,73 @@ body {
     cursor: not-allowed;
 }
 
+.auth-panel {
+    max-width: 28rem;
+    margin: 2rem auto;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: var(--muted);
+}
+
+.auth-form input {
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    color: var(--text);
+}
+
+.auth-form button,
+.profile-bar button {
+    padding: 0.6rem 1rem;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.auth-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.auth-switch {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.auth-switch__button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.profile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
 /* ---------- List ---------- */
 .todo-list {
     list-style: none;

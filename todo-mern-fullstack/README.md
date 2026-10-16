@@ -95,15 +95,21 @@ Open **two terminal tabs** (one for backend, one for frontend).
 ```bash
 cd backend
 cp .env.example .env       # one-time; edit values if you need to
+# Generate a private secret with `openssl rand -base64 32` and set JWT_SECRET in .env.
 npm install
 npm run dev                # starts the API on http://localhost:4000
 ```
 
-Quick smoke test:
+Register through the React app or create an account with the API. The JWT is
+returned only as an HttpOnly cookie; use a cookie jar for command-line calls:
 
 ```bash
-curl http://localhost:4000/api/todos          # [] on a fresh DB
-curl -X POST http://localhost:4000/api/todos \
+curl -i -c cookies.txt -X POST http://localhost:4000/api/auth/register \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Student","email":"student@example.com","password":"example-password"}'
+curl -b cookies.txt http://localhost:4000/api/profile
+curl -b cookies.txt http://localhost:4000/api/todos
+curl -b cookies.txt -X POST http://localhost:4000/api/todos \
      -H "Content-Type: application/json" \
      -d '{"title":"Learn MERN"}'
 ```
@@ -124,13 +130,21 @@ transparently.
 
 ## REST API
 
-| Verb   | Path               | Body                                | Response       |
-|--------|--------------------|-------------------------------------|----------------|
-| GET    | `/api/todos`       | —                                   | `Todo[]`       |
-| GET    | `/api/todos/:id`   | —                                   | `Todo`         |
-| POST   | `/api/todos`       | `{ title, completed? }`             | `Todo` (201)   |
-| PATCH  | `/api/todos/:id`   | `{ title?, completed? }`            | `Todo`         |
-| DELETE | `/api/todos/:id`   | —                                   | `204 No Content` |
+| Verb | Path | Body | Response |
+|------|------|------|----------|
+| POST | `/api/auth/register` | `{ name, email, password }` | Safe user profile (201); sets HttpOnly JWT cookie |
+| POST | `/api/auth/login` | `{ email, password }` | Safe user profile; sets HttpOnly JWT cookie |
+| POST | `/api/auth/logout` | — | Clears the authentication cookie |
+| GET | `/api/profile` | — | Current user's safe profile (authenticated) |
+| GET | `/api/todos` | — | `Todo[]` (authenticated) |
+| GET | `/api/todos/:id` | — | `Todo` (authenticated) |
+| POST | `/api/todos` | `{ title, completed? }` | `Todo` (201; authenticated) |
+| PATCH | `/api/todos/:id` | `{ title?, completed? }` | `Todo` (authenticated) |
+| DELETE | `/api/todos/:id` | — | `204 No Content` (authenticated) |
+
+Passwords are stored as salted scrypt hashes and are never included in API
+responses. JWTs expire after 15 minutes; unauthenticated or expired requests
+to profile and todo endpoints receive `401`.
 
 `Todo` shape:
 

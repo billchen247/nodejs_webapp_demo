@@ -18,7 +18,7 @@
 
 import type { Todo, CreateTodoInput, UpdateTodoInput } from "../types/todo";
 
-const BASE_URL = "http://localhost:3000/api/todos";
+const BASE_URL = "/api/todos";
 
 /**
  * Thin wrapper that turns any non-2xx response into a thrown Error.
@@ -30,6 +30,7 @@ async function request<T>(
 ): Promise<T> {
     const res = await fetch(url, {
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         ...init,
     });
 
