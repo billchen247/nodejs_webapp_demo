@@ -72,11 +72,11 @@ export async function login(req, res, next) {
     );
 
     // Use a generic error so attackers can't tell valid emails from invalid ones.
-    const invalid = () => res.status(401).json({ error: "Invalid email or password" });
-    if (!user) return invalid();
+    const invalid = (errMsg) => res.status(401).json({ error: errMsg || "Invalid email or password" });
+    if (!user) return invalid("Email not found");
 
     const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) return invalid();
+    if (!ok) return invalid("Incorrect password");
 
     const token = signAuthToken(user._id);
     res.cookie(AUTH_COOKIE_NAME, token, authCookieOptions());
