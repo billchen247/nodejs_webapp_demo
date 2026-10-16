@@ -46,7 +46,7 @@ export const config = Object.freeze({
 
     // CORS allow-list — the React dev server's URL. In production you would
     // set this to the deployed frontend domain.
-    clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+    clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5273",
 });
 
 export type AppConfig = typeof config;

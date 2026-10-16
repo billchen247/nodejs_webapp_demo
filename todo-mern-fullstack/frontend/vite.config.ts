@@ -23,15 +23,6 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
     plugins: [react()],
     server: {
-        port: 5173,
-        proxy: {
-            // Any request that STARTS with /api gets forwarded to the backend.
-            // The browser URL stays "/api/todos" — only the hop from Vite to
-            // Express changes.
-            "/api": {
-                target: "http://localhost:4000",
-                changeOrigin: true,
-            },
-        },
+        port: 5173
     },
 });

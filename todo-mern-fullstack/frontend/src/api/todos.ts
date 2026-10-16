@@ -18,7 +18,7 @@
 
 import type { Todo, CreateTodoInput, UpdateTodoInput } from "../types/todo";
 
-const BASE_URL = "/api/todos";
+const BASE_URL = "http://localhost:3000/api/todos";
 
 /**
  * Thin wrapper that turns any non-2xx response into a thrown Error.
