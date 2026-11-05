@@ -50,9 +50,9 @@ todo-mern-fullstack/
 │       ├── app.ts            ← Express app assembly
 │       ├── db.ts             ← Mongo connect / disconnect
 │       ├── config/index.ts   ← env → typed config
-│       ├── models/Todo.ts    ← Mongoose schema + model
-│       ├── routes/todos.ts   ← REST routes
-│       ├── controllers/todos.ts ← request handlers
+│       ├── models/           ← Mongoose schemas + models (Todo, Project)
+│       ├── routes/           ← REST routes (todos, projects)
+│       ├── controllers/      ← request handlers
 │       └── middleware/
 │           ├── errorHandler.ts
 │           └── notFound.ts
@@ -66,13 +66,12 @@ todo-mern-fullstack/
         ├── main.tsx          ← React entry point
         ├── App.tsx           ← root component
         ├── App.css
-        ├── types/todo.ts     ← shared Todo type
-        ├── api/todos.ts      ← fetch wrapper for the REST API
-        ├── hooks/useTodos.ts ← custom hook holding todo state
+        ├── types/            ← shared Todo and Project types
+        ├── api/              ← fetch wrappers for the REST API
+        ├── hooks/            ← custom hooks holding resource state
         └── components/
-            ├── TodoForm.tsx
-            ├── TodoList.tsx
-            └── TodoItem.tsx
+            ├── Todo*.tsx
+            └── Project*.tsx
 ```
 
 ---
@@ -112,6 +111,9 @@ curl -b cookies.txt http://localhost:4000/api/todos
 curl -b cookies.txt -X POST http://localhost:4000/api/todos \
      -H "Content-Type: application/json" \
      -d '{"title":"Learn MERN"}'
+curl -b cookies.txt -X POST http://localhost:4000/api/projects \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Portfolio","description":"Personal website"}'
 ```
 
 ### Terminal 2 — frontend
@@ -125,6 +127,11 @@ npm run dev                # opens http://localhost:5173
 Vite is configured to **proxy** `/api` requests to the backend, so the browser
 code can just call `fetch("/api/todos")` and it will reach the Express server
 transparently.
+
+After signing in, use the navigation bar to switch between the Dashboard, My
+projects, and My todos. The Dashboard shows both CRUD lists and the
+localStorage/sessionStorage demos; each resource page focuses on its own CRUD
+list.
 
 ---
 
@@ -160,6 +167,11 @@ test-runner dependencies are needed.
 | POST | `/api/todos` | `{ title, completed? }` | `Todo` (201; authenticated) |
 | PATCH | `/api/todos/:id` | `{ title?, completed? }` | `Todo` (authenticated) |
 | DELETE | `/api/todos/:id` | — | `204 No Content` (authenticated) |
+| GET | `/api/projects` | — | `Project[]` (authenticated) |
+| GET | `/api/projects/:id` | — | `Project` (authenticated) |
+| POST | `/api/projects` | `{ name, description? }` | `Project` (201; authenticated) |
+| PATCH | `/api/projects/:id` | `{ name?, description? }` | `Project` (authenticated) |
+| DELETE | `/api/projects/:id` | — | `204 No Content` (authenticated) |
 
 Passwords are stored as salted scrypt hashes and are never included in API
 responses. JWTs expire after 15 minutes; unauthenticated or expired requests
@@ -177,17 +189,31 @@ to profile and todo endpoints receive `401`.
 }
 ```
 
+`Project` shape:
+
+```ts
+{
+    id: string;           // Mongo _id as a string
+    name: string;
+    description: string;
+    createdAt: string;    // ISO date
+    updatedAt: string;
+}
+```
+
+Project endpoints require the same authenticated session cookie as todo endpoints.
+
 ---
 
 ## What to read first
 
 1. `backend/src/server.ts` — how a Node process actually starts an HTTP server
 2. `backend/src/app.ts` — how Express middleware & routes are composed
-3. `backend/src/models/Todo.ts` — Mongoose schema
-4. `backend/src/controllers/todos.ts` — the CRUD handlers
+3. `backend/src/models/` — Mongoose schemas
+4. `backend/src/controllers/` — CRUD handlers
 5. `frontend/src/App.tsx` — the top-level React component
-6. `frontend/src/hooks/useTodos.ts` — React state management for the list
-7. `frontend/src/api/todos.ts` — how the browser talks to the API
+6. `frontend/src/hooks/` — React state management for each resource
+7. `frontend/src/api/` — how the browser talks to the API
 
 Every file has an `@author Bill Chen` header and verbose teaching comments.
 Treat them as the textbook.
