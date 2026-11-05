@@ -167,6 +167,126 @@ body {
     cursor: not-allowed;
 }
 
+.projects {
+    margin-bottom: 1rem;
+}
+
+.dashboard-section + .dashboard-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.dashboard-section > h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+}
+
+.project-form,
+.project-item__edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.project-form {
+    margin-bottom: 1.5rem;
+}
+
+.project-form label,
+.project-item__edit label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.project-form input,
+.project-form textarea,
+.project-item__edit input,
+.project-item__edit textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    color: var(--text);
+}
+
+.project-form button,
+.project-item__actions button {
+    align-self: flex-start;
+    padding: 0.55rem 0.9rem;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.project-form button:disabled,
+.project-item__actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.project-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem;
+    background: var(--bg);
+    border-radius: 8px;
+}
+
+.project-item__content {
+    min-width: 0;
+}
+
+.project-item__content h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.project-item__content p {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    white-space: pre-wrap;
+}
+
+.project-item__actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.5rem;
+}
+
+.project-item__actions .project-item__delete {
+    background: var(--danger);
+}
+
+.project-item__edit {
+    width: 100%;
+}
+
+.project-form :focus-visible,
+.project-item :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
 .auth-panel {
     max-width: 28rem;
     margin: 2rem auto;
@@ -413,6 +533,10 @@ body {
     .app__footer {
         flex-direction: column;
         gap: 0.4rem;
+    }
+
+    .project-item {
+        flex-direction: column;
     }
 
     .local-storage-demo__header {

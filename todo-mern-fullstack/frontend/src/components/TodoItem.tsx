@@ -47,6 +47,12 @@ export function TodoItem({ todo, onToggle, onRename, onRemove }: Props) {
         }
     }
 
+    function handleRemove(): void {
+        if (window.confirm(`Delete "${todo.title}"? This action cannot be undone.`)) {
+            onRemove(todo);
+        }
+    }
+
     return (
         <li className={`todo-item ${todo.completed ? "is-done" : ""}`}>
             <input
@@ -79,7 +85,7 @@ export function TodoItem({ todo, onToggle, onRename, onRemove }: Props) {
             <button
                 className="todo-item__delete"
                 type="button"
-                onClick={() => onRemove(todo)}
+                onClick={handleRemove}
                 aria-label={`Delete "${todo.title}"`}
             >
                 ×
