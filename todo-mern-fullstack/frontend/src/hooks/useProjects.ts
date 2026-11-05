@@ -6,7 +6,7 @@ export interface UseProjectsResult {
     projects: Project[];
     loading: boolean;
     error: string | null;
-    createProject: (name: string, description: string) => Promise<boolean>;
+    addProject: (project: Project) => void;
     updateProject: (project: Project, patch: UpdateProjectInput) => Promise<boolean>;
     removeProject: (project: Project) => Promise<boolean>;
 }
@@ -32,20 +32,10 @@ export function useProjects(): UseProjectsResult {
         void refresh();
     }, [refresh]);
 
-    const createProject = useCallback(
-        async (name: string, description: string): Promise<boolean> => {
-            try {
-                const created = await projectsApi.create({ name, description });
-                setProjects((current) => [created, ...current]);
-                setError(null);
-                return true;
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Unable to create project.");
-                return false;
-            }
-        },
-        [],
-    );
+    const addProject = useCallback((project: Project): void => {
+        setProjects((current) => [project, ...current]);
+        setError(null);
+    }, []);
 
     const updateProject = useCallback(
         async (project: Project, patch: UpdateProjectInput): Promise<boolean> => {
@@ -76,5 +66,5 @@ export function useProjects(): UseProjectsResult {
         }
     }, []);
 
-    return { projects, loading, error, createProject, updateProject, removeProject };
+    return { projects, loading, error, addProject, updateProject, removeProject };
 }

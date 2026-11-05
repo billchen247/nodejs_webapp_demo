@@ -1,13 +1,16 @@
 import { useState, type FormEvent } from "react";
+import { projectsApi } from "../api/projects";
+import type { Project } from "../types/project";
 
 interface Props {
-    onCreate: (name: string, description: string) => Promise<boolean>;
+    onCreated: (project: Project) => void;
 }
 
-export function ProjectForm({ onCreate }: Props) {
+export function ProjectForm({ onCreated }: Props) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
@@ -15,11 +18,17 @@ export function ProjectForm({ onCreate }: Props) {
         if (!trimmedName) return;
 
         setSubmitting(true);
+        setError(null);
         try {
-            if (await onCreate(trimmedName, description.trim())) {
-                setName("");
-                setDescription("");
-            }
+            const created = await projectsApi.create({
+                name: trimmedName,
+                description: description.trim(),
+            });
+            onCreated(created);
+            setName("");
+            setDescription("");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Unable to create project.");
         } finally {
             setSubmitting(false);
         }
@@ -50,6 +59,7 @@ export function ProjectForm({ onCreate }: Props) {
             <button type="submit" disabled={submitting || !name.trim()}>
                 {submitting ? "Adding…" : "Add project"}
             </button>
+            {error && <div role="alert" className="app__error">{error}</div>}
         </form>
     );
 }

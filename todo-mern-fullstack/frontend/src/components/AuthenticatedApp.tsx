@@ -38,7 +38,7 @@ export function AuthenticatedApp({ user, onLogout }: Props) {
         projects,
         loading: projectsLoading,
         error: projectsError,
-        createProject,
+        addProject,
         updateProject,
         removeProject,
     } = useProjects();
@@ -107,7 +107,7 @@ export function AuthenticatedApp({ user, onLogout }: Props) {
                 {showProjects && (
                     <section className={isDashboard ? "dashboard-section" : undefined} aria-label="Projects">
                         {isDashboard && <h2>Projects</h2>}
-                        <ProjectForm onCreate={createProject} />
+                        <ProjectForm onCreated={addProject} />
 
                         {projectsError && (
                             <div role="alert" className="app__error">{projectsError}</div>
