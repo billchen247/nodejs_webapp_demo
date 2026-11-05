@@ -20,6 +20,8 @@ export function LoginForm({ onAuthenticated }: Props) {
         try {
             const { user } = await authApi.login({ email, password });
             onAuthenticated(user);
+            console.log(user);
+            console.log(`Welcome back, ${user.name}!`);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Authentication failed.");
         } finally {

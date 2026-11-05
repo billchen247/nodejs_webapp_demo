@@ -42,12 +42,13 @@ export const openApiSpec = {
         schemas: {
             User: {
                 type: "object",
-                required: ["id", "name", "email", "role"],
+                required: ["id", "name", "email", "role", "createdAt"],
                 properties: {
                     id: { type: "string" },
                     name: { type: "string" },
                     email: { type: "string", format: "email" },
                     role: { type: "string", example: "student" },
+                    createdAt: { type: "string", format: "date-time" },
                 },
             },
             RegisterInput: {
