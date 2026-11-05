@@ -307,6 +307,79 @@ body {
     font-size: 0.85rem;
 }
 
+/* ---------- LocalStorage demo ---------- */
+.local-storage-demo {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.session-storage-demo {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.local-storage-demo__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.local-storage-demo__header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.local-storage-demo__description {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.local-storage-demo__reset {
+    flex-shrink: 0;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+}
+
+.local-storage-demo__reset:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.local-storage-demo :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.storage-comparison {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--muted);
+}
+
+.storage-comparison h2 {
+    margin: 0 0 0.4rem;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.storage-comparison p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
 @media (max-width: 600px) {
     .top-nav__inner {
         align-items: flex-start;
@@ -340,5 +413,9 @@ body {
     .app__footer {
         flex-direction: column;
         gap: 0.4rem;
+    }
+
+    .local-storage-demo__header {
+        flex-direction: column;
     }
 }
