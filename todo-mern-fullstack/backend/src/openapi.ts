@@ -15,10 +15,10 @@
 export const openApiSpec = {
     openapi: "3.0.3",
     info: {
-        title: "Todo MERN Fullstack API",
+        title: "Todo & Projects MERN Fullstack API",
         version: "1.0.0",
         description:
-            "Express 5 + MongoDB (Mongoose) REST API for a learning-oriented MERN todo app.",
+            "Express 5 + MongoDB (Mongoose) REST API for a learning-oriented MERN app with todos and projects.",
         license: { name: "MIT" },
     },
     servers: [
@@ -29,6 +29,7 @@ export const openApiSpec = {
         { name: "Authentication", description: "Account registration and sessions" },
         { name: "Profile", description: "Current authenticated user" },
         { name: "Todos", description: "CRUD operations on todo items" },
+        { name: "Projects", description: "CRUD operations on projects" },
     ],
     components: {
         securitySchemes: {
@@ -99,6 +100,33 @@ export const openApiSpec = {
                     completed: { type: "boolean" },
                 },
             },
+            Project: {
+                type: "object",
+                required: ["id", "name", "description", "createdAt", "updatedAt"],
+                properties: {
+                    id: { type: "string", description: "Mongo ObjectId as a 24-char hex string." },
+                    name: { type: "string", minLength: 1, maxLength: 120 },
+                    description: { type: "string", maxLength: 1000 },
+                    createdAt: { type: "string", format: "date-time" },
+                    updatedAt: { type: "string", format: "date-time" },
+                },
+            },
+            CreateProjectInput: {
+                type: "object",
+                required: ["name"],
+                properties: {
+                    name: { type: "string", minLength: 1, maxLength: 120 },
+                    description: { type: "string", maxLength: 1000 },
+                },
+            },
+            UpdateProjectInput: {
+                type: "object",
+                minProperties: 1,
+                properties: {
+                    name: { type: "string", minLength: 1, maxLength: 120 },
+                    description: { type: "string", maxLength: 1000 },
+                },
+            },
             Error: {
                 type: "object",
                 required: ["error"],
@@ -118,6 +146,13 @@ export const openApiSpec = {
         },
         parameters: {
             TodoId: {
+                name: "id",
+                in: "path",
+                required: true,
+                description: "Mongo ObjectId (24 hex chars).",
+                schema: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
+            },
+            ProjectId: {
                 name: "id",
                 in: "path",
                 required: true,
@@ -346,6 +381,112 @@ export const openApiSpec = {
                 responses: {
                     "204": { description: "Deleted." },
                     "400": { $ref: "#/components/responses/BadRequest" },
+                    "404": { $ref: "#/components/responses/NotFound" },
+                },
+            },
+        },
+        "/api/projects": {
+            get: {
+                tags: ["Projects"],
+                summary: "List all projects (newest first)",
+                security: [{ cookieAuth: [] }],
+                responses: {
+                    "200": {
+                        description: "Array of projects.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "array",
+                                    items: { $ref: "#/components/schemas/Project" },
+                                },
+                            },
+                        },
+                    },
+                    "401": { description: "Authentication required." },
+                },
+            },
+            post: {
+                tags: ["Projects"],
+                summary: "Create a project",
+                security: [{ cookieAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/CreateProjectInput" },
+                        },
+                    },
+                },
+                responses: {
+                    "201": {
+                        description: "Created.",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "401": { description: "Authentication required." },
+                },
+            },
+        },
+        "/api/projects/{id}": {
+            get: {
+                tags: ["Projects"],
+                summary: "Fetch one project by id",
+                security: [{ cookieAuth: [] }],
+                parameters: [{ $ref: "#/components/parameters/ProjectId" }],
+                responses: {
+                    "200": {
+                        description: "The project.",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "401": { description: "Authentication required." },
+                    "404": { $ref: "#/components/responses/NotFound" },
+                },
+            },
+            patch: {
+                tags: ["Projects"],
+                summary: "Partially update a project",
+                security: [{ cookieAuth: [] }],
+                parameters: [{ $ref: "#/components/parameters/ProjectId" }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/UpdateProjectInput" },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Updated project.",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Project" },
+                            },
+                        },
+                    },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "401": { description: "Authentication required." },
+                    "404": { $ref: "#/components/responses/NotFound" },
+                },
+            },
+            delete: {
+                tags: ["Projects"],
+                summary: "Delete a project",
+                security: [{ cookieAuth: [] }],
+                parameters: [{ $ref: "#/components/parameters/ProjectId" }],
+                responses: {
+                    "204": { description: "Deleted." },
+                    "400": { $ref: "#/components/responses/BadRequest" },
+                    "401": { description: "Authentication required." },
                     "404": { $ref: "#/components/responses/NotFound" },
                 },
             },

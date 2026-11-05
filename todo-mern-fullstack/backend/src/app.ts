@@ -32,6 +32,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { openApiSpec } from "./openapi.js";
 import { authRouter } from "./routes/auth.js";
 import { profileRouter } from "./routes/profile.js";
+import { projectsRouter } from "./routes/projects.js";
 
 export function createApp(): Express {
     const app = express();
@@ -72,7 +73,7 @@ export function createApp(): Express {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Todo API</title>
+<title>Todo &amp; Projects API</title>
 <style>
   body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
   code { background: #f4f4f4; padding: 0.1rem 0.3rem; border-radius: 3px; }
@@ -80,12 +81,13 @@ export function createApp(): Express {
 </style>
 </head>
 <body>
-  <h1>Todo API</h1>
+  <h1>Todo &amp; Projects API</h1>
   <p>Backend is running (<code>${config.nodeEnv}</code>).</p>
   <ul>
     <li><a href="/api-docs">/api-docs</a> — interactive Swagger UI</li>
     <li><a href="/api-docs.json">/api-docs.json</a> — raw OpenAPI spec</li>
     <li><a href="/api/todos">/api/todos</a> — list todos</li>
+    <li><a href="/api/projects">/api/projects</a> — list projects</li>
     <li><a href="/health">/health</a> — liveness probe</li>
   </ul>
 </body>
@@ -104,6 +106,7 @@ export function createApp(): Express {
      * 5. API routes — mount sub-routers under their URL prefix.
      * ---------------------------------------------------------------- */
     app.use("/api/todos", todosRouter);
+    app.use("/api/projects", projectsRouter);
     app.use("/api/auth", authRouter);
     app.use("/api/profile", profileRouter);
 
