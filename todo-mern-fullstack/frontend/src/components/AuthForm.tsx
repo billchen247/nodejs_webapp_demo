@@ -1,14 +1,16 @@
-import { useState } from "react";
 import type { User } from "../types/auth";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 
+export type AuthMode = "login" | "register";
+
 interface Props {
+    mode: AuthMode;
+    onModeChange: (mode: AuthMode) => void;
     onAuthenticated: (user: User) => void;
 }
 
-export function AuthForm({ onAuthenticated }: Props) {
-    const [mode, setMode] = useState<"login" | "register">("login");
+export function AuthForm({ mode, onModeChange, onAuthenticated }: Props) {
     const isRegistering = mode === "register";
 
     return (
@@ -22,7 +24,7 @@ export function AuthForm({ onAuthenticated }: Props) {
                 <button
                     type="button"
                     className="auth-switch__button"
-                    onClick={() => setMode(isRegistering ? "login" : "register")}
+                    onClick={() => onModeChange(isRegistering ? "login" : "register")}
                 >
                     {isRegistering ? "Sign in" : "Create an account"}
                 </button>
