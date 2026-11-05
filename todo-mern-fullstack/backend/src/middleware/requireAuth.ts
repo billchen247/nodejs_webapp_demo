@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { signToken, verifyToken } from "../auth/crypto.js";
+import { verifyToken } from "../auth/crypto.js";
 
 declare global {
     namespace Express {

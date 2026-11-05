@@ -4,12 +4,16 @@ import {
     scrypt as scryptCallback,
     timingSafeEqual,
 } from "node:crypto";
-import { promisify } from "node:util";
 import { config } from "../config/index.js";
 
-const scrypt = promisify(scryptCallback);
 const PASSWORD_KEY_LENGTH = 64;
 const JWT_LIFETIME_SECONDS = 15 * 60;
+const SCRYPT_OPTIONS = {
+    N: 16_384,
+    r: 8,
+    p: 1,
+    maxmem: 64 * 1024 * 1024,
+};
 
 interface JwtPayload {
     sub: string;
@@ -20,12 +24,7 @@ interface JwtPayload {
 
 export async function hashPassword(password: string): Promise<string> {
     const salt = randomBytes(16).toString("hex");
-    const key = await scrypt(password, salt, PASSWORD_KEY_LENGTH, {
-        N: 16_384,
-        r: 8,
-        p: 1,
-        maxmem: 64 * 1024 * 1024,
-    }) as Buffer;
+    const key = await deriveKey(password, salt);
     return `scrypt$16384$8$1$${salt}$${key.toString("base64url")}`;
 }
 
@@ -48,12 +47,7 @@ export async function verifyPassword(
     const expected = Buffer.from(encodedKey, "base64url");
     if (expected.length !== PASSWORD_KEY_LENGTH) return false;
 
-    const actual = await scrypt(password, salt, PASSWORD_KEY_LENGTH, {
-        N: 16_384,
-        r: 8,
-        p: 1,
-        maxmem: 64 * 1024 * 1024,
-    }) as Buffer;
+    const actual = await deriveKey(password, salt);
     return timingSafeEqual(actual, expected);
 }
 
@@ -133,4 +127,22 @@ function sign(value: string): string {
 
 function encodeBase64Url(value: string): string {
     return Buffer.from(value, "utf8").toString("base64url");
+}
+
+function deriveKey(password: string, salt: string): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+        scryptCallback(
+            password,
+            salt,
+            PASSWORD_KEY_LENGTH,
+            SCRYPT_OPTIONS,
+            (error, derivedKey) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(derivedKey);
+                }
+            },
+        );
+    });
 }
