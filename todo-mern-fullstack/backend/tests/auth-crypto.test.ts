@@ -21,17 +21,18 @@ test("password verification rejects malformed hashes", async () => {
 });
 
 test("signed tokens verify and expose their claims", () => {
-    const token = signToken("user-123", "user");
+    const token = signToken("user-123", "user@example.com", "user");
     const payload = verifyToken(token);
 
     assert.ok(payload);
     assert.equal(payload.sub, "user-123");
+    assert.equal(payload.email, "user@example.com");
     assert.equal(payload.role, "user");
     assert.ok(payload.exp > payload.iat);
 });
 
 test("token verification rejects malformed and tampered tokens", () => {
-    const token = signToken("user-123", "user");
+    const token = signToken("user-123", "user@example.com", "user");
     const [header, payload, signature] = token.split(".");
     assert.ok(header && payload && signature);
     const tamperedSignature = `${

@@ -2,6 +2,11 @@ import { Schema, model, type InferSchemaType, type HydratedDocument } from "mong
 
 const projectSchema = new Schema(
     {
+        ownerId: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
         name: {
             type: String,
             required: [true, "A project must have a name."],

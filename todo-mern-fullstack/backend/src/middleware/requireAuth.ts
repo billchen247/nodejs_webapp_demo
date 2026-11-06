@@ -6,6 +6,7 @@ declare global {
         interface Request {
             auth?: {
                 userId: string;
+                email: string;
                 role: string;
             };
         }
@@ -19,7 +20,7 @@ export function requireAuth(
 ): void {
     const token = readCookie(req.headers.cookie, "token");
     if (!token) {
-        res.status(401).json({ error: "missing Authentication." });
+        res.status(401).json({ error: "missing Authentication token." });
         return;
     }
     const payload = token ? verifyToken(token) : null;
@@ -28,7 +29,7 @@ export function requireAuth(
         return;
     }
 
-    req.auth = { userId: payload.sub, role: payload.role };
+    req.auth = { userId: payload.sub, email: payload.email, role: payload.role };
     next();
 }
 

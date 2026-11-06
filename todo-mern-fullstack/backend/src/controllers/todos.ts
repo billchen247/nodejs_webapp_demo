@@ -49,15 +49,23 @@ const idParamSchema = z.object({
 });
 
 /* ---------------------------------------------------------------------------
- * GET /api/todos — list all todos, newest first.
+ * GET /api/todos — list the authenticated user's todos, newest first.
  * ------------------------------------------------------------------------- */
 export async function listTodos(
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction,
 ): Promise<void> {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        res.status(401).json({ error: "Authentication required." });
+        return;
+    }
+
     try {
-        const todos = await TodoModel.find().sort({ createdAt: -1 }).exec();
+        const todos = await TodoModel.find({ ownerId: userId })
+            .sort({ createdAt: -1 })
+            .exec();
         res.json(todos);
     } catch (err) {
         next(err);
@@ -95,7 +103,13 @@ export async function createTodo(
 ): Promise<void> {
     try {
         const input = createTodoSchema.parse(req.body);
-        const created = await TodoModel.create(input);
+        const userId = req.auth?.userId;
+        if (!userId) {
+            res.status(401).json({ error: "Authentication required." });
+            return;
+        }
+
+        const created = await TodoModel.create({ ...input, ownerId: userId });
         res.status(201).json(created);
     } catch (err) {
         next(err);

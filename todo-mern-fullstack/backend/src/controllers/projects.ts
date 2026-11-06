@@ -20,12 +20,16 @@ const idParamSchema = z.object({
 });
 
 export async function listProjects(
-    _req: Request,
+    req: Request,
     res: Response,
     next: NextFunction,
 ): Promise<void> {
+    const userId = req.auth?.userId;
+
     try {
-        const projects = await ProjectModel.find().sort({ createdAt: -1 }).exec();
+        const projects = await ProjectModel.find({ ownerId: userId })
+            .sort({ createdAt: -1 })
+            .exec();
         res.json(projects);
     } catch (err) {
         next(err);
@@ -57,7 +61,13 @@ export async function createProject(
 ): Promise<void> {
     try {
         const input = createProjectSchema.parse(req.body);
-        const created = await ProjectModel.create(input);
+        const userId = req.auth?.userId;
+        if (!userId) {
+            res.status(401).json({ error: "Authentication required." });
+            return;
+        }
+
+        const created = await ProjectModel.create({ ...input, ownerId: userId });
         res.status(201).json(created);
     } catch (err) {
         next(err);

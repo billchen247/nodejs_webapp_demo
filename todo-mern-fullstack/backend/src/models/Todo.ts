@@ -27,6 +27,11 @@ import { Schema, model, type InferSchemaType, type HydratedDocument } from "mong
  * ------------------------------------------------------------------------- */
 const todoSchema = new Schema(
     {
+        ownerId: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
         title: {
             type: String,
             required: [true, "A todo must have a title."],

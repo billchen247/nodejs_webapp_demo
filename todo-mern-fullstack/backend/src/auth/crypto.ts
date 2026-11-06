@@ -17,6 +17,7 @@ const SCRYPT_OPTIONS = {
 
 interface JwtPayload {
     sub: string;
+    email: string;
     role: string;
     iat: number;
     exp: number;
@@ -51,11 +52,12 @@ export async function verifyPassword(
     return timingSafeEqual(actual, expected);
 }
 
-export function signToken(userId: string, role: string): string {
+export function signToken(userId: string, email: string, role: string): string {
     const issuedAt = Math.floor(Date.now() / 1000);
     const header = encodeBase64Url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
     const payload = encodeBase64Url(JSON.stringify({
         sub: userId,
+        email,
         role,
         iat: issuedAt,
         exp: issuedAt + JWT_LIFETIME_SECONDS,
@@ -92,6 +94,8 @@ export function verifyToken(token: string): JwtPayload | null {
             payload === null ||
             !("sub" in payload) ||
             typeof payload.sub !== "string" ||
+            !("email" in payload) ||
+            typeof payload.email !== "string" ||
             !("role" in payload) ||
             typeof payload.role !== "string" ||
             !("iat" in payload) ||
@@ -104,6 +108,7 @@ export function verifyToken(token: string): JwtPayload | null {
         }
         return {
             sub: payload.sub,
+            email: payload.email,
             role: payload.role,
             iat: payload.iat,
             exp: payload.exp,

@@ -105,7 +105,7 @@ export function getProfile(
 }
 
 function setAuthCookie(res: Response, user: UserDoc): void {
-    res.cookie("token", signToken(String(user._id), user.role), authCookie);
+    res.cookie("token", signToken(String(user._id), user.email, user.role), authCookie);
 }
 
 function toPublicUser(user: UserDoc) {
