@@ -42,7 +42,13 @@ export function useProjects(): UseProjectsResult {
             try {
                 const updated = await projectsApi.update(project.id, patch);
                 setProjects((current) =>
-                    current.map((item) => item.id === updated.id ? updated : item),
+                    current.map((item) => {
+                        if (item.id === updated.id) {
+                            return updated;
+                        }
+
+                        return item;
+                    }),
                 );
                 setError(null);
                 return true;

@@ -12,7 +12,7 @@ export function GuestApp({ authError, onAuthenticated }: Props) {
     const [authMode, setAuthMode] = useState<AuthMode>("login");
 
     return (
-        <>
+        <div id="guest-app">
             <NavigationBar
                 mode="guest"
                 activeAuthMode={authMode}
@@ -30,6 +30,6 @@ export function GuestApp({ authError, onAuthenticated }: Props) {
                     onAuthenticated={onAuthenticated}
                 />
             </main>
-        </>
+        </div>
     );
 }

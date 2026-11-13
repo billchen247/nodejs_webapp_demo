@@ -77,7 +77,7 @@ export function AuthenticatedApp({ user, onLogout }: Props) {
             : "My todos";
 
     return (
-        <>
+        <div id="authenticated-app">
             <NavigationBar
                 mode="authenticated"
                 user={user}
@@ -164,6 +164,6 @@ export function AuthenticatedApp({ user, onLogout }: Props) {
                     </>
                 )}
             </main>
-        </>
+        </div>
     );
 }
