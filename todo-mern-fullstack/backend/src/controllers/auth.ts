@@ -77,6 +77,7 @@ export function logout(_req: Request, res: Response): void {
         sameSite: authCookie.sameSite,
         path: authCookie.path,
     });
+    res.setHeader("X-Auth-Token", "");
     res.json({ message: "Logged out." });
 }
 

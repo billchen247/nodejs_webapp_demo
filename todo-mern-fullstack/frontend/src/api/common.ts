@@ -35,7 +35,7 @@ export async function request<T>(
     }
 
     const responseToken = response.headers.get("X-Auth-Token");
-    if (responseToken) {
+    if (responseToken !== null) {
         setAuthToken(responseToken);
     }
 

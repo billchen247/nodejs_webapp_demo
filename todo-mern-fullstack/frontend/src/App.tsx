@@ -42,9 +42,9 @@ export default function App() {
         return (
             <GuestApp
                 authError={authError}
-                onAuthenticated={(authenticatedUser) => {
+                onAuthenticated={(loginedUser) => {
                     setAuthError(null);
-                    setUser(authenticatedUser);
+                    setUser(loginedUser);
                 }}
             />
         );

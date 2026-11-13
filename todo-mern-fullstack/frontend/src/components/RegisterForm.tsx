@@ -22,7 +22,7 @@ export function RegisterForm({ onAuthenticated }: Props) {
             const { user } = await authApi.register({ name, email, password });
             onAuthenticated(user);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Authentication failed.");
+            setError(err instanceof Error ? err.message : "registration failed.");
         } finally {
             setSubmitting(false);
         }
