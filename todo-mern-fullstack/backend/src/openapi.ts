@@ -11,6 +11,7 @@
  * @author Bill Chen
  * ===========================================================================
  */
+import { config } from "./config/index.js";
 
 export const openApiSpec = {
     openapi: "3.0.3",
@@ -22,7 +23,7 @@ export const openApiSpec = {
         license: { name: "MIT" },
     },
     servers: [
-        { url: "http://localhost:4000", description: "Local dev server" },
+        { url: `http://localhost:${config.port}`, description: "Local dev server" },
     ],
     tags: [
         { name: "Health", description: "Liveness probe" },
