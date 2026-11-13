@@ -53,6 +53,8 @@ export function createApp(): Express {
         cors({
             origin: config.clientOrigin,
             credentials: true,
+            allowedHeaders: ["Content-Type", "X-Auth-Token"],
+            exposedHeaders: ["X-Auth-Token"],
         }),
     );
 

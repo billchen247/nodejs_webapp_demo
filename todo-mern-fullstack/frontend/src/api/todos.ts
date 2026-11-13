@@ -16,8 +16,8 @@
  * ===========================================================================
  */
 
-import type { Todo, CreateTodoInput, UpdateTodoInput } from "../types/todo";
-import { request } from "./common";
+import type { Todo, CreateTodoInput, UpdateTodoInput } from "../types/todo.ts";
+import { request } from "./common.ts";
 
 const BASE_URL = "/api/todos";
 

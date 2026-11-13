@@ -18,7 +18,9 @@ export function requireAuth(
     res: Response,
     next: NextFunction,
 ): void {
-    const token = readCookie(req.headers.cookie, "token");
+    const token_from_cookie = readCookie(req.headers.cookie, "token");
+    const token_from_custom_field = req.get("X-Auth-Token");
+    const token = token_from_custom_field;
     if (!token) {
         res.status(401).json({ error: "missing Authentication token." });
         return;

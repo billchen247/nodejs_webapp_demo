@@ -2,8 +2,8 @@ import type {
     CreateProjectInput,
     Project,
     UpdateProjectInput,
-} from "../types/project";
-import { request } from "./common";
+} from "../types/project.ts";
+import { request } from "./common.ts";
 
 const BASE_URL = "/api/projects";
 

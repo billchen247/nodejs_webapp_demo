@@ -99,8 +99,12 @@ npm install
 npm run dev                # starts the API on http://localhost:4000
 ```
 
-Register through the React app or create an account with the API. The JWT is
-returned only as an HttpOnly cookie; use a cookie jar for command-line calls:
+Register through the React app or create an account with the API. The JWT
+continues to be stored in an HttpOnly cookie. For learning purposes, successful
+register/login responses also include the same token in the `X-Auth-Token`
+response header; the React API wrapper saves it in localStorage and sends it
+back in that custom request header. Cookie-based authentication remains
+available and is still used by the examples below:
 
 ```bash
 curl -i -c cookies.txt -X POST http://localhost:4000/api/auth/register \
@@ -115,6 +119,18 @@ curl -b cookies.txt -X POST http://localhost:4000/api/projects \
      -H "Content-Type: application/json" \
      -d '{"name":"Portfolio","description":"Personal website"}'
 ```
+
+For the header-based demo, copy the `X-Auth-Token` value from the response
+headers and pass it on authenticated requests:
+
+```bash
+curl -H "X-Auth-Token: <token-from-login-response>" \
+     http://localhost:4000/api/profile
+```
+
+**Security note:** localStorage is accessible to JavaScript and therefore
+exposes the token if the page has an XSS vulnerability. This is a teaching/demo
+path; prefer the HttpOnly cookie in production.
 
 ### Terminal 2 — frontend
 
@@ -158,8 +174,8 @@ test-runner dependencies are needed.
 
 | Verb | Path | Body | Response |
 |------|------|------|----------|
-| POST | `/api/auth/register` | `{ name, email, password }` | Safe user profile (201); sets HttpOnly JWT cookie |
-| POST | `/api/auth/login` | `{ email, password }` | Safe user profile; sets HttpOnly JWT cookie |
+| POST | `/api/auth/register` | `{ name, email, password }` | Safe user profile (201); sets HttpOnly JWT cookie and `X-Auth-Token` response header |
+| POST | `/api/auth/login` | `{ email, password }` | Safe user profile; sets HttpOnly JWT cookie and `X-Auth-Token` response header |
 | POST | `/api/auth/logout` | — | Clears the authentication cookie |
 | GET | `/api/profile` | — | Current user's safe profile (authenticated) |
 | GET | `/api/todos` | — | `Todo[]` (authenticated) |
@@ -175,7 +191,8 @@ test-runner dependencies are needed.
 
 Passwords are stored as salted scrypt hashes and are never included in API
 responses. JWTs expire after 15 minutes; unauthenticated or expired requests
-to profile and todo endpoints receive `401`.
+to profile and todo endpoints receive `401`. Protected routes accept either
+the `token` cookie or an `X-Auth-Token` request header.
 
 `Todo` shape:
 
@@ -201,7 +218,7 @@ to profile and todo endpoints receive `401`.
 }
 ```
 
-Project endpoints require the same authenticated session cookie as todo endpoints.
+Project endpoints accept the same cookie or `X-Auth-Token` header as todo endpoints.
 
 ---
 

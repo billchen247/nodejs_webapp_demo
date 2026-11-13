@@ -24,7 +24,7 @@ test("list requests projects with the session cookie", async () => {
     assert.deepEqual(await projectsApi.list(), projects);
     assert.equal(requestedUrl, "/api/projects");
     assert.equal(requestInit.credentials, "include");
-    assert.equal(requestInit.headers["Content-Type"], "application/json");
+    assert.equal(new Headers(requestInit.headers).get("Content-Type"), "application/json");
 });
 
 test("create sends a JSON POST and returns the created project", async () => {

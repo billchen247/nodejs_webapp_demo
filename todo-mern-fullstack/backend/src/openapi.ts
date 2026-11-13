@@ -39,6 +39,12 @@ export const openApiSpec = {
                 name: "token",
                 description: "Short-lived HttpOnly JWT cookie.",
             },
+            authTokenHeader: {
+                type: "apiKey",
+                in: "header",
+                name: "X-Auth-Token",
+                description: "Demo alternative to the HttpOnly cookie; short-lived JWT.",
+            },
         },
         schemas: {
             User: {
@@ -210,7 +216,14 @@ export const openApiSpec = {
                 },
                 responses: {
                     "201": {
-                        description: "Account created; JWT set in an HttpOnly cookie.",
+                        description:
+                            "Account created; JWT set in the HttpOnly cookie and X-Auth-Token response header.",
+                        headers: {
+                            "X-Auth-Token": {
+                                description: "Short-lived JWT for the demo header/localStorage flow.",
+                                schema: { type: "string" },
+                            },
+                        },
                         content: {
                             "application/json": {
                                 schema: {
@@ -239,7 +252,14 @@ export const openApiSpec = {
                 },
                 responses: {
                     "200": {
-                        description: "Signed in; JWT set in an HttpOnly cookie.",
+                        description:
+                            "Signed in; JWT set in the HttpOnly cookie and X-Auth-Token response header.",
+                        headers: {
+                            "X-Auth-Token": {
+                                description: "Short-lived JWT for the demo header/localStorage flow.",
+                                schema: { type: "string" },
+                            },
+                        },
                         content: {
                             "application/json": {
                                 schema: {
@@ -267,7 +287,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Profile"],
                 summary: "Get the current authenticated user's profile",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 responses: {
                     "200": {
                         description: "Current user.",
@@ -288,7 +308,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Todos"],
                 summary: "List all todos (newest first)",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 responses: {
                     "200": {
                         description: "Array of todos.",
@@ -306,7 +326,7 @@ export const openApiSpec = {
             post: {
                 tags: ["Todos"],
                 summary: "Create a new todo",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -332,7 +352,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Todos"],
                 summary: "Fetch one todo by id",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 responses: {
                     "200": {
@@ -350,7 +370,7 @@ export const openApiSpec = {
             patch: {
                 tags: ["Todos"],
                 summary: "Partially update a todo",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 requestBody: {
                     required: true,
@@ -376,7 +396,7 @@ export const openApiSpec = {
             delete: {
                 tags: ["Todos"],
                 summary: "Delete a todo",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/TodoId" }],
                 responses: {
                     "204": { description: "Deleted." },
@@ -389,7 +409,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Projects"],
                 summary: "List all projects (newest first)",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 responses: {
                     "200": {
                         description: "Array of projects.",
@@ -408,7 +428,7 @@ export const openApiSpec = {
             post: {
                 tags: ["Projects"],
                 summary: "Create a project",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -435,7 +455,7 @@ export const openApiSpec = {
             get: {
                 tags: ["Projects"],
                 summary: "Fetch one project by id",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/ProjectId" }],
                 responses: {
                     "200": {
@@ -454,7 +474,7 @@ export const openApiSpec = {
             patch: {
                 tags: ["Projects"],
                 summary: "Partially update a project",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/ProjectId" }],
                 requestBody: {
                     required: true,
@@ -481,7 +501,7 @@ export const openApiSpec = {
             delete: {
                 tags: ["Projects"],
                 summary: "Delete a project",
-                security: [{ cookieAuth: [] }],
+                security: [{ cookieAuth: [] }, { authTokenHeader: [] }],
                 parameters: [{ $ref: "#/components/parameters/ProjectId" }],
                 responses: {
                     "204": { description: "Deleted." },

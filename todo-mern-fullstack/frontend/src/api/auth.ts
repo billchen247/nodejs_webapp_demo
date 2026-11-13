@@ -1,5 +1,6 @@
-import type { LoginInput, RegisterInput, User } from "../types/auth";
-import { request } from "./common";
+import type { LoginInput, RegisterInput, User } from "../types/auth.ts";
+import { request } from "./common.ts";
+import { removeAuthToken } from "./tokenStorage.ts";
 
 export const authApi = {
     profile(): Promise<{ user: User }> {
@@ -20,10 +21,12 @@ export const authApi = {
         });
     },
 
-    logout(): Promise<{ message: string }> {
-        return request("/api/auth/logout", {
+    async logout(): Promise<{ message: string }> {
+        const result = await request<{ message: string }>("/api/auth/logout", {
             method: "POST",
             body: JSON.stringify({}),
         });
+        removeAuthToken();
+        return result;
     },
 };

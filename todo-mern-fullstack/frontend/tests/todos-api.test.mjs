@@ -24,7 +24,7 @@ test("list requests todos with the session cookie", async () => {
     assert.deepEqual(await todosApi.list(), todos);
     assert.equal(requestedUrl, "/api/todos");
     assert.equal(requestInit.credentials, "include");
-    assert.equal(requestInit.headers["Content-Type"], "application/json");
+    assert.equal(new Headers(requestInit.headers).get("Content-Type"), "application/json");
 });
 
 test("create sends a JSON POST and returns the created todo", async () => {

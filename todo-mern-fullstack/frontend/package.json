@@ -14,8 +14,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs",
-    "test:coverage": "node --experimental-strip-types --experimental-test-coverage --test tests/*.test.mjs"
+    "test": "node --experimental-strip-types --test-concurrency=1 --test tests/*.test.mjs",
+    "test:coverage": "node --experimental-strip-types --experimental-test-coverage --test-concurrency=1 --test tests/*.test.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
